@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>BuyCrafting - Registro</title>
+    <title>BuyCrafting - Acceso</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -59,7 +59,7 @@
         /* Contenido Principal */
         .main-content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;z-index:2}
         
-        .brand{text-align:center;margin-bottom:28px;animation:fadeIn 0.6s}
+        .brand{text-align:center;margin-bottom:32px;animation:fadeIn 0.6s}
         
         .logo-icon{
             width:76px;height:76px;background:var(--gradient);background-size:200% 200%;
@@ -74,21 +74,21 @@
         }
         .logo-subtitle{color:var(--text-muted);font-size:14px;margin-top:6px}
         
-        .register-card{
+        .login-card{
             background:var(--bg-card);border:1px solid var(--border);border-radius:24px;
-            padding:36px 32px;width:100%;max-width:440px;box-shadow:var(--shadow);
+            padding:36px 32px;width:100%;max-width:420px;box-shadow:var(--shadow);
             animation:slideUp 0.6s cubic-bezier(0.4,0,0.2,1);
             position:relative;overflow:hidden
         }
-        .register-card::before{
+        .login-card::before{
             content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient)
         }
         
-        .register-header{text-align:center;margin-bottom:24px}
-        .register-title{font-size:24px;font-weight:700;margin-bottom:6px}
-        .register-subtitle{color:var(--text-muted);font-size:14px}
+        .login-header{text-align:center;margin-bottom:28px}
+        .login-title{font-size:24px;font-weight:700;margin-bottom:6px}
+        .login-subtitle{color:var(--text-muted);font-size:14px}
         
-        .form-group{margin-bottom:18px;position:relative}
+        .form-group{margin-bottom:20px;position:relative}
         .form-group label{
             display:block;margin-bottom:8px;font-size:13px;color:var(--text-muted);
             font-weight:500;display:flex;align-items:center;gap:8px
@@ -116,14 +116,16 @@
         }
         .password-toggle:hover{color:var(--primary)}
         
-        .terms{
-            display:flex;align-items:flex-start;gap:10px;margin:16px 0;font-size:13px;color:var(--text-muted)
+        .form-options{
+            display:flex;justify-content:space-between;align-items:center;
+            margin-bottom:20px;font-size:13px;flex-wrap:wrap;gap:10px
         }
-        .terms input[type="checkbox"]{
-            width:17px;height:17px;accent-color:var(--primary);cursor:pointer;margin-top:2px
+        .remember-me{display:flex;align-items:center;gap:8px;color:var(--text-muted);cursor:pointer}
+        .remember-me input[type="checkbox"]{
+            width:17px;height:17px;accent-color:var(--primary);cursor:pointer
         }
-        .terms a{color:var(--primary);text-decoration:none;font-weight:500}
-        .terms a:hover{text-decoration:underline}
+        .forgot-link{color:var(--primary);text-decoration:none;font-weight:500;transition:color 0.3s}
+        .forgot-link:hover{color:var(--primary-dark);text-decoration:underline}
         
         .btn{
             width:100%;padding:15px;background:var(--gradient);color:white;
@@ -143,6 +145,21 @@
         .btn.loading .spinner{display:block}
         .btn.loading .btn-text{display:none}
         
+        .divider{
+            display:flex;align-items:center;margin:20px 0;color:var(--text-muted);font-size:13px
+        }
+        .divider::before,.divider::after{
+            content:'';flex:1;height:1px;background:var(--border)
+        }
+        .divider span{padding:0 14px}
+        
+        .register-link{
+            text-align:center;color:var(--text-muted);font-size:14px;
+            margin-top:28px;padding-top:20px;border-top:1px solid var(--border)
+        }
+        .register-link a{color:var(--primary);text-decoration:none;font-weight:600;transition:color 0.3s}
+        .register-link a:hover{color:var(--primary-dark);text-decoration:underline}
+        
         .error{
             color:var(--danger);font-size:13px;margin-top:14px;display:none;
             padding:10px 14px;background:rgba(239,68,68,0.1);border:1px solid var(--danger);
@@ -152,37 +169,33 @@
         .success{
             color:var(--secondary);font-size:13px;margin-top:14px;display:none;
             padding:10px 14px;background:rgba(16,185,129,0.1);border:1px solid var(--secondary);
-            border-radius:10px;display:flex;align-items:center;gap:10px;text-align:center
+            border-radius:10px;display:flex;align-items:center;gap:10px
         }
-        .success.show{display:block}
+        .success.show{display:flex}
         
         .info{
             background:rgba(99,102,241,0.12);border:1px solid var(--primary);
-            border-radius:12px;padding:14px;margin-top:18px;font-size:13px;color:var(--text-muted)
+            border-radius:12px;padding:14px;margin-top:20px;font-size:13px;color:var(--text-muted)
         }
         .info code{
             background:var(--bg);padding:3px 8px;border-radius:6px;
             color:var(--primary);font-family:monospace;font-size:12px
         }
         
-        .login-link{
-            text-align:center;color:var(--text-muted);font-size:14px;
-            margin-top:24px;padding-top:18px;border-top:1px solid var(--border)
+        .security-badge{
+            display:flex;align-items:center;justify-content:center;gap:8px;
+            margin-top:20px;font-size:12px;color:var(--text-muted)
         }
-        .login-link a{color:var(--primary);text-decoration:none;font-weight:600}
-        .login-link a:hover{color:var(--primary-dark);text-decoration:underline}
+        .security-badge i{color:var(--secondary);font-size:15px}
         
-        .token-display{
-            background:var(--bg);padding:14px 16px;border-radius:12px;
-            font-family:monospace;font-size:13px;color:var(--primary);
-            border:1px solid var(--primary);margin:12px 0;word-break:break-all;
-            display:flex;align-items:center;justify-content:space-between;gap:10px
+        .server-status{
+            display:flex;align-items:center;justify-content:center;gap:8px;
+            margin-top:14px;font-size:12px;color:var(--text-muted)
         }
-        .token-display button{
-            background:var(--bg-hover);border:none;color:var(--text);
-            padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer
+        .status-dot{
+            width:9px;height:9px;border-radius:50%;background:var(--secondary);
+            animation:pulse 2s infinite
         }
-        .token-display button:hover{background:var(--primary);color:white}
         
         /* Footer con Copyright */
         .footer{
@@ -198,17 +211,17 @@
             body{padding:16px}
             .logo-icon{width:70px;height:70px;font-size:30px}
             .logo-text{font-size:26px}
-            .register-card{padding:32px 24px;border-radius:20px}
-            .register-title{font-size:22px}
+            .login-card{padding:32px 24px;border-radius:20px}
+            .login-title{font-size:22px}
             .form-group input{padding:13px 13px 13px 46px;font-size:14px}
             .btn{padding:14px;font-size:14px}
-            .terms{flex-direction:column;align-items:flex-start}
+            .form-options{flex-direction:column;align-items:flex-start}
             .footer{padding:16px 12px;font-size:11px}
         }
         
         /* Responsive PC */
         @media(min-width:1024px){
-            .register-card{max-width:460px;padding:40px 36px}
+            .login-card{max-width:440px;padding:40px 36px}
             .logo-icon{width:80px;height:80px;font-size:36px}
             .logo-text{font-size:32px}
         }
@@ -224,18 +237,6 @@
             color:var(--danger);font-size:12px;margin-top:6px;display:none
         }
         .form-group.error .error-message{display:block}
-        
-        /* Password strength */
-        .password-strength{
-            height:4px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden
-        }
-        .password-strength-bar{
-            height:100%;width:0%;transition:all 0.3s;border-radius:2px
-        }
-        .password-strength-bar.weak{width:33%;background:var(--danger)}
-        .password-strength-bar.medium{width:66%;background:var(--accent)}
-        .password-strength-bar.strong{width:100%;background:var(--secondary)}
-        .password-hint{font-size:11px;color:var(--text-muted);margin-top:4px}
     </style>
 </head>
 <body>
@@ -250,28 +251,19 @@
         <div class="brand">
             <div class="logo-icon"><i class="fas fa-bolt"></i></div>
             <div class="logo-text">BuyCrafting</div>
-            <div class="logo-subtitle">Crea tu Tienda</div>
+            <div class="logo-subtitle">Panel de Administración</div>
         </div>
 
-        <!-- Register Card -->
-        <div class="register-card">
-            <div class="register-header">
-                <h1 class="register-title">Crear Nueva Tienda</h1>
-                <p class="register-subtitle">Registra tu servidor de Minecraft gratis</p>
+        <!-- Login Card -->
+        <div class="login-card">
+            <div class="login-header">
+                <h1 class="login-title">Bienvenido de nuevo</h1>
+                <p class="login-subtitle">Ingresa tus credenciales para gestionar tu tienda</p>
             </div>
 
-            <form id="registerForm" onsubmit="handleRegister(event)">
-                <div class="form-group" id="serverNameGroup">
-                    <label for="serverName"><i class="fas fa-server"></i> Nombre del Servidor</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="serverName" placeholder="Ej: MiServer SMP" required minlength="3" maxlength="50">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <div class="error-message">Nombre debe tener 3-50 caracteres</div>
-                </div>
-
+            <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group" id="emailGroup">
-                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <label for="email"><i class="fas fa-envelope"></i> Email del Servidor</label>
                     <div class="input-wrapper">
                         <input type="email" id="email" placeholder="admin@miserver.com" autocomplete="email" required>
                         <i class="fas fa-user"></i>
@@ -282,39 +274,28 @@
                 <div class="form-group" id="passwordGroup">
                     <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
                     <div class="input-wrapper">
-                        <input type="password" id="password" placeholder="••••••••" autocomplete="new-password" required minlength="6">
+                        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required minlength="6">
                         <i class="fas fa-key"></i>
-                        <button type="button" class="password-toggle" onclick="togglePassword('password','eyeIcon')" aria-label="Mostrar contraseña">
+                        <button type="button" class="password-toggle" onclick="togglePassword()" aria-label="Mostrar contraseña">
                             <i class="fas fa-eye" id="eyeIcon"></i>
                         </button>
                     </div>
-                    <div class="password-strength"><div class="password-strength-bar" id="strengthBar"></div></div>
-                    <div class="password-hint" id="passwordHint">Mínimo 6 caracteres</div>
                     <div class="error-message">La contraseña debe tener al menos 6 caracteres</div>
                 </div>
 
-                <div class="form-group" id="confirmPasswordGroup">
-                    <label for="confirmPassword"><i class="fas fa-lock"></i> Confirmar Contraseña</label>
-                    <div class="input-wrapper">
-                        <input type="password" id="confirmPassword" placeholder="••••••••" autocomplete="new-password" required>
-                        <i class="fas fa-key"></i>
-                        <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword','eyeIcon2')" aria-label="Mostrar contraseña">
-                            <i class="fas fa-eye" id="eyeIcon2"></i>
-                        </button>
-                    </div>
-                    <div class="error-message">Las contraseñas no coinciden</div>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <span>Recordar sesión</span>
+                    </label>
+                    <a href="#" class="forgot-link" onclick="showNotification('Contacta al soporte para recuperar acceso');return false;">¿Olvidaste tu contraseña?</a>
                 </div>
 
-                <label class="terms">
-                    <input type="checkbox" id="terms" required>
-                    <span>Acepto los <a href="#" onclick="return false">Términos de Servicio</a> y la <a href="#" onclick="return false">Política de Privacidad</a></span>
-                </label>
-
-                <button type="submit" class="btn" id="registerBtn">
+                <button type="submit" class="btn" id="loginBtn">
                     <span class="spinner"></span>
                     <span class="btn-text">
-                        <i class="fas fa-user-plus"></i>
-                        Crear Mi Tienda
+                        <i class="fas fa-sign-in-alt"></i>
+                        Iniciar Sesión
                     </span>
                 </button>
                 
@@ -324,25 +305,33 @@
                 </div>
                 <div class="success" id="successMsg">
                     <i class="fas fa-check-circle"></i>
-                    <div>
-                        <strong>¡Registro exitoso!</strong><br>
-                        Tu token único:<br>
-                        <div class="token-display">
-                            <code id="generatedToken">sk_xxxxxx</code>
-                            <button type="button" onclick="copyToken()"><i class="fas fa-copy"></i></button>
-                        </div>
-                        <small>Guárdalo para tu config.yml</small>
-                    </div>
+                    <span id="successText"></span>
                 </div>
             </form>
 
-            <div class="info">
-                <i class="fas fa-info-circle"></i> 
-                <strong>¿Qué recibes?</strong> Token único, dashboard personalizado, y sincronización automática con tu plugin de Minecraft.
+            <div class="divider"><span>o</span></div>
+
+            <div style="text-align:center">
+                <a href="register.html" class="btn" style="background:var(--bg-hover);border:1px solid var(--border);box-shadow:none">
+                    <i class="fas fa-user-plus"></i>
+                    Crear Nueva Tienda
+                </a>
             </div>
 
-            <div class="login-link">
-                ¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a>
+            <div class="info">
+                <i class="fas fa-info-circle"></i> 
+                <strong>¿Eres nuevo?</strong> Regístrate gratis para crear tu tienda de Minecraft. 
+                Recibirás un token único para conectar tu plugin.
+            </div>
+
+            <div class="security-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span>Conexión segura • Datos encriptados • Firebase Auth</span>
+            </div>
+
+            <div class="server-status">
+                <div class="status-dot"></div>
+                <span>Sistema en línea • Firebase conectado</span>
             </div>
         </div>
     </div>
@@ -357,7 +346,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, doc, setDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCIGXn0zND_8A_nD6NPxx1txYFQzrhM9hg",
@@ -371,7 +360,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let isRegistering = false;
+        // Flag para evitar redirección múltiple
+        let isRedirecting = false;
 
         // Crear Partículas
         function createParticles(){
@@ -388,9 +378,9 @@
         }
 
         // Toggle Password
-        window.togglePassword = function(inputId, iconId){
-            const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
+        window.togglePassword = function(){
+            const input = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
             if(input.type === 'password'){
                 input.type = 'text';
                 icon.className = 'fas fa-eye-slash';
@@ -400,45 +390,12 @@
             }
         };
 
-        // Password Strength
-        document.getElementById('password')?.addEventListener('input', function(){
-            const val = this.value;
-            const bar = document.getElementById('strengthBar');
-            const hint = document.getElementById('passwordHint');
-            
-            if(val.length === 0){
-                bar.className = 'password-strength-bar';
-                hint.textContent = 'Mínimo 6 caracteres';
-                return;
-            }
-            
-            let strength = 0;
-            if(val.length >= 6) strength++;
-            if(val.length >= 10) strength++;
-            if(/[A-Z]/.test(val) && /[a-z]/.test(val) && /[0-9]/.test(val)) strength++;
-            
-            bar.className = 'password-strength-bar ' + (strength <= 1 ? 'weak' : strength === 2 ? 'medium' : 'strong');
-            hint.textContent = strength <= 1 ? 'Débil' : strength === 2 ? 'Media' : 'Fuerte ✓';
-        });
-
         // Validar Formulario
         function validateForm(){
             let valid = true;
-            const serverName = document.getElementById('serverName');
             const email = document.getElementById('email');
             const password = document.getElementById('password');
-            const confirmPassword = document.getElementById('confirmPassword');
-            const terms = document.getElementById('terms');
             
-            // Server name
-            if(serverName.value.length < 3 || serverName.value.length > 50){
-                document.getElementById('serverNameGroup').classList.add('error');
-                valid = false;
-            } else {
-                document.getElementById('serverNameGroup').classList.remove('error');
-            }
-            
-            // Email
             if(!email.value.includes('@')){
                 document.getElementById('emailGroup').classList.add('error');
                 valid = false;
@@ -446,26 +403,11 @@
                 document.getElementById('emailGroup').classList.remove('error');
             }
             
-            // Password
             if(password.value.length < 6){
                 document.getElementById('passwordGroup').classList.add('error');
                 valid = false;
             } else {
                 document.getElementById('passwordGroup').classList.remove('error');
-            }
-            
-            // Confirm password
-            if(password.value !== confirmPassword.value){
-                document.getElementById('confirmPasswordGroup').classList.add('error');
-                valid = false;
-            } else {
-                document.getElementById('confirmPasswordGroup').classList.remove('error');
-            }
-            
-            // Terms
-            if(!terms.checked){
-                showNotification('Debes aceptar los términos');
-                valid = false;
             }
             
             return valid;
@@ -474,115 +416,75 @@
         // Notificaciones
         window.showNotification = function(msg, type='error'){
             const el = type==='error' ? document.getElementById('errorMsg') : document.getElementById('successMsg');
-            const textEl = type==='error' ? document.getElementById('errorText') : document.getElementById('successMsg');
-            if(type === 'error'){
-                document.getElementById('errorText').textContent = msg;
-                document.getElementById('errorMsg').className = 'error show';
-                setTimeout(()=>{document.getElementById('errorMsg').className = 'error'},5000);
-            }
+            const textEl = type==='error' ? document.getElementById('errorText') : document.getElementById('successText');
+            textEl.textContent = msg;
+            el.className = type==='error' ? 'error show' : 'success show';
+            setTimeout(()=>{el.className = type==='error' ? 'error' : 'success'},5000);
         };
 
-        // Generar Token Único
-        function generateToken(){
-            return 'sk_' + Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
-        }
-
-        // Copiar Token
-        window.copyToken = function(){
-            const token = document.getElementById('generatedToken').textContent;
-            navigator.clipboard.writeText(token);
-            showNotification('Token copiado al portapapeles', 'success');
-        };
-
-        // Manejar Registro
-        window.handleRegister = async function(e){
+        // Manejar Login - SIN BUCLE
+        window.handleLogin = async function(e){
             e.preventDefault();
             
-            if(isRegistering) return;
-            
             if(!validateForm()){
+                showNotification('Por favor corrige los errores');
                 return;
             }
 
-            const serverName = document.getElementById('serverName').value.trim();
             const email = document.getElementById('email').value.trim().toLowerCase();
             const password = document.getElementById('password').value.trim();
-            const btn = document.getElementById('registerBtn');
+            const remember = document.getElementById('remember').checked;
+            const btn = document.getElementById('loginBtn');
             
-            isRegistering = true;
+            // Estado de carga
             btn.classList.add('loading');
             btn.disabled = true;
 
             try{
-                // Verificar si el email ya existe
+                // Buscar servidor por email y contraseña
                 const serversRef = collection(db, 'servers');
-                const existingQuery = query(serversRef, where('ownerEmail', '==', email));
-                const existingSnap = await getDocs(existingQuery);
-                
-                if(!existingSnap.empty){
-                    showNotification('Este email ya está registrado');
-                    isRegistering = false;
+                const q = query(serversRef, where('ownerEmail', '==', email), where('password', '==', password), where('active', '==', true));
+                const snapshot = await getDocs(q);
+
+                if(snapshot.empty){
+                    showNotification('Email o contraseña incorrectos');
                     btn.classList.remove('loading');
                     btn.disabled = false;
                     return;
                 }
 
-                // Generar ID y token únicos
-                const serverId = 'server_' + Math.random().toString(36).substring(2, 10);
-                const token = generateToken();
+                // Login exitoso
+                const serverDoc = snapshot.docs[0];
+                const serverData = serverDoc.data();
+                const serverId = serverDoc.id;
 
-                // Crear documento del servidor
-                await setDoc(doc(db, 'servers', serverId), {
-                    serverName: serverName,
-                    ownerEmail: email,
-                    password: password,
-                    token: token,
-                    createdAt: new Date(),
-                    active: true,
-                    plan: 'free'
-                });
-
-                // Crear config inicial
-                await setDoc(doc(db, 'configs', serverId), {
-                    apiKey: token,
-                    serverName: serverName,
-                    currency: 'USD',
-                    createdAt: new Date()
-                });
-
-                // Crear store config inicial
-                await setDoc(doc(db, 'stores', serverId), {
-                    name: serverName + ' Shop',
-                    currency: 'USD',
-                    description: 'Tienda oficial de ' + serverName,
-                    color: '#6366f1',
-                    createdAt: new Date()
-                }, { merge: true });
-
-                // Mostrar token generado
-                document.getElementById('generatedToken').textContent = token;
-                document.getElementById('successMsg').className = 'success show';
-                btn.innerHTML = '<i class="fas fa-check"></i> ¡Registrado!';
+                showNotification('¡Bienvenido! Redirigiendo...', 'success');
                 
-                // Guardar sesión para auto-login
-                localStorage.setItem('buycrafting_auth', 'true');
-                localStorage.setItem('buycrafting_serverId', serverId);
-                localStorage.setItem('buycrafting_token', token);
-                localStorage.setItem('buycrafting_serverName', serverName);
-                localStorage.setItem('buycrafting_email', email);
+                // Guardar sesión
+                const sessionData = {
+                    buycrafting_auth: 'true',
+                    buycrafting_serverId: serverId,
+                    buycrafting_token: serverData.token,
+                    buycrafting_serverName: serverData.serverName,
+                    buycrafting_email: serverData.ownerEmail
+                };
+                
+                const storage = remember ? localStorage : sessionStorage;
+                Object.entries(sessionData).forEach(([k,v]) => storage.setItem(k,v));
 
-                // Redirigir al dashboard después de 3 segundos
-                setTimeout(() => {
-                    window.location.replace('index.html');
-                }, 3000);
+                // ✅ REDIRECCIÓN SEGURA (sin bucle)
+                if(!isRedirecting){
+                    isRedirecting = true;
+                    setTimeout(() => {
+                        window.location.replace('index.html');
+                    }, 1200);
+                }
 
             } catch(error){
-                console.error('Register error:', error);
-                showNotification('Error: ' + error.message);
-                isRegistering = false;
+                console.error('Login error:', error);
+                showNotification('Error de conexión: '+error.message);
                 btn.classList.remove('loading');
                 btn.disabled = false;
-                btn.innerHTML = '<span class="btn-text"><i class="fas fa-user-plus"></i> Crear Mi Tienda</span>';
             }
         };
 
@@ -591,6 +493,7 @@
             input.addEventListener('input', function(){
                 this.closest('.form-group')?.classList.remove('error');
                 document.getElementById('errorMsg')?.classList.remove('show');
+                document.getElementById('successMsg')?.classList.remove('show');
             });
         });
 
@@ -600,7 +503,7 @@
             
             // Focus en el primer input (con delay para iOS)
             setTimeout(() => {
-                document.getElementById('serverName')?.focus();
+                document.getElementById('email')?.focus();
             }, 300);
         });
     </script>
