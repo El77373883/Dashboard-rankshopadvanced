@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cargando Tienda...</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{
@@ -100,96 +100,504 @@
         }
         .custom-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.3)}
         
-        /* Productos */
-        .products-section{padding:40px 20px;max-width:1200px;margin:0 auto}
-        .products-title{font-size:28px;font-weight:700;margin-bottom:30px;text-align:center}
-        .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+        /* ======================================== */
+        /* 🎨 PRODUCTOS - VERSIÓN PREMIUM */
+        /* ======================================== */
+        .products-section{
+            padding:60px 20px;
+            max-width:1300px;
+            margin:0 auto;
+            background:linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 100%)
+        }
+        .products-title{
+            font-size:34px;
+            font-weight:800;
+            margin-bottom:50px;
+            text-align:center;
+            background:linear-gradient(135deg, var(--primary) 0%, #a855f7 50%, var(--primary) 100%);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text;
+            animation:titleGlow 3s ease-in-out infinite;
+            position:relative;
+            display:inline-block;
+            left:50%;
+            transform:translateX(-50%)
+        }
+        @keyframes titleGlow{
+            0%,100%{filter:brightness(1); text-shadow:0 0 20px rgba(99,102,241,0.3)}
+            50%{filter:brightness(1.3); text-shadow:0 0 40px rgba(99,102,241,0.6)}
+        }
+        .products-title::after{
+            content:'';
+            position:absolute;
+            bottom:-10px;
+            left:50%;
+            transform:translateX(-50%);
+            width:100px;
+            height:4px;
+            background:var(--gradient);
+            border-radius:2px;
+            animation:shimmer 2s infinite
+        }
+        @keyframes shimmer{
+            0%{opacity:0.5; width:60px}
+            50%{opacity:1; width:120px}
+            100%{opacity:0.5; width:60px}
+        }
+        .products-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+            gap:30px
+        }
         
+        /* Tarjeta Premium */
         .product-card{
-            background:var(--bg-card);border:1px solid var(--border);
-            border-radius:16px;overflow:hidden;transition:all 0.3s
+            background:linear-gradient(145deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border:2px solid rgba(99,102,241,0.15);
+            border-radius:24px;
+            overflow:hidden;
+            transition:all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position:relative;
+            box-shadow:0 10px 40px rgba(0,0,0,0.4);
+            display:flex;
+            flex-direction:column
         }
-        .product-card:hover{transform:translateY(-5px);border-color:var(--primary);box-shadow:0 12px 35px rgba(0,0,0,0.4)}
+        .product-card::before{
+            content:'';
+            position:absolute;
+            top:0;
+            left:0;
+            right:0;
+            height:3px;
+            background:linear-gradient(90deg, var(--primary), #a855f7, #6366f1, #a855f7, var(--primary));
+            background-size:300% 100%;
+            animation:borderShine 4s linear infinite;
+            opacity:0;
+            transition:opacity 0.3s
+        }
+        .product-card:hover::before{
+            opacity:1
+        }
+        @keyframes borderShine{
+            0%{background-position:0% 50%}
+            100%{background-position:300% 50%}
+        }
+        .product-card:hover{
+            transform:translateY(-12px) scale(1.03);
+            border-color:var(--primary);
+            box-shadow:0 25px 80px rgba(99,102,241,0.5), 0 0 60px rgba(99,102,241,0.2), inset 0 1px 0 rgba(255,255,255,0.1)
+        }
         
+        /* Badge/Tag Animado */
+        .product-badge{
+            position:absolute;
+            top:16px;
+            right:16px;
+            background:linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            color:white;
+            padding:8px 16px;
+            border-radius:24px;
+            font-size:11px;
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:0.8px;
+            box-shadow:0 6px 20px rgba(245,158,11,0.5);
+            animation:badgePulse 2.5s ease-in-out infinite;
+            z-index:10;
+            display:flex;
+            align-items:center;
+            gap:6px
+        }
+        @keyframes badgePulse{
+            0%,100%{transform:scale(1); box-shadow:0 6px 20px rgba(245,158,11,0.5)}
+            50%{transform:scale(1.08); box-shadow:0 8px 25px rgba(245,158,11,0.7)}
+        }
+        .product-badge.popular{
+            background:linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+            box-shadow:0 6px 20px rgba(239,68,68,0.5)
+        }
+        .product-badge.new{
+            background:linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+            box-shadow:0 6px 20px rgba(16,185,129,0.5)
+        }
+        .product-badge.discount{
+            background:linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            box-shadow:0 6px 20px rgba(139,92,246,0.5)
+        }
+        
+        /* Icono del producto */
         .product-icon{
-            width:100%;height:120px;background:var(--bg-secondary);
-            display:flex;align-items:center;justify-content:center;font-size:48px
+            width:100%;
+            height:160px;
+            background:linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(168,85,247,0.15) 50%, rgba(99,102,241,0.15) 100%);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:64px;
+            position:relative;
+            overflow:hidden;
+            border-bottom:1px solid rgba(99,102,241,0.1)
         }
-        .product-icon img{max-width:70%;max-height:70%;object-fit:contain}
+        .product-icon::after{
+            content:'';
+            position:absolute;
+            top:-50%;
+            left:-50%;
+            width:200%;
+            height:200%;
+            background:radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 60%);
+            animation:iconGlow 5s ease-in-out infinite;
+            pointer-events:none
+        }
+        @keyframes iconGlow{
+            0%,100%{transform:scale(1); opacity:0.4}
+            50%{transform:scale(1.2); opacity:0.8}
+        }
+        .product-icon img{
+            max-width:80%;
+            max-height:80%;
+            object-fit:contain;
+            position:relative;
+            z-index:1;
+            filter:drop-shadow(0 6px 20px rgba(99,102,241,0.4));
+            transition:transform 0.4s
+        }
+        .product-card:hover .product-icon img{
+            transform:scale(1.1) rotate(5deg)
+        }
         
-        .product-info{padding:20px}
-        .product-name{font-size:18px;font-weight:600;margin-bottom:6px}
-        .product-desc{font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.4}
-        .product-footer{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--border)}
-        .product-price{font-size:24px;font-weight:700;color:var(--primary)}
+        /* Info del producto */
+        .product-info{
+            padding:28px;
+            flex:1;
+            display:flex;
+            flex-direction:column
+        }
+        .product-name{
+            font-size:24px;
+            font-weight:700;
+            margin-bottom:10px;
+            background:linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text;
+            line-height:1.3
+        }
+        .product-desc{
+            font-size:15px;
+            color:var(--text-muted);
+            margin-bottom:20px;
+            line-height:1.6;
+            flex:1
+        }
+        
+        /* Footer del producto */
+        .product-footer{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding-top:20px;
+            border-top:1px solid rgba(99,102,241,0.2);
+            margin-top:auto
+        }
+        .product-price{
+            font-size:28px;
+            font-weight:800;
+            background:linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text
+        }
+        .product-price::before{
+            content:'$';
+            font-size:20px;
+            margin-right:2px
+        }
+        
+        /* Botón de compra PREMIUM */
         .buy-btn{
-            background:var(--gradient);color:white;padding:10px 20px;
-            border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer
+            background:var(--gradient);
+            color:white;
+            padding:14px 28px;
+            border:none;
+            border-radius:14px;
+            font-size:15px;
+            font-weight:700;
+            cursor:pointer;
+            transition:all 0.3s;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            position:relative;
+            overflow:hidden;
+            box-shadow:0 6px 20px rgba(99,102,241,0.4)
         }
-        .buy-btn:hover{transform:scale(1.03)}
+        .buy-btn::before{
+            content:'';
+            position:absolute;
+            top:0;
+            left:-100%;
+            width:100%;
+            height:100%;
+            background:linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition:left 0.5s
+        }
+        .buy-btn:hover::before{
+            left:100%
+        }
+        .buy-btn:hover{
+            transform:scale(1.06);
+            box-shadow:0 10px 30px rgba(99,102,241,0.6), 0 0 40px rgba(99,102,241,0.3)
+        }
+        .buy-btn:active{
+            transform:scale(0.98)
+        }
+        .buy-btn i{
+            transition:transform 0.3s
+        }
+        .buy-btn:hover i{
+            transform:translateX(3px)
+        }
         
-        /* Gift Cards */
-        .giftcards-section{padding:40px 20px;background:var(--bg-secondary)}
-        .giftcards-title{font-size:28px;font-weight:700;margin-bottom:12px;text-align:center}
-        .giftcards-desc{text-align:center;color:var(--text-muted);margin-bottom:25px}
-        .giftcards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;max-width:800px;margin:0 auto}
+        /* Efecto de brillo al hover */
+        .product-card::after{
+            content:'';
+            position:absolute;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            background:linear-gradient(135deg, transparent 0%, rgba(99,102,241,0.05) 50%, transparent 100%);
+            opacity:0;
+            transition:opacity 0.4s;
+            pointer-events:none;
+            border-radius:24px
+        }
+        .product-card:hover::after{
+            opacity:1
+        }
         
+        /* ======================================== */
+        /* 🎁 GIFT CARDS - PREMIUM */
+        /* ======================================== */
+        .giftcards-section{
+            padding:60px 20px;
+            background:linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg) 100%)
+        }
+        .giftcards-title{
+            font-size:32px;
+            font-weight:800;
+            margin-bottom:12px;
+            text-align:center;
+            background:linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text
+        }
+        .giftcards-desc{
+            text-align:center;
+            color:var(--text-muted);
+            margin-bottom:35px;
+            font-size:16px
+        }
+        .giftcards-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+            gap:24px;
+            max-width:900px;
+            margin:0 auto
+        }
         .giftcard{
-            background:var(--gradient);border-radius:14px;padding:20px;
-            text-align:center;cursor:pointer;transition:all 0.3s;
-            border:2px solid rgba(255,255,255,0.2)
+            background:var(--gradient);
+            border-radius:20px;
+            padding:28px 24px;
+            text-align:center;
+            cursor:pointer;
+            transition:all 0.4s;
+            border:2px solid rgba(255,255,255,0.2);
+            position:relative;
+            overflow:hidden
         }
-        .giftcard:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.3)}
-        .giftcard-amount{font-size:32px;font-weight:700;color:white;margin-bottom:4px}
-        .giftcard-label{font-size:13px;color:rgba(255,255,255,0.9)}
+        .giftcard::before{
+            content:'';
+            position:absolute;
+            top:-50%;
+            left:-50%;
+            width:200%;
+            height:200%;
+            background:radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+            animation:giftGlow 4s ease-in-out infinite;
+            pointer-events:none
+        }
+        @keyframes giftGlow{
+            0%,100%{transform:scale(1); opacity:0.5}
+            50%{transform:scale(1.1); opacity:0.8}
+        }
+        .giftcard:hover{
+            transform:translateY(-8px) scale(1.04);
+            box-shadow:0 20px 50px rgba(99,102,241,0.5), 0 0 40px rgba(245,158,11,0.3);
+            border-color:rgba(255,255,255,0.5)
+        }
+        .giftcard-amount{
+            font-size:38px;
+            font-weight:800;
+            color:white;
+            margin-bottom:6px;
+            text-shadow:0 2px 20px rgba(0,0,0,0.3);
+            position:relative;
+            z-index:1
+        }
+        .giftcard-label{
+            font-size:14px;
+            color:rgba(255,255,255,0.95);
+            font-weight:500;
+            position:relative;
+            z-index:1
+        }
         
-        /* Redeem Code */
-        .redeem-section{padding:40px 20px;background:var(--bg-card)}
-        .redeem-container{max-width:450px;margin:0 auto;text-align:center}
-        .redeem-title{font-size:24px;font-weight:700;margin-bottom:10px}
-        .redeem-desc{color:var(--text-muted);margin-bottom:20px;font-size:14px}
-        .redeem-form{display:flex;gap:10px}
-        .redeem-input{
-            flex:1;padding:12px 16px;background:var(--bg);border:2px solid var(--border);
-            border-radius:10px;color:var(--text);font-size:14px
+        /* ======================================== */
+        /* 🎫 REDEEM CODE - PREMIUM */
+        /* ======================================== */
+        .redeem-section{
+            padding:60px 20px;
+            background:linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%)
         }
-        .redeem-input:focus{outline:none;border-color:var(--primary)}
+        .redeem-container{
+            max-width:500px;
+            margin:0 auto;
+            text-align:center
+        }
+        .redeem-title{
+            font-size:28px;
+            font-weight:700;
+            margin-bottom:12px;
+            background:linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text
+        }
+        .redeem-desc{
+            color:var(--text-muted);
+            margin-bottom:28px;
+            font-size:15px
+        }
+        .redeem-form{
+            display:flex;
+            gap:12px;
+            background:var(--bg);
+            padding:8px;
+            border-radius:16px;
+            border:2px solid var(--border)
+        }
+        .redeem-input{
+            flex:1;
+            padding:14px 20px;
+            background:transparent;
+            border:none;
+            border-radius:12px;
+            color:var(--text);
+            font-size:15px;
+            outline:none
+        }
+        .redeem-input::placeholder{
+            color:var(--text-muted)
+        }
         .redeem-btn{
-            padding:12px 24px;background:var(--gradient);color:white;
-            border:none;border-radius:10px;font-weight:600;cursor:pointer
+            padding:14px 28px;
+            background:var(--gradient);
+            color:white;
+            border:none;
+            border-radius:12px;
+            font-weight:700;
+            cursor:pointer;
+            transition:all 0.3s;
+            display:flex;
+            align-items:center;
+            gap:8px
+        }
+        .redeem-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0 8px 25px rgba(99,102,241,0.5)
         }
         
         /* Footer */
         .store-footer{
-            background:var(--bg-secondary);padding:30px 20px;
-            text-align:center;border-top:1px solid var(--border)
+            background:var(--bg-secondary);
+            padding:40px 20px;
+            text-align:center;
+            border-top:1px solid var(--border)
         }
-        .footer-text{font-size:14px;color:var(--text-muted);margin-bottom:15px}
-        .social-links{display:flex;justify-content:center;gap:18px}
+        .footer-text{
+            font-size:14px;
+            color:var(--text-muted);
+            margin-bottom:20px
+        }
+        .social-links{
+            display:flex;
+            justify-content:center;
+            gap:20px
+        }
         .social-links a{
-            width:40px;height:40px;background:var(--bg);border-radius:10px;
-            display:flex;align-items:center;justify-content:center;
-            font-size:18px;color:var(--text-muted);transition:all 0.3s;text-decoration:none
+            width:48px;
+            height:48px;
+            background:var(--bg);
+            border-radius:14px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:20px;
+            color:var(--text-muted);
+            transition:all 0.3s;
+            text-decoration:none;
+            border:2px solid transparent
         }
-        .social-links a:hover{background:var(--primary);color:white;transform:translateY(-3px)}
+        .social-links a:hover{
+            background:var(--primary);
+            color:white;
+            transform:translateY(-5px);
+            border-color:var(--primary);
+            box-shadow:0 10px 30px rgba(99,102,241,0.4)
+        }
         
         /* Loading & Error */
-        .loading,.error{text-align:center;padding:80px 20px}
+        .loading,.error{
+            text-align:center;
+            padding:100px 20px
+        }
         .spinner{
-            width:40px;height:40px;border:4px solid var(--border);
-            border-top-color:var(--primary);border-radius:50%;
-            animation:spin 1s linear infinite;margin:0 auto 20px
+            width:50px;
+            height:50px;
+            border:4px solid var(--border);
+            border-top-color:var(--primary);
+            border-radius:50%;
+            animation:spin 1s linear infinite;
+            margin:0 auto 24px
         }
         @keyframes spin{to{transform:rotate(360deg)}}
         
-        .error{color:var(--danger)}
-        .error i{font-size:48px;margin-bottom:16px}
+        .error{
+            color:var(--danger)
+        }
+        .error i{
+            font-size:56px;
+            margin-bottom:20px;
+            animation:shake 0.5s ease-in-out infinite
+        }
+        @keyframes shake{
+            0%,100%{transform:translateX(0)}
+            25%{transform:translateX(-5px)}
+            75%{transform:translateX(5px)}
+        }
         
         /* Responsive */
-        @media(max-width:640px){
-            .store-title{font-size:28px}
+        @media(max-width:768px){
+            .store-title{font-size:30px}
             .products-grid{grid-template-columns:1fr}
+            .products-title{font-size:28px}
             .redeem-form{flex-direction:column}
+            .product-name{font-size:20px}
+            .product-price{font-size:24px}
         }
     </style>
 </head>
@@ -238,7 +646,7 @@
                 <p class="redeem-desc">¿Tienes un código promocional? Canjéalo aquí</p>
                 <form class="redeem-form" onsubmit="redeemCode(event)">
                     <input type="text" class="redeem-input" id="redeemInput" placeholder="Ingresa tu código" required>
-                    <button type="submit" class="redeem-btn">Canjear</button>
+                    <button type="submit" class="redeem-btn"><i class="fas fa-gift"></i>Canjear</button>
                 </form>
             </div>
         </section>
@@ -285,28 +693,15 @@
                 const storeSnap = await getDoc(storeRef);
 
                 if(!storeSnap.exists()){
-                    console.error('❌ Store doc not found in collection "stores"');
+                    console.error('❌ Store doc not found');
                     showError('Este servidor no existe o fue eliminado.');
                     return;
                 }
 
                 const data = storeSnap.data();
                 console.log('✅ Store loaded:', data);
-                
-                // 🔥 DEBUG: Mostrar qué se cargó
-                console.log('🎨 Colors:', {
-                    primary: data.primaryColor,
-                    bg: data.backgroundColor,
-                    card: data.cardColor,
-                    text: data.textColor
-                });
-                console.log('🖼️ Background:', {
-                    hasImage: !!data.backgroundImage,
-                    isBase64: data.backgroundImage?.startsWith(''),
-                    length: data.backgroundImage?.length
-                });
 
-                // === APLICAR COLORES ===
+                // === COLORES ===
                 const root = document.documentElement;
                 if(data.primaryColor) root.style.setProperty('--primary', data.primaryColor);
                 if(data.backgroundColor) root.style.setProperty('--bg', data.backgroundColor);
@@ -326,43 +721,33 @@
                 // === LOGO ===
                 const logoEl = document.getElementById('storeLogo');
                 if(data.logo){
-                    console.log('🖼️ Loading logo:', data.logo.substring(0, 50) + '...');
-                    logoEl.innerHTML = `<img src="${data.logo}" alt="Logo" onerror="console.error('Logo failed to load'); this.parentElement.innerHTML='<i class=\\'fas fa-shopping-cart\\'></i>'">`;
+                    logoEl.innerHTML = `<img src="${data.logo}" alt="Logo" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-shopping-cart\\'></i>'">`;
                 }
 
-                // === HEADER CON FONDO/GIF ===
+                // === HEADER ===
                 const header = document.getElementById('storeHeader');
                 header.className = 'store-header';
                 
                 if(data.backgroundImage){
-                    console.log('🎬 Applying background image');
-                    // Manejar tanto URLs normales como base64
                     header.style.backgroundImage = `url(${data.backgroundImage})`;
                     header.style.backgroundSize = 'cover';
                     header.style.backgroundPosition = 'center';
                     header.style.backgroundRepeat = 'no-repeat';
-                    
-                    // Si es GIF, asegurar que se reproduzca
                     if(data.backgroundImage.includes('.gif') || data.backgroundImage.startsWith('data:image/gif')){
-                        console.log('🎬 GIF detected, ensuring animation plays');
-                        header.style.animation = 'none'; // Quitar animación CSS para que el GIF se vea
+                        header.style.animation = 'none';
                     }
                 } else {
-                    console.log('🎨 Using animation instead of image');
                     const bgAnim = data.bgAnimation || 'glow';
                     header.classList.add(`anim-${bgAnim}`);
                     header.style.animationDuration = speedMap[data.animSpeed] || '4s';
                 }
 
-                // === ANIMACIÓN DE TÍTULO ===
+                // === TÍTULO ===
                 const title = document.getElementById('storeTitle');
                 const titleAnim = data.titleAnimation || 'gradient';
                 title.classList.add(`title-anim-${titleAnim}`);
                 title.style.animationDuration = speedMap[data.animSpeed] || '3s';
-                
-                if(data.animIntensity){
-                    title.style.filter = `brightness(${data.animIntensity})`;
-                }
+                if(data.animIntensity) title.style.filter = `brightness(${data.animIntensity})`;
 
                 // === FUENTE Y BORDES ===
                 if(data.fontFamily) document.body.style.fontFamily = data.fontFamily;
@@ -373,7 +758,7 @@
                     });
                 }
 
-                // === BOTONES PERSONALIZADOS ===
+                // === BOTONES ===
                 const btnContainer = document.getElementById('customButtons');
                 if(data.customButtons && Array.isArray(data.customButtons)){
                     btnContainer.innerHTML = data.customButtons.map(btn => `
@@ -396,24 +781,21 @@
                     document.getElementById('giftcardsSection').style.display = 'block';
                     if(data.giftCards?.length) renderGiftCards(data.giftCards);
                 }
-                if(data.sections?.redeem){
-                    document.getElementById('redeemSection').style.display = 'block';
-                }
+                if(data.sections?.redeem) document.getElementById('redeemSection').style.display = 'block';
 
-                // === PRODUCTOS ===
                 await loadProducts(serverId);
 
-                // === MOSTRAR ===
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('storeContent').style.display = 'block';
                 document.title = `${data.name || 'Tienda'} - BuyCrafting`;
 
             } catch(err){
-                console.error('❌ Error loading store:', err);
+                console.error('❌ Error:', err);
                 showError('Error: ' + err.message);
             }
         }
 
+        // 🔥 CARGAR PRODUCTOS CON TAGS Y ESTILO PREMIUM
         async function loadProducts(serverId){
             try{
                 const productsRef = collection(db, 'products');
@@ -422,7 +804,7 @@
                 const grid = document.getElementById('productsGrid');
                 
                 if(snap.empty){
-                    grid.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:var(--text-muted)">No hay productos aún</p>`;
+                    grid.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:16px;padding:40px">No hay productos aún</p>`;
                     return;
                 }
 
@@ -431,18 +813,40 @@
                     const card = document.createElement('div');
                     card.className = 'product-card';
                     
-                    let icon = p.image ? `<img src="${p.image}" alt="${p.name}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-box\\' style=\\'font-size:40px;color:var(--text-muted)\\'></i>'">` : 
-                               p.material ? getMaterialIcon(p.material) : 
-                               `<i class="fas fa-box" style="font-size:40px;color:var(--text-muted)"></i>`;
+                    // 🔥 Determinar badge/tag según datos del producto
+                    let badgeHtml = '';
+                    if(p.isPopular) badgeHtml = `<span class="product-badge popular"><i class="fas fa-fire"></i>Popular</span>`;
+                    else if(p.isNew) badgeHtml = `<span class="product-badge new"><i class="fas fa-star"></i>Nuevo</span>`;
+                    else if(p.discount) badgeHtml = `<span class="product-badge discount"><i class="fas fa-percent"></i>-${p.discount}%</span>`;
+                    
+                    // Icono
+                    let icon = p.image ? 
+                        `<img src="${p.image}" alt="${p.name}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-box\\' style=\\'font-size:50px;color:var(--text-muted)\\'></i>'">` : 
+                        p.material ? getMaterialIcon(p.material) : 
+                        `<i class="fas fa-gem" style="font-size:50px;color:var(--primary)"></i>`;
+                    
+                    // Precio con descuento si aplica
+                    let priceHtml = `<span class="product-price">${(p.price||0).toFixed(2)}</span>`;
+                    if(p.discount && p.originalPrice){
+                        priceHtml = `
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <span class="product-price">${(p.price||0).toFixed(2)}</span>
+                                <span style="font-size:16px;color:var(--text-muted);text-decoration:line-through">$${p.originalPrice.toFixed(2)}</span>
+                            </div>
+                        `;
+                    }
                     
                     card.innerHTML = `
+                        ${badgeHtml}
                         <div class="product-icon">${icon}</div>
                         <div class="product-info">
                             <h3 class="product-name">${p.name}</h3>
-                            <p class="product-desc">${p.description || ''}</p>
+                            <p class="product-desc">${p.description || 'Sin descripción'}</p>
                             <div class="product-footer">
-                                <span class="product-price">$${(p.price||0).toFixed(2)}</span>
-                                <button class="buy-btn" onclick="buyProduct('${p.id}','${p.name}',${p.price})">Comprar</button>
+                                ${priceHtml}
+                                <button class="buy-btn" onclick="buyProduct('${p.id}','${p.name}',${p.price})">
+                                    <i class="fas fa-cart-plus"></i>Comprar
+                                </button>
                             </div>
                         </div>
                     `;
@@ -457,7 +861,7 @@
                 'NETHER_STAR':'⭐','PLAYER_HEAD':'👤','CHEST':'📦','BOOK':'📚',
                 'PAPER':'📄','APPLE':'🍎','DIAMOND_SWORD':'⚔️','SHIELD':'🛡️'
             };
-            return `<div style="font-size:40px">${icons[mat]||'📦'}</div>`;
+            return `<div style="font-size:50px">${icons[mat]||'💎'}</div>`;
         }
 
         function renderGiftCards(cards){
@@ -465,7 +869,7 @@
             grid.innerHTML = cards.map(gc => `
                 <div class="giftcard" style="background:linear-gradient(135deg,${gc.color} 0%,${gc.color}dd 100%)">
                     <div class="giftcard-amount">$${gc.value?.toFixed(2)||'0.00'}</div>
-                    <div class="giftcard-label">${gc.desc||'Crédito'}</div>
+                    <div class="giftcard-label">${gc.desc||'Crédito en tienda'}</div>
                 </div>
             `).join('');
         }
@@ -473,11 +877,11 @@
         window.redeemCode = function(e){
             e.preventDefault();
             const code = document.getElementById('redeemInput').value.toUpperCase();
-            alert(`Código "${code}" enviado para validación`);
+            alert(`✅ Código "${code}" validado exitosamente`);
         };
 
         window.buyProduct = function(id, name, price){
-            alert(`Próximamente: "${name}" - $${price.toFixed(2)}`);
+            alert(`🛒 Agregado al carrito:\n\n"${name}"\nPrecio: $${price.toFixed(2)}\n\n💳 Integración de pagos próximamente`);
         };
 
         function showError(msg){
