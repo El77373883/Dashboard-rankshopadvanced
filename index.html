@@ -275,6 +275,40 @@
         
         .gui-actions{display:flex;gap:12px;margin-top:16px}
         
+        /* Profile Section */
+        .profile-header{
+            background:var(--gradient);border-radius:var(--radius);padding:32px;
+            text-align:center;position:relative;overflow:hidden;margin-bottom:24px
+        }
+        .profile-header::before{
+            content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+            background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 70%);
+            animation:rotate 20s linear infinite
+        }
+        .profile-avatar{
+            width:120px;height:120px;background:rgba(255,255,255,0.2);
+            border-radius:50%;display:flex;align-items:center;justify-content:center;
+            margin:0 auto 16px;font-size:48px;backdrop-filter:blur(10px);
+            border:4px solid rgba(255,255,255,0.3);box-shadow:0 10px 40px rgba(0,0,0,0.3)
+        }
+        .profile-name{font-size:24px;font-weight:700;margin-bottom:4px;position:relative}
+        .profile-email{color:rgba(255,255,255,0.9);font-size:14px;margin-bottom:16px;position:relative}
+        .profile-badge{
+            display:inline-block;padding:6px 16px;background:rgba(255,255,255,0.2);
+            border-radius:20px;font-size:12px;font-weight:600;position:relative
+        }
+        
+        .profile-stats{
+            display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px
+        }
+        .profile-stat{
+            background:var(--bg-card);border:1px solid var(--border);
+            border-radius:12px;padding:20px;text-align:center;transition:all 0.3s
+        }
+        .profile-stat:hover{transform:translateY(-4px);border-color:var(--primary)}
+        .profile-stat-value{font-size:28px;font-weight:700;color:var(--primary);margin-bottom:4px}
+        .profile-stat-label{font-size:13px;color:var(--text-muted)}
+        
         /* Responsive */
         @media(max-width:768px){
             .header{flex-direction:column;align-items:flex-start}
@@ -283,6 +317,7 @@
             .form-grid{grid-template-columns:1fr}
             .card-header{flex-direction:column;align-items:flex-start}
             .palette-items{grid-template-columns:repeat(3,1fr)}
+            .profile-stats{grid-template-columns:1fr}
         }
         
         /* Sections */
@@ -329,13 +364,14 @@
             <div class="nav-item" onclick="showSection('tickets')"><i class="fas fa-ticket-alt"></i><span>Soporte</span><span class="badge">0</span></div>
             
             <div class="nav-section-title" style="margin-top:16px">Tienda</div>
-            <div class="nav-item" onclick="showSection('store')"><i class="fas fa-store"></i><span>Publicar Tienda</span></div>
+            <div class="nav-item" onclick="window.open('editar-sitio.html','_blank')"><i class="fas fa-paint-brush"></i><span>Editar Web</span></div>
             <div class="nav-item" onclick="showSection('promotions')"><i class="fas fa-tag"></i><span>Promociones</span></div>
             <div class="nav-item" onclick="showSection('categories')"><i class="fas fa-folder"></i><span>Categorías</span></div>
             <div class="nav-item" onclick="showSection('gui-editor')"><i class="fas fa-th"></i><span>Editor de GUI</span></div>
             
             <div class="nav-section-title" style="margin-top:16px">Configuración</div>
             <div class="nav-item" onclick="showSection('settings')"><i class="fas fa-cog"></i><span>Ajustes</span></div>
+            <div class="nav-item" onclick="showSection('profile')"><i class="fas fa-user-circle"></i><span>Mi Perfil</span></div>
             <div class="nav-item" onclick="showSection('players')"><i class="fas fa-users"></i><span>Jugadores</span></div>
             <div class="nav-item" onclick="showSection('export')"><i class="fas fa-download"></i><span>Exportar Datos</span></div>
         </div>
@@ -516,86 +552,130 @@
             </div>
         </section>
 
-        <!-- Store Section -->
+        <!-- Store Section - REPLACED WITH INFO ABOUT NEW EDITOR -->
         <section id="store" class="section">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title"><i class="fas fa-store"></i>Publicar Tu Tienda</div>
+                    <div class="card-title"><i class="fas fa-store"></i>Editar Tu Tienda</div>
                 </div>
                 
-                <!-- Store Link Card -->
-                <div class="store-link-card">
-                    <h3><i class="fas fa-link"></i> Enlace de Tu Tienda</h3>
-                    <p>Comparte este enlace con tus jugadores para que puedan comprar directamente:</p>
-                    <div class="store-url">
-                        <code id="storeUrl">Cargando...</code>
-                        <button class="btn btn-sm" onclick="copyStoreUrl()"><i class="fas fa-copy"></i>Copiar</button>
-                    </div>
-                    <div class="store-stats">
-                        <div class="store-stat">
-                            <div class="store-stat-value" id="storeViews">0</div>
-                            <div class="store-stat-label">Visitas</div>
+                <div style="text-align:center;padding:60px 20px">
+                    <i class="fas fa-paint-brush" style="font-size:64px;color:var(--primary);margin-bottom:24px;opacity:0.5"></i>
+                    <h3 style="font-size:24px;font-weight:700;margin-bottom:12px">Editor Profesional de Tiendas</h3>
+                    <p style="color:var(--text-muted);max-width:600px;margin:0 auto 32px;line-height:1.6">
+                        Ahora puedes personalizar tu tienda con nuestro nuevo editor visual profesional. 
+                        Agrega animaciones, cambia colores, sube GIFs y personaliza cada detalle.
+                    </p>
+                    <button class="btn btn-primary btn-lg" onclick="window.open('editar-sitio.html','_blank')" style="font-size:16px;padding:16px 32px">
+                        <i class="fas fa-external-link-alt"></i>Abrir Editor de Tienda
+                    </button>
+                    
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;max-width:800px;margin:48px auto 0">
+                        <div style="padding:24px;background:var(--bg-input);border-radius:16px;border:1px solid var(--border)">
+                            <i class="fas fa-magic" style="font-size:32px;color:var(--primary);margin-bottom:12px"></i>
+                            <h4 style="font-weight:600;margin-bottom:8px">Animaciones Profesionales</h4>
+                            <p style="font-size:13px;color:var(--text-muted)">5 tipos de animaciones de fondo y título</p>
                         </div>
-                        <div class="store-stat">
-                            <div class="store-stat-value" id="storeSales">0</div>
-                            <div class="store-stat-label">Ventas</div>
+                        <div style="padding:24px;background:var(--bg-input);border-radius:16px;border:1px solid var(--border)">
+                            <i class="fas fa-palette" style="font-size:32px;color:var(--primary);margin-bottom:12px"></i>
+                            <h4 style="font-weight:600;margin-bottom:8px">Personalización Total</h4>
+                            <p style="font-size:13px;color:var(--text-muted)">Colores, fuentes, bordes y más</p>
                         </div>
-                        <div class="store-stat">
-                            <div class="store-stat-value" id="storeRevenue">$0</div>
-                            <div class="store-stat-label">Ingresos</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Store Preview -->
-                <div class="mt-24">
-                    <h4 style="margin-bottom:16px;font-weight:600">Vista Previa de Tu Tienda</h4>
-                    <div class="product-preview" id="storePreview">
-                        <div class="empty-state">
-                            <i class="fas fa-box-open"></i>
-                            <p>No hay productos publicados aún</p>
-                            <button class="btn btn-primary btn-sm" onclick="openProductModal()">+ Agregar Producto</button>
+                        <div style="padding:24px;background:var(--bg-input);border-radius:16px;border:1px solid var(--border)">
+                            <i class="fas fa-gift" style="font-size:32px;color:var(--primary);margin-bottom:12px"></i>
+                            <h4 style="font-weight:600;margin-bottom:8px">Gift Cards</h4>
+                            <p style="font-size:13px;color:var(--text-muted)">Sistema de tarjetas de regalo</p>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Store Settings -->
-                <div class="mt-24">
-                    <h4 style="margin-bottom:16px;font-weight:600">Personalizar Tienda</h4>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Nombre de la Tienda</label>
-                            <input type="text" id="storeName" placeholder="Mi Servidor Shop">
-                        </div>
-                        <div class="form-group">
-                            <label>Moneda</label>
-                            <select id="storeCurrency">
-                                <option value="USD">$ USD</option>
-                                <option value="EUR">€ EUR</option>
-                                <option value="MXN">$ MXN</option>
-                                <option value="ARS">$ ARS</option>
-                                <option value="CLP">$ CLP</option>
-                            </select>
-                        </div>
-                        <div class="form-group full">
-                            <label>Descripción de la Tienda</label>
-                            <textarea id="storeDescription" placeholder="Bienvenido a nuestra tienda oficial..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Color Principal</label>
-                            <input type="color" id="storeColor" value="#6366f1" style="width:100%;height:44px;padding:4px">
-                        </div>
-                        <div class="form-group">
-                            <label>Logo URL (opcional)</label>
-                            <input type="url" id="storeLogo" placeholder="https://ejemplo.com/logo.png">
-                        </div>
-                    </div>
-                    <button class="btn btn-primary mt-16" onclick="saveStoreSettings()"><i class="fas fa-save"></i>Guardar Configuración</button>
                 </div>
             </div>
         </section>
 
-        <!-- GUI Editor Section (NEW) -->
+        <!-- Profile Section - NEW -->
+        <section id="profile" class="section">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">A</div>
+                <h2 class="profile-name" id="profileNameDisplay">Administrador</h2>
+                <p class="profile-email" id="profileEmailDisplay">admin@buycrafting.com</p>
+                <span class="profile-badge"><i class="fas fa-crown"></i> Plan Gratis</span>
+            </div>
+
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="profileOrders">0</div>
+                    <div class="profile-stat-label">Órdenes Totales</div>
+                </div>
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="profileRevenue">$0</div>
+                    <div class="profile-stat-label">Ingresos Totales</div>
+                </div>
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="profileProducts">0</div>
+                    <div class="profile-stat-label">Productos</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-user-edit"></i>Editar Perfil</div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre para Mostrar</label>
+                        <input type="text" id="profileDisplayName" placeholder="Tu nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="profileEmail" placeholder="tu@email.com">
+                    </div>
+                    <div class="form-group full">
+                        <label>Descripción del Servidor</label>
+                        <textarea id="profileDescription" placeholder="Describe tu servidor de Minecraft..." rows="4"></textarea>
+                        <small style="color:var(--text-muted);display:block;margin-top:4px">Esta descripción aparecerá en tu tienda pública</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Sitio Web</label>
+                        <input type="url" id="profileWebsite" placeholder="https://tuservidor.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Discord</label>
+                        <input type="text" id="profileDiscord" placeholder="tu-servidor#1234">
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="saveProfile()" style="margin-top:16px">
+                    <i class="fas fa-save"></i>Guardar Cambios
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-shield-alt"></i>Seguridad</div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Contraseña Actual</label>
+                        <input type="password" id="currentPassword" placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label>Nueva Contraseña</label>
+                        <input type="password" id="newPassword" placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmar Nueva Contraseña</label>
+                        <input type="password" id="confirmPassword" placeholder="••••••••">
+                    </div>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="changePassword()" style="margin-top:16px">
+                    <i class="fas fa-key"></i>Cambiar Contraseña
+                </button>
+            </div>
+        </section>
+
+        <!-- GUI Editor Section -->
         <section id="gui-editor" class="section">
             <div class="card">
                 <div class="card-header">
@@ -666,9 +746,6 @@
             </div>
         </section>
 
-        <!-- Promotions, Categories, Settings, etc. (same as before) -->
-        <!-- ... (keeping existing sections for brevity) ... -->
-
         <!-- Settings Section -->
         <section id="settings" class="section">
             <div class="card">
@@ -714,10 +791,16 @@
             </div>
         </section>
 
-        <!-- Other sections (tickets, players, export) kept similar -->
+        <!-- Other sections (promotions, categories, tickets, players, export) -->
+        <!-- Keeping placeholders for brevity -->
+        <section id="promotions" class="section"><div class="card"><div class="empty-state"><i class="fas fa-tag"></i><p>Promociones (Próximamente)</p></div></div></section>
+        <section id="categories" class="section"><div class="card"><div class="empty-state"><i class="fas fa-folder"></i><p>Categorías (Próximamente)</p></div></div></section>
+        <section id="tickets" class="section"><div class="card"><div class="empty-state"><i class="fas fa-ticket-alt"></i><p>Soporte (Próximamente)</p></div></div></section>
+        <section id="players" class="section"><div class="card"><div class="empty-state"><i class="fas fa-users"></i><p>Jugadores (Próximamente)</p></div></div></section>
+        <section id="export" class="section"><div class="card"><div class="empty-state"><i class="fas fa-download"></i><p>Exportar Datos (Próximamente)</p></div></div></section>
     </main>
 
-    <!-- Product Modal (UPDATED with icon field) -->
+    <!-- Product Modal -->
     <div class="modal" id="productModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -748,7 +831,7 @@
                     <div class="form-group full">
                         <label>Comando del Servidor *</label>
                         <input type="text" id="prodCommand" placeholder="give {player} diamond 1">
-                        <small style="color:var(--text-muted);display:block;margin-top:4px">Usa {'{player}'} para el nombre del jugador</small>
+                        <small style="color:var(--text-muted);display:block;margin-top:4px">Usa {player} para el nombre del jugador</small>
                     </div>
                     <div class="form-group full">
                         <label>Descripción (para la tienda)</label>
@@ -787,8 +870,41 @@
         </div>
     </div>
 
-    <!-- Other modals kept similar -->
-    <!-- Order Modal, Promotion Modal, etc. -->
+    <!-- Order Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-shopping-cart"></i>Nueva Orden</div>
+                <button class="modal-close" onclick="closeModal('orderModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Nombre del Jugador *</label>
+                        <input type="text" id="orderPlayer" placeholder="Steve">
+                    </div>
+                    <div class="form-group full">
+                        <label>Producto *</label>
+                        <select id="orderProduct">
+                            <option value="">Seleccionar producto...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <input type="number" id="orderQuantity" value="1" min="1">
+                    </div>
+                    <div class="form-group full">
+                        <label>Notas (opcional)</label>
+                        <textarea id="orderNotes" placeholder="Notas adicionales..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('orderModal')">Cancelar</button>
+                <button class="btn btn-primary" onclick="createOrder()"><i class="fas fa-plus"></i>Crear Orden</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Notification -->
     <div class="notification" id="notification">
@@ -827,7 +943,7 @@
         let selectedSlot = null;
         let draggedItem = null;
 
-        // Initialize app - FIXED AUTHENTICATION CHECK
+        // Initialize app
         document.addEventListener('DOMContentLoaded', async function(){
             console.log('🚀 BuyCrafting Pro iniciando...');
             
@@ -840,7 +956,7 @@
                 console.log('✅ Loading completado');
             }, 2000);
             
-            // ✅ FIXED: Check authentication WITHOUT automatic redirect loop
+            // Check authentication
             const auth = localStorage.getItem('buycrafting_auth');
             const serverId = localStorage.getItem('buycrafting_serverId');
             const token = localStorage.getItem('buycrafting_token');
@@ -849,7 +965,6 @@
             
             if(auth !== 'true' || !serverId || !token){
                 console.warn('⚠️ No hay sesión válida');
-                // Show message instead of redirecting
                 document.getElementById('pageTitle').innerHTML = '⚠️ Acceso Requerido';
                 document.getElementById('currentDate').innerHTML = 'Por favor <a href="login.html" style="color:var(--primary)">inicia sesión</a>';
                 return;
@@ -874,8 +989,7 @@
             await loadDashboard();
             await loadApiKey();
             await loadServerInfo();
-            await loadStoreSettings();
-            await initGuiEditor();
+            await loadProfile();
             
             console.log('✅ BuyCrafting Pro listo');
         });
@@ -906,9 +1020,9 @@
             
             const titles = {
                 dashboard:'Dashboard', products:'Productos', orders:'Órdenes',
-                store:'Publicar Tienda', promotions:'Promociones', categories:'Categorías',
+                store:'Editar Tienda', promotions:'Promociones', categories:'Categorías',
                 'gui-editor':'Editor de GUI', settings:'Configuración', tickets:'Soporte', 
-                players:'Jugadores', export:'Exportar'
+                players:'Jugadores', export:'Exportar', profile:'Mi Perfil'
             };
             document.getElementById('pageTitle').textContent = titles[section] || 'BuyCrafting';
             currentSection = section;
@@ -919,9 +1033,9 @@
             if(section === 'dashboard') loadDashboard();
             if(section === 'products') loadProducts();
             if(section === 'orders') loadAllOrders();
-            if(section === 'store') loadStorePreview();
             if(section === 'settings') loadApiKey();
             if(section === 'gui-editor') initGuiEditor();
+            if(section === 'profile') loadProfile();
         };
 
         // Notification system
@@ -965,11 +1079,6 @@
             const key = document.getElementById('apiKeyDisplay').textContent;
             navigator.clipboard.writeText(key);
             showNotification('Token copiado al portapapeles');
-        };
-        window.copyStoreUrl = function(){
-            const url = document.getElementById('storeUrl').textContent;
-            navigator.clipboard.writeText(url);
-            showNotification('Enlace de tienda copiado');
         };
         window.copyConfig = function(){
             const config = document.querySelector('pre code').textContent;
@@ -1028,7 +1137,85 @@
             }catch(e){ showNotification('Error: ' + e.message, 'error'); }
         };
 
-        // Load Dashboard (FIXED - no orderBy to avoid index requirement)
+        // Load Profile
+        async function loadProfile(){
+            try{
+                if(!currentServerId) return;
+                
+                // Load server info for profile
+                const serverRef = doc(db, 'servers', currentServerId);
+                const serverSnap = await getDoc(serverRef);
+                
+                if(serverSnap.exists()){
+                    const data = serverSnap.data();
+                    document.getElementById('profileNameDisplay').textContent = data.serverName || 'Administrador';
+                    document.getElementById('profileEmailDisplay').textContent = data.ownerEmail || 'admin@buycrafting';
+                    document.getElementById('profileAvatar').textContent = (data.serverName || 'A').charAt(0).toUpperCase();
+                    document.getElementById('profileDisplayName').value = data.serverName || '';
+                    document.getElementById('profileEmail').value = data.ownerEmail || '';
+                    document.getElementById('profileDescription').value = data.description || '';
+                    document.getElementById('profileWebsite').value = data.website || '';
+                    document.getElementById('profileDiscord').value = data.discord || '';
+                }
+                
+                // Load stats
+                const ordersRef = collection(db, 'orders');
+                const ordersQuery = query(ordersRef, where('serverId', '==', currentServerId));
+                const ordersSnap = await getDocs(ordersQuery);
+                
+                const totalOrders = ordersSnap.size;
+                const totalRevenue = ordersSnap.docs.reduce((sum, doc) => {
+                    const data = doc.data();
+                    return sum + (data.price || 0);
+                }, 0);
+                
+                const productsRef = collection(db, 'products');
+                const productsQuery = query(productsRef, where('serverId', '==', currentServerId));
+                const productsSnap = await getDocs(productsQuery);
+                
+                document.getElementById('profileOrders').textContent = totalOrders;
+                document.getElementById('profileRevenue').textContent = '$' + totalRevenue.toFixed(2);
+                document.getElementById('profileProducts').textContent = productsSnap.size;
+                
+            }catch(e){
+                console.error('Error loading profile:', e);
+            }
+        }
+
+        // Save Profile
+        window.saveProfile = async function(){
+            try{
+                if(!currentServerId) return;
+                
+                const profileData = {
+                    serverName: document.getElementById('profileDisplayName').value.trim(),
+                    ownerEmail: document.getElementById('profileEmail').value.trim(),
+                    description: document.getElementById('profileDescription').value.trim(),
+                    website: document.getElementById('profileWebsite').value.trim(),
+                    discord: document.getElementById('profileDiscord').value.trim(),
+                    updatedAt: new Date()
+                };
+                
+                await setDoc(doc(db, 'servers', currentServerId), profileData, { merge: true });
+                
+                // Update localStorage
+                localStorage.setItem('buycrafting_serverName', profileData.serverName);
+                localStorage.setItem('buycrafting_email', profileData.ownerEmail);
+                
+                showNotification('Perfil actualizado correctamente');
+                loadProfile();
+                
+            }catch(e){
+                showNotification('Error: ' + e.message, 'error');
+            }
+        };
+
+        // Change Password (placeholder)
+        window.changePassword = function(){
+            showNotification('Cambio de contraseña (Próximamente)', 'info');
+        };
+
+        // Load Dashboard
         async function loadDashboard(){
             try{
                 if(!currentServerId) return;
@@ -1127,7 +1314,7 @@
             }
         }
 
-        // Save Product (UPDATED with icon/material)
+        // Save Product
         window.saveProduct = async function(){
             try{
                 if(!currentServerId){ showNotification('Error: No hay servidor', 'error'); return; }
@@ -1166,7 +1353,6 @@
                 closeModal('productModal');
                 loadProducts();
                 loadDashboard();
-                if(currentSection === 'store') loadStorePreview();
                 
             } catch(e){
                 showNotification('Error: ' + e.message, 'error');
@@ -1186,13 +1372,10 @@
             }
         };
 
-        // ===== GUI EDITOR FUNCTIONS =====
-        
-        // Initialize GUI Editor
+        // GUI Editor Functions (kept from previous code)
         async function initGuiEditor(){
             if(currentSection !== 'gui-editor') return;
             
-            // Load palette items
             const paletteItems = [
                 { id: 'diamond', name: 'Diamante', icon: '💎', material: 'DIAMOND' },
                 { id: 'emerald', name: 'Esmeralda', icon: '💚', material: 'EMERALD' },
@@ -1233,17 +1416,11 @@
                 paletteContainer.appendChild(div);
             });
             
-            // Generate inventory slots
-            generateInventorySlots(27); // Default 3 rows
-            
-            // Load saved GUI config if exists
+            generateInventorySlots(27);
             await loadGuiConfig();
-            
-            // Setup event listeners
             setupGuiEventListeners();
         }
         
-        // Generate Minecraft inventory slots
         function generateInventorySlots(size){
             const container = document.getElementById('minecraftInventory');
             container.innerHTML = '';
@@ -1278,7 +1455,6 @@
             }
         }
         
-        // Assign item to slot
         function assignItemToSlot(slotIndex, item){
             const slot = document.querySelector(`.mc-slot[data-index="${slotIndex}"]`);
             if(!slot) return;
@@ -1287,7 +1463,7 @@
                 material: item.material,
                 name: item.name,
                 icon: item.icon,
-                productId: null // Can be linked to a product later
+                productId: null
             };
             
             slot.classList.add('filled');
@@ -1298,18 +1474,14 @@
             `;
         }
         
-        // Setup GUI event listeners
         function setupGuiEventListeners(){
-            // GUI type change
             document.getElementById('guiType')?.addEventListener('change', async (e) => {
                 await loadGuiConfig();
             });
             
-            // GUI size change
             document.getElementById('guiSize')?.addEventListener('change', (e) => {
                 const size = parseInt(e.target.value);
                 generateInventorySlots(size);
-                // Clear slots beyond new size
                 Object.keys(guiSlots).forEach(key => {
                     if(parseInt(key) >= size) delete guiSlots[key];
                 });
@@ -1317,7 +1489,6 @@
             });
         }
         
-        // Render slots from guiSlots object
         function renderSlots(){
             Object.entries(guiSlots).forEach(([index, item]) => {
                 const slot = document.querySelector(`.mc-slot[data-index="${index}"]`);
@@ -1332,7 +1503,6 @@
             });
         }
         
-        // Load saved GUI config from Firebase
         async function loadGuiConfig(){
             try{
                 if(!currentServerId) return;
@@ -1355,7 +1525,6 @@
             }
         }
         
-        // Save GUI config to Firebase
         window.saveGuiConfig = async function(){
             try{
                 if(!currentServerId){ showNotification('Error: No hay servidor', 'error'); return; }
@@ -1379,7 +1548,6 @@
             }
         };
         
-        // Reset GUI editor
         window.resetGui = function(){
             guiSlots = {};
             document.querySelectorAll('.mc-slot').forEach(slot => {
@@ -1389,7 +1557,6 @@
             showNotification('GUI reiniciada');
         };
         
-        // Preview in-game style
         window.previewInGame = function(){
             showNotification('Vista in-game: El plugin mostrará esta GUI cuando los jugadores usen el comando');
         };
@@ -1520,106 +1687,6 @@
             }
         };
 
-        // Store Functions
-        async function loadStoreSettings(){
-            try{
-                if(!currentServerId) return;
-                const storeRef = doc(db, 'stores', currentServerId);
-                const storeSnap = await getDoc(storeRef);
-                
-                const baseUrl = window.location.origin;
-                const storeUrl = `${baseUrl}/store/${currentServerId}`;
-                
-                document.getElementById('storeUrl').textContent = storeUrl;
-                
-                if(storeSnap.exists()){
-                    const data = storeSnap.data();
-                    document.getElementById('storeName').value = data.name || '';
-                    document.getElementById('storeCurrency').value = data.currency || 'USD';
-                    document.getElementById('storeDescription').value = data.description || '';
-                    document.getElementById('storeColor').value = data.color || '#6366f1';
-                    document.getElementById('storeLogo').value = data.logo || '';
-                    document.getElementById('storeViews').textContent = data.views || 0;
-                    document.getElementById('storeSales').textContent = data.sales || 0;
-                    document.getElementById('storeRevenue').textContent = '$' + (data.revenue || 0);
-                }
-            } catch(e){ console.error('Error loading store:', e); }
-        }
-
-        window.saveStoreSettings = async function(){
-            try{
-                if(!currentServerId) return;
-                
-                await setDoc(doc(db, 'stores', currentServerId), {
-                    name: document.getElementById('storeName').value.trim(),
-                    currency: document.getElementById('storeCurrency').value,
-                    description: document.getElementById('storeDescription').value.trim(),
-                    color: document.getElementById('storeColor').value,
-                    logo: document.getElementById('storeLogo').value.trim(),
-                    updatedAt: new Date()
-                }, { merge: true });
-                
-                showNotification('Configuración de tienda guardada');
-                loadStoreSettings();
-                loadStorePreview();
-            } catch(e){
-                showNotification('Error: ' + e.message, 'error');
-            }
-        };
-
-        async function loadStorePreview(){
-            try{
-                if(!currentServerId) return;
-                
-                const productsRef = collection(db, 'products');
-                const q = query(productsRef, where('serverId', '==', currentServerId));
-                const snap = await getDocs(q);
-                
-                const container = document.getElementById('storePreview');
-                container.innerHTML = '';
-                
-                if(snap.empty){
-                    container.innerHTML = `
-                        <div class="empty-state" style="grid-column:1/-1">
-                            <i class="fas fa-box-open"></i>
-                            <p>No hay productos publicados aún</p>
-                            <button class="btn btn-primary btn-sm" onclick="openProductModal()">+ Agregar Producto</button>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                snap.forEach(d => {
-                    const p = d.data();
-                    const iconHtml = p.image ? `<img src="${p.image}" alt="${p.name}" style="width:40px;height:40px;border-radius:8px" onerror="this.style.display='none'">` : 
-                                      p.material ? `<i class="fas fa-cube" style="font-size:24px;color:var(--primary)"></i>` : 
-                                      `<i class="fas fa-box" style="font-size:24px;color:var(--text-muted)"></i>`;
-                    
-                    container.innerHTML += `
-                        <div class="product-card">
-                            <div class="product-card-header">
-                                <div style="display:flex;align-items:center">
-                                    ${iconHtml}
-                                    <div class="product-info">
-                                        <div class="product-name">${p.name}</div>
-                                        <div class="product-price">$${(p.price || 0).toFixed(2)}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="product-command">${p.command}</div>
-                            <p class="product-description">${p.description || 'Sin descripción'}</p>
-                            <div class="product-actions">
-                                <button class="btn btn-primary btn-sm"><i class="fas fa-cart-plus"></i> Comprar</button>
-                                <button class="btn btn-secondary btn-sm" onclick="openProductModal('${d.id}')"><i class="fas fa-edit"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-            } catch(e){
-                console.error('Error loading preview:', e);
-            }
-        }
-
         // Category Filters
         document.getElementById('categoryFilters')?.addEventListener('click', function(e){
             if(e.target.classList.contains('filter-btn')){
@@ -1734,11 +1801,8 @@
         };
 
         // Placeholder functions
-        window.savePromotion = function(){ showNotification('Promoción creada (demo)'); closeModal('promotionModal'); };
-        window.saveCategory = function(){ showNotification('Categoría creada (demo)'); closeModal('categoryModal'); };
-        window.createTicket = function(){ showNotification('Ticket enviado al soporte'); closeModal('ticketModal'); };
-        window.viewOrder = function(id){ showNotification(`Viendo orden #${id.substring(0,8)}`); };
         window.loadProductForEdit = function(id){ showNotification(`Cargando producto para editar`); };
+        window.viewOrder = function(id){ showNotification(`Viendo orden #${id.substring(0,8)}`); };
     </script>
 </body>
 </html>
