@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Debug BuyCrafting</title>
+    <style>
+        body{background:#0a0e1a;color:#fff;padding:20px;font-family:monospace;font-size:14px}
+        .box{background:#1e293b;padding:15px;margin:10px 0;border-radius:8px;border-left:4px solid #6366f1}
+        .error{border-left-color:#ef4444;background:rgba(239,68,68,0.1)}
+        .success{border-left-color:#10b981;background:rgba(16,185,129,0.1)}
+        h2{color:#6366f1}
+        code{background:#0f172a;padding:2px 8px;border-radius:4px}
+    </style>
+</head>
+<body>
+    <h2>🔍 Debug BuyCrafting</h2>
+    <div id="output"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCIGXn0zND_8A_nD6NPxx1txYFQzrhM9hg",
+            authDomain: "rankshop-9c9d3.firebaseapp.com",
+            projectId: "rankshop-9c9d3",
+            storageBucket: "rankshop-9c9d3.firebasestorage.app",
+            messagingSenderId: "556660639350",
+            appId: "1:556660639350:web:23734d089097e50c9ec157"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const output = document.getElementById('output');
+
+        function log(msg, type='info'){
+            const div = document.createElement('div');
+            div.className = `box ${type}`;
+            div.innerHTML = msg;
+            output.appendChild(div);
+        }
+
+        async function debug(){
+            log('✅ Firebase inicializado', 'success');
+            
+            // Verificar localStorage
+            const serverId = localStorage.getItem('buycrafting_serverId');
+            const token = localStorage.getItem('buycrafting_token');
+            const auth = localStorage.getItem('buycrafting_auth');
+            
+            log(`📱 Auth: <code>${auth || 'NO'}</code>`);
+            log(`🔑 ServerId: <code>${serverId || 'NO ENCONTRADO'}</code>`);
+            log(`🔐 Token: <code>${token || 'NO ENCONTRADO'}</code>`);
+
+            if(!serverId){
+                log('❌ ERROR: No hay serverId en localStorage. Debes iniciar sesión primero.', 'error');
+                return;
+            }
+
+            try{
+                // Consultar TODOS los productos
+                log('📡 Consultando TODOS los productos...', 'info');
+                const allProducts = await getDocs(collection(db, 'products'));
+                log(`✅ Total productos: <strong>${allProducts.size}</strong>`, 'success');
+                
+                allProducts.forEach(doc => {
+                    const data = doc.data();
+                    const hasServerId = data.serverId ? '✅' : '❌';
+                    log(`📦 Producto: <code>${doc.id}</code><br>
+                         Nombre: ${data.name}<br>
+                         serverId: <code>${data.serverId || 'NO TIENE'}</code> ${hasServerId}<br>
+                         Datos completos: <pre>${JSON.stringify(data, null, 2)}</pre>`);
+                });
+
+                // Consultar productos CON serverId
+                log(`<br>📡 Consultando productos de TU servidor (${serverId})...`, 'info');
+                const q = query(collection(db, 'products'), where('serverId', '==', serverId));
+                const myProducts = await getDocs(q);
+                log(`✅ TUS productos: <strong>${myProducts.size}</strong>`, 'success');
+
+                if(myProducts.size === 0){
+                    log('⚠️ No hay productos con tu serverId. Los productos existen pero no tienen el campo serverId.', 'error');
+                    log('💡 SOLUCIÓN: Elimina los productos viejos y créalos de nuevo, O agrega manualmente el campo serverId en Firebase Console', 'success');
+                }
+
+                // Verificar servers
+                log(`<br>📡 Consultando servers...`, 'info');
+                const servers = await getDocs(collection(db, 'servers'));
+                log(`✅ Servers encontrados: <strong>${servers.size}</strong>`, 'success');
+                servers.forEach(doc => {
+                    log(`🖥️ Server: <code>${doc.id}</code> - ${JSON.stringify(doc.data())}`);
+                });
+
+            }catch(e){
+                log(`❌ ERROR: ${e.message}`, 'error');
+                log(`Detalles: <pre>${JSON.stringify(e, null, 2)}</pre>`);
+            }
+        }
+
+        debug();
+    </script>
+</body>
+</html>
