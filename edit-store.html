@@ -866,6 +866,7 @@
         let bgAnimation = 'glow';
         let titleAnimation = 'gradient';
 
+        // Obtener serverId de URL o localStorage
         const pathParts = window.location.pathname.split('/');
         serverId = pathParts[pathParts.indexOf('store') + 1];
         if(!serverId){
@@ -874,6 +875,7 @@
 
         console.log('Editor loaded for server:', serverId);
 
+        // Cargar configuración de la tienda
         async function loadStoreConfig(){
             if(!serverId){
                 window.showNotification('Error: No se encontró el servidor', 'error');
@@ -881,13 +883,15 @@
             }
 
             try{
+                // 🔥 IMPORTANTE: Leer de la colección 'stores' (MISMO nombre que usa saveStore)
                 const storeRef = doc(db, 'stores', serverId);
                 const storeSnap = await getDoc(storeRef);
 
                 if(storeSnap.exists()){
                     const data = storeSnap.data();
-                    console.log('Store config loaded:', data);
+                    console.log('✅ Store config loaded:', data);
 
+                    // === GENERAL ===
                     document.getElementById('storeName').value = data.name || '';
                     document.getElementById('storeDescription').value = data.description || '';
                     document.getElementById('publishedBy').value = data.publishedBy || '';
@@ -896,6 +900,7 @@
                     document.getElementById('heroTitle').value = data.heroTitle || 'Productos Disponibles';
                     document.getElementById('footerText').value = data.footerText || 'Powered by BuyCrafting';
 
+                    // === COLORES ===
                     document.getElementById('primaryColor').value = data.primaryColor || '#6366f1';
                     document.getElementById('primaryColorText').value = data.primaryColor || '#6366f1';
                     document.getElementById('bgColor').value = data.backgroundColor || '#0a0e1a';
@@ -904,10 +909,13 @@
                     document.getElementById('cardColorText').value = data.cardColor || '#1e293b';
                     document.getElementById('textColor').value = data.textColor || '#f8fafc';
                     document.getElementById('textColorText').value = data.textColor || '#f8fafc';
+                    
+                    // === TIPOGRAFÍA ===
                     document.getElementById('fontFamily').value = data.fontFamily || "'Inter', sans-serif";
                     document.getElementById('fontSize').value = data.fontSize || '16px';
                     document.getElementById('borderRadius').value = data.borderRadius || '12px';
 
+                    // === PAGOS ===
                     document.getElementById('paypalEmail').value = data.paypalEmail || '';
                     document.getElementById('currency').value = data.currency || 'USD';
                     document.getElementById('discordUrl').value = data.discordUrl || '';
@@ -915,19 +923,20 @@
                     document.getElementById('instagramUrl').value = data.instagramUrl || '';
                     document.getElementById('youtubeUrl').value = data.youtubeUrl || '';
 
-                    // Animaciones
+                    // === ANIMACIONES ===
                     bgAnimation = data.bgAnimation || 'glow';
                     titleAnimation = data.titleAnimation || 'gradient';
                     document.getElementById('animSpeed').value = data.animSpeed || 'normal';
                     document.getElementById('animIntensity').value = data.animIntensity || '1';
                     document.getElementById('animIntensityValue').textContent = data.animIntensity || '1';
 
-                    // Actualizar selección de animaciones
+                    // Actualizar selección visual de animaciones
                     document.querySelectorAll('.anim-option[data-anim]').forEach(opt => opt.classList.remove('active'));
                     document.querySelector(`[data-anim="${bgAnimation}"]`)?.classList.add('active');
                     document.querySelectorAll('.anim-option[data-title-anim]').forEach(opt => opt.classList.remove('active'));
                     document.querySelector(`[data-title-anim="${titleAnimation}"]`)?.classList.add('active');
 
+                    // === PREVIEW DE IMÁGENES ===
                     if(data.logo){
                         document.getElementById('logoPreview').innerHTML = `<img src="${data.logo}" style="max-width:100%;max-height:100%">`;
                     }
@@ -939,31 +948,37 @@
                         `;
                     }
 
-                    if(data.customButtons && data.customButtons.length > 0){
+                    // === BOTONES PERSONALIZADOS ===
+                    if(data.customButtons && Array.isArray(data.customButtons)){
                         customButtons = data.customButtons;
                         window.renderButtonsList();
                     }
 
-                    if(data.giftCards && data.giftCards.length > 0){
+                    // === GIFT CARDS ===
+                    if(data.giftCards && Array.isArray(data.giftCards)){
                         giftCards = data.giftCards;
                         window.renderGiftCardsList();
                     }
 
+                    // === ACTUALIZAR PREVIEW ===
                     window.updatePreview();
                     window.showNotification('Configuración cargada', 'success');
+                    
                 } else {
-                    console.log('No store config found, using defaults');
+                    console.log('ℹ️ No store config found, using defaults');
                     window.updatePreview();
                 }
 
+                // Cargar productos para preview
                 await loadProducts();
 
             } catch(error){
-                console.error('Error loading store config:', error);
+                console.error('❌ Error loading store config:', error);
                 window.showNotification('Error al cargar: ' + error.message, 'error');
             }
         }
 
+        // Cargar productos desde Firebase
         async function loadProducts(){
             try{
                 const productsRef = collection(db, 'products');
@@ -994,6 +1009,7 @@
             }
         }
 
+        // Crear tarjeta de producto para preview
         function createProductCard(product){
             const div = document.createElement('div');
             div.className = 'product-card-preview';
@@ -1020,6 +1036,7 @@
             return div;
         }
 
+        // Sincronizar color picker con input de texto
         window.syncColor = function(type){
             const colorInput = document.getElementById(type + 'Color');
             const textInput = document.getElementById(type + 'ColorText');
@@ -1032,6 +1049,7 @@
             window.updatePreview();
         };
 
+        // Cambiar animación de fondo
         window.setBgAnimation = function(anim){
             bgAnimation = anim;
             document.querySelectorAll('.anim-option[data-anim]').forEach(opt => opt.classList.remove('active'));
@@ -1039,6 +1057,7 @@
             window.updatePreview();
         };
 
+        // Cambiar animación de título
         window.setTitleAnimation = function(anim){
             titleAnimation = anim;
             document.querySelectorAll('.anim-option[data-title-anim]').forEach(opt => opt.classList.remove('active'));
@@ -1046,6 +1065,7 @@
             window.updatePreview();
         };
 
+        // 🔥 FUNCIÓN PRINCIPAL: Actualizar vista previa en tiempo real
         window.updatePreview = function(){
             const storeName = document.getElementById('storeName').value || 'Mi Tienda';
             const storeDesc = document.getElementById('storeDescription').value || 'Bienvenido a nuestra tienda oficial';
@@ -1072,14 +1092,14 @@
             const animIntensity = parseFloat(document.getElementById('animIntensity').value);
             document.getElementById('animIntensityValue').textContent = animIntensity.toFixed(1);
 
-            // Textos
+            // === ACTUALIZAR TEXTOS ===
             document.getElementById('previewTitle').textContent = storeName;
             document.getElementById('previewDesc').textContent = storeDesc;
             document.getElementById('previewProductsTitle').textContent = heroTitle;
             document.getElementById('previewFooterText').textContent = footerText;
             document.getElementById('publishedByName').textContent = publishedBy;
 
-            // Logo
+            // === ACTUALIZAR LOGO ===
             const logoEl = document.getElementById('previewLogo');
             if(logoUrl){
                 logoEl.innerHTML = `<img src="${logoUrl}" alt="Logo">`;
@@ -1087,7 +1107,7 @@
                 logoEl.innerHTML = '<i class="fas fa-shopping-cart"></i>';
             }
 
-            // Fondo y animación
+            // === ACTUALIZAR FONDO Y ANIMACIÓN ===
             const headerEl = document.getElementById('previewHeader');
             headerEl.className = 'store-preview-header';
             
@@ -1101,20 +1121,20 @@
                 headerEl.classList.add(`anim-${bgAnimation}`);
             }
 
-            // Animación del título
+            // === ANIMACIÓN DEL TÍTULO ===
             const titleEl = document.getElementById('previewTitle');
             titleEl.className = 'store-preview-title';
             titleEl.classList.add(`title-anim-${titleAnimation}`);
 
-            // Velocidad de animación
+            // === VELOCIDAD DE ANIMACIÓN ===
             const speedMap = { slow: '3s', normal: '2s', fast: '1s' };
             headerEl.style.animationDuration = speedMap[animSpeed] || '2s';
             titleEl.style.animationDuration = speedMap[animSpeed] || '2s';
 
-            // Intensidad
+            // === INTENSIDAD ===
             titleEl.style.filter = `brightness(${animIntensity})`;
 
-            // Colores CSS
+            // === APLICAR COLORES CSS (VARIABLES) ===
             const previewEl = document.getElementById('storePreview');
             previewEl.style.setProperty('--preview-bg', bgColor);
             previewEl.style.setProperty('--preview-primary', primaryColor);
@@ -1122,16 +1142,22 @@
             previewEl.style.setProperty('--preview-text', textColor);
             previewEl.style.setProperty('--preview-gradient', `linear-gradient(135deg,${primaryColor} 0%,${primaryColor}dd 50%,${primaryColor}aa 100%)`);
 
+            // === FUENTE Y TAMAÑO ===
             previewEl.style.fontFamily = fontFamily;
             previewEl.style.fontSize = fontSize;
 
+            // === BORDES ===
             document.querySelectorAll('.product-card-preview, .buy-btn-preview, .custom-btn-preview, .gift-card-preview').forEach(el => {
                 el.style.borderRadius = borderRadius;
             });
 
+            // === BOTONES PERSONALIZADOS ===
             window.renderCustomButtonsPreview();
+
+            // === GIFT CARDS ===
             window.renderGiftCardsPreview();
 
+            // === REDES SOCIALES ===
             const socialsEl = document.getElementById('previewSocials');
             socialsEl.innerHTML = '';
             if(discordUrl) socialsEl.innerHTML += `<a href="${discordUrl}" target="_blank"><i class="fab fa-discord"></i></a>`;
@@ -1139,12 +1165,14 @@
             if(instagramUrl) socialsEl.innerHTML += `<a href="${instagramUrl}" target="_blank"><i class="fab fa-instagram"></i></a>`;
             if(youtubeUrl) socialsEl.innerHTML += `<a href="${youtubeUrl}" target="_blank"><i class="fab fa-youtube"></i></a>`;
 
+            // === VISIBILIDAD DE SECCIONES ===
             document.getElementById('previewHeader').style.display = document.getElementById('toggle-hero').classList.contains('active') ? 'block' : 'none';
             document.getElementById('previewProducts').style.display = document.getElementById('toggle-products').classList.contains('active') ? 'block' : 'none';
             document.getElementById('previewGiftCards').style.display = document.getElementById('toggle-giftcards').classList.contains('active') ? 'block' : 'none';
             document.getElementById('previewFooter').style.display = document.getElementById('toggle-footer').classList.contains('active') ? 'block' : 'none';
         };
 
+        // Subir imagen con validación
         window.uploadImage = async function(type, input){
             const file = input.files[0];
             if(!file){
@@ -1191,6 +1219,7 @@
             reader.readAsDataURL(file);
         };
 
+        // Cambiar pestaña
         window.switchTab = function(tab){
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
@@ -1204,17 +1233,20 @@
             document.getElementById(`tab-${tab}`).style.display = 'block';
         };
 
+        // Toggle sección
         window.toggleSection = function(section){
             const toggle = document.getElementById(`toggle-${section}`);
             toggle.classList.toggle('active');
             window.updatePreview();
         };
 
+        // Seleccionar método de pago
         window.selectPayment = function(method, element){
             document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
             element.classList.add('active');
         };
 
+        // Agregar botón personalizado
         window.addCustomButton = function(){
             const text = document.getElementById('btnText').value;
             const url = document.getElementById('btnUrl').value;
@@ -1280,6 +1312,7 @@
             window.showNotification('Botón eliminado', 'success');
         };
 
+        // Agregar Gift Card
         window.addGiftCard = function(){
             const value = parseFloat(document.getElementById('gcValue').value);
             const desc = document.getElementById('gcDesc').value;
@@ -1348,6 +1381,7 @@
             window.showNotification('Gift Card eliminada', 'success');
         };
 
+        // 🔥 FUNCIÓN PRINCIPAL: Guardar configuración en Firebase
         window.saveStore = async function(){
             if(!serverId){
                 window.showNotification('Error: No se encontró el servidor', 'error');
@@ -1355,8 +1389,11 @@
             }
 
             try{
+                // 🔥 IMPORTANTE: Guardar en la colección 'stores' con el MISMO serverId
                 const config = {
                     serverId: serverId,
+                    
+                    // === GENERAL ===
                     name: document.getElementById('storeName').value,
                     description: document.getElementById('storeDescription').value,
                     publishedBy: document.getElementById('publishedBy').value,
@@ -1364,49 +1401,67 @@
                     backgroundImage: document.getElementById('bgUrl').value,
                     heroTitle: document.getElementById('heroTitle').value,
                     footerText: document.getElementById('footerText').value,
+                    
+                    // === COLORES ===
                     primaryColor: document.getElementById('primaryColor').value,
                     backgroundColor: document.getElementById('bgColor').value,
                     cardColor: document.getElementById('cardColor').value,
                     textColor: document.getElementById('textColor').value,
+                    
+                    // === TIPOGRAFÍA ===
                     fontFamily: document.getElementById('fontFamily').value,
                     fontSize: document.getElementById('fontSize').value,
                     borderRadius: document.getElementById('borderRadius').value,
+                    
+                    // === ANIMACIONES ===
                     bgAnimation: bgAnimation,
                     titleAnimation: titleAnimation,
                     animSpeed: document.getElementById('animSpeed').value,
                     animIntensity: parseFloat(document.getElementById('animIntensity').value),
+                    
+                    // === PAGOS ===
                     paypalEmail: document.getElementById('paypalEmail').value,
                     currency: document.getElementById('currency').value,
+                    
+                    // === REDES SOCIALES ===
                     discordUrl: document.getElementById('discordUrl').value,
                     twitterUrl: document.getElementById('twitterUrl').value,
                     instagramUrl: document.getElementById('instagramUrl').value,
                     youtubeUrl: document.getElementById('youtubeUrl').value,
+                    
+                    // === ELEMENTOS PERSONALIZADOS ===
                     customButtons: customButtons,
                     giftCards: giftCards,
+                    
+                    // === SECCIONES ===
                     sections: {
                         hero: document.getElementById('toggle-hero').classList.contains('active'),
                         products: document.getElementById('toggle-products').classList.contains('active'),
                         giftcards: document.getElementById('toggle-giftcards').classList.contains('active'),
                         footer: document.getElementById('toggle-footer').classList.contains('active')
                     },
+                    
                     updatedAt: new Date()
                 };
 
+                // 🔥 GUARDAR EN FIREBASE - MISMA COLECCIÓN QUE LEE LA TIENDA
                 await setDoc(doc(db, 'stores', serverId), config, { merge: true });
 
-                window.showNotification('Tienda guardada exitosamente', 'success');
+                window.showNotification('✅ Tienda guardada exitosamente', 'success');
 
             } catch(error){
-                console.error('Error saving store:', error);
+                console.error('❌ Error saving store:', error);
                 window.showNotification('Error al guardar: ' + error.message, 'error');
             }
         };
 
+        // Abrir tienda en nueva pestaña
         window.previewFull = function(){
             const url = `/store/${serverId}`;
             window.open(url, '_blank');
         };
 
+        // Mostrar notificación
         window.showNotification = function(message, type = 'success'){
             const notification = document.getElementById('notification');
             const icon = document.getElementById('notificationIcon');
@@ -1420,6 +1475,7 @@
             }, 4000);
         };
 
+        // Inicializar al cargar
         loadStoreConfig();
     </script>
 </body>
