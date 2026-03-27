@@ -100,12 +100,13 @@
             err.classList.remove('show'); succ.classList.remove('show');
             btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
 
-            // ✅ TU KEY PERSONALIZADA
+            // ✅ TU KEY PERSONALIZADA - ENTRADA DIRECTA SIN FIREBASE
             if(key === 'Adrian2005@'){
                 showSuccess('¡Acceso concedido!');
                 localStorage.setItem('buycrafting_auth', 'true');
                 localStorage.setItem('buycrafting_key', key);
-                setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+                // Redirección directa sin bucle
+                window.location.replace('index.html');
                 return;
             }
 
@@ -117,7 +118,7 @@
                         showSuccess('¡Bienvenido!');
                         localStorage.setItem('buycrafting_auth', 'true');
                         localStorage.setItem('buycrafting_key', key);
-                        setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+                        window.location.replace('index.html');
                     } else { showError('API Key incorrecta'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Acceder'; }
                 } else {
                     await setDoc(configRef, { apiKey: 'Adrian2005@' });
@@ -131,7 +132,11 @@
             }
         };
 
-        if(localStorage.getItem('buycrafting_auth') === 'true'){ window.location.href = 'index.html'; }
+        // ✅ SOLO redirigir si NO estamos en login
+        const currentPath = window.location.pathname;
+        if(localStorage.getItem('buycrafting_auth') === 'true' && !currentPath.includes('login.html')){
+            window.location.replace('index.html');
+        }
     </script>
 </body>
 </html>
