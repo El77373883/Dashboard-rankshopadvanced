@@ -173,7 +173,7 @@
         <!-- Footer -->
         <footer class="store-footer">
             <p class="footer-text">
-                Powered by <a href="https://buy crafting.app" target="_blank" class="footer-link">BuyCrafting</a> • 
+                Powered by <a href="#" target="_blank" class="footer-link">BuyCrafting</a> • 
                 <span id="currentYear"></span>
             </p>
         </footer>
@@ -201,12 +201,45 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Get serverId from URL
-        const pathParts = window.location.pathname.split('/');
-        const serverId = pathParts[pathParts.indexOf('store') + 1];
+        // Debug mode
+        console.log('🚀 Store HTML loaded');
+        console.log('📍 Current URL:', window.location.href);
+        console.log('📂 Pathname:', window.location.pathname);
+
+        // Get serverId from URL - IMPROVED
+        function extractServerId(){
+            const pathname = window.location.pathname;
+            console.log('📍 Pathname:', pathname);
+            
+            // Try multiple methods
+            // Method 1: Split by /
+            const parts = pathname.split('/').filter(p => p.length > 0);
+            console.log('📦 Parts:', parts);
+            
+            // If URL is /store/server_abc123
+            if(parts.length >= 2 && parts[0] === 'store'){
+                return parts[1];
+            }
+            
+            // Method 2: Look for server_ pattern
+            const serverMatch = pathname.match(/server_[a-zA-Z0-9]+/);
+            if(serverMatch){
+                return serverMatch[0];
+            }
+            
+            // Method 3: Get last part
+            if(parts.length > 0){
+                return parts[parts.length - 1];
+            }
+            
+            return null;
+        }
+
+        const serverId = extractServerId();
+        console.log('🔑 ServerId encontrado:', serverId);
 
         if(!serverId){
-            showError('URL inválida. Debe incluir el ID del servidor.');
+            showError('URL inválida. Ejemplo: tudominio.vercel.app/store/server_abc123');
         } else {
             loadStore(serverId);
         }
@@ -214,21 +247,26 @@
         // Load store data
         async function loadStore(serverId){
             try{
+                console.log('📡 Loading store:', serverId);
+                
                 // Load server config
                 const serverRef = doc(db, 'servers', serverId);
                 const serverSnap = await getDoc(serverRef);
                 
                 if(!serverSnap.exists()){
+                    console.error('❌ Server not found:', serverId);
                     showError('Este servidor no existe o fue eliminado.');
                     return;
                 }
 
                 const serverData = serverSnap.data();
+                console.log('✅ Server data:', serverData);
 
                 // Load store config
                 const storeRef = doc(db, 'stores', serverId);
                 const storeSnap = await getDoc(storeRef);
                 const storeData = storeSnap.exists() ? storeSnap.data() : {};
+                console.log('✅ Store data:', storeData);
 
                 // Load products
                 const productsRef = collection(db, 'products');
@@ -238,12 +276,13 @@
                 productsSnap.forEach(doc => {
                     products.push({ id: doc.id, ...doc.data() });
                 });
+                console.log('✅ Products loaded:', products.length);
 
                 // Render store
                 renderStore(serverData, storeData, products);
                 
             } catch(error){
-                console.error('Error loading store:', error);
+                console.error('❌ Error loading store:', error);
                 showError('Error al cargar la tienda: ' + error.message);
             }
         }
@@ -311,7 +350,7 @@
                     'DIAMOND_SWORD': '⚔️', 'SHIELD': '🛡️'
                 };
                 const icon = materialIcons[product.material] || '📦';
-                iconHtml = `<i class="fas fa-cube" style="font-size:48px;color:var(--primary)"></i>`;
+                iconHtml = `<div style="font-size:48px">${icon}</div>`;
             } else {
                 iconHtml = `<i class="fas fa-box" style="font-size:48px;color:var(--text-muted)"></i>`;
             }
