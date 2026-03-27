@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "rewrites": [
+    { 
+      "source": "/store/:serverId", 
+      "destination": "/web/store.html" 
+    }
+  ]
+}
