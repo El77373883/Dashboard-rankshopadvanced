@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Editor de Tienda - BuyCrafting</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{
@@ -21,7 +21,6 @@
         ::-webkit-scrollbar{width:8px}
         ::-webkit-scrollbar-track{background:var(--bg-secondary)}
         ::-webkit-scrollbar-thumb{background:var(--primary);border-radius:4px}
-        ::-webkit-scrollbar-thumb:hover{background:var(--primary-dark)}
 
         .editor-header{
             background:var(--bg-secondary);border-bottom:1px solid var(--border);
@@ -46,7 +45,6 @@
         .btn-success:hover{background:#059669}
         .btn-danger{background:var(--danger);color:white}
         .btn-danger:hover{background:#dc2626}
-        .btn-sm{padding:8px 16px;font-size:13px}
         
         .editor-container{display:grid;grid-template-columns:400px 1fr;gap:0;min-height:calc(100vh - 70px)}
         @media(max-width:1024px){.editor-container{grid-template-columns:1fr}}
@@ -55,7 +53,7 @@
             background:var(--bg-secondary);border-right:1px solid var(--border);
             padding:24px;overflow-y:auto;height:calc(100vh - 70px)
         }
-        .sidebar-section{margin-bottom:32px;background:var(--bg-card);border-radius:16px;padding:20px;border:1px solid var(--border)}
+        .sidebar-section{margin-bottom:24px;background:var(--bg-card);border-radius:16px;padding:20px;border:1px solid var(--border)}
         .sidebar-title{font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
         .sidebar-title i{color:var(--primary)}
         
@@ -70,20 +68,20 @@
             outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.15)
         }
         .form-group textarea{resize:vertical;min-height:80px}
-        .form-group input[type="color"]{height:44px;padding:4px;cursor:pointer}
+        .form-group input[type="color"]{height:44px;padding:4px;cursor:pointer;width:60px}
         .form-group input[type="file"]{padding:8px}
         
         .image-upload{
-            border:2px dashed var(--border);border-radius:12px;padding:20px;
+            border:2px dashed var(--border);border-radius:12px;padding:24px;
             text-align:center;cursor:pointer;transition:all 0.3s;background:var(--bg)
         }
         .image-upload:hover{border-color:var(--primary);background:var(--bg-hover)}
-        .image-upload i{font-size:32px;color:var(--text-muted);margin-bottom:8px}
+        .image-upload i{font-size:32px;color:var(--text-muted);margin-bottom:12px}
         .image-upload p{font-size:13px;color:var(--text-muted)}
         .image-preview{
-            width:100%;height:120px;border-radius:8px;overflow:hidden;
+            width:100%;height:140px;border-radius:10px;overflow:hidden;
             margin-top:12px;background:var(--bg);display:flex;
-            align-items:center;justify-content:center;position:relative
+            align-items:center;justify-content:center;position:relative;border:1px solid var(--border)
         }
         .image-preview img{max-width:100%;max-height:100%;object-fit:contain}
         .gif-badge{
@@ -91,12 +89,11 @@
             background:linear-gradient(135deg,#f59e0b,#ef4444);
             color:white;padding:4px 10px;border-radius:20px;
             font-size:11px;font-weight:700;text-transform:uppercase;
-            box-shadow:0 4px 12px rgba(245,158,11,0.4);animation:pulse 2s infinite
+            box-shadow:0 4px 12px rgba(245,158,11,0.4)
         }
-        @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
         
-        .color-picker-group{display:flex;gap:8px;align-items:center}
-        .color-picker-group input[type="color"]{width:50px;height:44px;padding:0;border-radius:8px;cursor:pointer}
+        .color-picker-group{display:flex;gap:10px;align-items:center}
+        .color-picker-group input[type="color"]{width:60px;height:44px;padding:0;border-radius:8px;cursor:pointer;border:1px solid var(--border)}
         .color-picker-group input[type="text"]{flex:1}
         
         .editor-preview{padding:0;overflow-y:auto;height:calc(100vh - 70px);background:var(--bg)}
@@ -106,11 +103,6 @@
         .store-preview-header{
             background:var(--preview-gradient,linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#a855f7 100%));
             padding:80px 20px;text-align:center;position:relative;transition:all 0.3s
-        }
-        .store-preview-header::before{
-            content:'';position:absolute;top:0;left:0;right:0;bottom:0;
-            background:radial-gradient(circle at 50% 50%,rgba(255,255,255,0.1) 0%,transparent 70%);
-            pointer-events:none
         }
         .store-preview-logo{
             width:120px;height:120px;background:rgba(255,255,255,0.2);
@@ -293,20 +285,19 @@
             <h1>Editor de Tienda</h1>
         </div>
         <div class="editor-actions">
-            <button class="btn btn-secondary" onclick="previewFull()"><i class="fas fa-external-link-alt"></i>Vista en Vivo</button>
-            <button class="btn btn-success" onclick="saveStore()"><i class="fas fa-save"></i>Guardar Cambios</button>
+            <button class="btn btn-secondary" onclick="window.previewFull()"><i class="fas fa-external-link-alt"></i>Vista en Vivo</button>
+            <button class="btn btn-success" onclick="window.saveStore()"><i class="fas fa-save"></i>Guardar Cambios</button>
         </div>
     </header>
 
     <div class="editor-container">
         <aside class="editor-sidebar">
             <div class="tabs">
-                <div class="tab active" data-tab="general" onclick="switchTab('general')">General</div>
-                <div class="tab" data-tab="design" onclick="switchTab('design')">Diseño</div>
-                <div class="tab" data-tab="buttons" onclick="switchTab('buttons')">Botones</div>
-                <div class="tab" data-tab="giftcards" onclick="switchTab('giftcards')">Gift Cards</div>
-                <div class="tab" data-tab="redeem" onclick="switchTab('redeem')">Códigos</div>
-                <div class="tab" data-tab="payment" onclick="switchTab('payment')">Pagos</div>
+                <div class="tab active" data-tab="general" onclick="window.switchTab('general')">General</div>
+                <div class="tab" data-tab="design" onclick="window.switchTab('design')">Diseño</div>
+                <div class="tab" data-tab="buttons" onclick="window.switchTab('buttons')">Botones</div>
+                <div class="tab" data-tab="giftcards" onclick="window.switchTab('giftcards')">Gift Cards</div>
+                <div class="tab" data-tab="payment" onclick="window.switchTab('payment')">Pagos</div>
             </div>
 
             <div id="tab-general">
@@ -315,12 +306,12 @@
                     
                     <div class="form-group">
                         <label>Nombre de la Tienda</label>
-                        <input type="text" id="storeName" placeholder="Mi Servidor Shop" oninput="updatePreview()">
+                        <input type="text" id="storeName" placeholder="Mi Servidor Shop" oninput="window.updatePreview()">
                     </div>
                     
                     <div class="form-group">
                         <label>Descripción</label>
-                        <textarea id="storeDescription" placeholder="Bienvenido a nuestra tienda oficial..." oninput="updatePreview()"></textarea>
+                        <textarea id="storeDescription" placeholder="Bienvenido a nuestra tienda oficial..." oninput="window.updatePreview()"></textarea>
                     </div>
                     
                     <div class="form-group">
@@ -330,9 +321,9 @@
                             <p>Click para subir logo</p>
                             <small>PNG, JPG, GIF - Máx 5MB</small>
                         </div>
-                        <input type="file" id="logoInput" accept="image/*,.gif" style="display:none" onchange="uploadImage('logo', this)">
+                        <input type="file" id="logoInput" accept="image/*,.gif" style="display:none" onchange="window.uploadImage('logo', this)">
                         <div class="image-preview" id="logoPreview"></div>
-                        <input type="url" id="logoUrl" placeholder="O pega URL de imagen" style="margin-top:8px" onchange="updatePreview()">
+                        <input type="url" id="logoUrl" placeholder="O pega URL de imagen" style="margin-top:8px" oninput="window.updatePreview()">
                     </div>
                     
                     <div class="form-group">
@@ -342,16 +333,15 @@
                             <p>Click para subir fondo</p>
                             <small>PNG, JPG, GIF animado - Máx 10MB</small>
                         </div>
-                        <input type="file" id="bgInput" accept="image/*,.gif,.gifv" style="display:none" onchange="uploadImage('background', this)">
+                        <input type="file" id="bgInput" accept="image/*,.gif,.gifv" style="display:none" onchange="window.uploadImage('background', this)">
                         <div class="image-preview" id="bgPreview"></div>
-                        <input type="url" id="bgUrl" placeholder="O pega URL de imagen/GIF" style="margin-top:8px" onchange="updatePreview()">
+                        <input type="url" id="bgUrl" placeholder="O pega URL de imagen/GIF" style="margin-top:8px" oninput="window.updatePreview()">
                         
                         <div class="tips-box">
                             <div class="tips-box-title"><i class="fas fa-info-circle"></i>Consejos para GIFs:</div>
                             <ul>
                                 <li>Usa GIFs de máximo 5-10MB para carga rápida</li>
                                 <li>Dimensiones recomendadas: 1920x600px (banner)</li>
-                                <li>Evita GIFs muy pesados que ralentizan la tienda</li>
                                 <li>Usa ezgif.com para optimizar tus GIFs</li>
                             </ul>
                         </div>
@@ -363,39 +353,34 @@
                     
                     <div class="form-group">
                         <label>Título de Productos</label>
-                        <input type="text" id="heroTitle" placeholder="Productos Disponibles" oninput="updatePreview()">
+                        <input type="text" id="heroTitle" placeholder="Productos Disponibles" oninput="window.updatePreview()">
                     </div>
                     
                     <div class="form-group">
                         <label>Texto del Footer</label>
-                        <input type="text" id="footerText" placeholder="Powered by BuyCrafting" oninput="updatePreview()">
+                        <input type="text" id="footerText" placeholder="Powered by BuyCrafting" oninput="window.updatePreview()">
                     </div>
                 </div>
 
                 <div class="sidebar-section">
                     <div class="sidebar-title"><i class="fas fa-toggle-on"></i>Secciones</div>
                     
-                    <div class="section-toggle" onclick="toggleSection('hero')">
+                    <div class="section-toggle" onclick="window.toggleSection('hero')">
                         <div class="section-toggle-title"><i class="fas fa-image"></i>Header/Hero</div>
                         <div class="toggle-switch active" id="toggle-hero"></div>
                     </div>
                     
-                    <div class="section-toggle" onclick="toggleSection('products')">
+                    <div class="section-toggle" onclick="window.toggleSection('products')">
                         <div class="section-toggle-title"><i class="fas fa-box"></i>Productos</div>
                         <div class="toggle-switch active" id="toggle-products"></div>
                     </div>
                     
-                    <div class="section-toggle" onclick="toggleSection('giftcards')">
+                    <div class="section-toggle" onclick="window.toggleSection('giftcards')">
                         <div class="section-toggle-title"><i class="fas fa-gift"></i>Gift Cards</div>
                         <div class="toggle-switch" id="toggle-giftcards"></div>
                     </div>
                     
-                    <div class="section-toggle" onclick="toggleSection('redeem')">
-                        <div class="section-toggle-title"><i class="fas fa-ticket-alt"></i>Canjear Códigos</div>
-                        <div class="toggle-switch" id="toggle-redeem"></div>
-                    </div>
-                    
-                    <div class="section-toggle" onclick="toggleSection('footer')">
+                    <div class="section-toggle" onclick="window.toggleSection('footer')">
                         <div class="section-toggle-title"><i class="fas fa-info-circle"></i>Footer</div>
                         <div class="toggle-switch active" id="toggle-footer"></div>
                     </div>
@@ -409,32 +394,32 @@
                     <div class="form-group">
                         <label>Color Principal</label>
                         <div class="color-picker-group">
-                            <input type="color" id="primaryColor" value="#6366f1" oninput="syncColor('primary')">
-                            <input type="text" id="primaryColorText" value="#6366f1" oninput="syncColor('primary')">
+                            <input type="color" id="primaryColor" value="#6366f1" onchange="window.syncColor('primary')">
+                            <input type="text" id="primaryColorText" value="#6366f1" onchange="window.syncColor('primary')" oninput="window.updatePreview()">
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label>Color de Fondo</label>
                         <div class="color-picker-group">
-                            <input type="color" id="bgColor" value="#0a0e1a" oninput="syncColor('bg')">
-                            <input type="text" id="bgColorText" value="#0a0e1a" oninput="syncColor('bg')">
+                            <input type="color" id="bgColor" value="#0a0e1a" onchange="window.syncColor('bg')">
+                            <input type="text" id="bgColorText" value="#0a0e1a" onchange="window.syncColor('bg')" oninput="window.updatePreview()">
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label>Color de Tarjetas</label>
                         <div class="color-picker-group">
-                            <input type="color" id="cardColor" value="#1e293b" oninput="syncColor('card')">
-                            <input type="text" id="cardColorText" value="#1e293b" oninput="syncColor('card')">
+                            <input type="color" id="cardColor" value="#1e293b" onchange="window.syncColor('card')">
+                            <input type="text" id="cardColorText" value="#1e293b" onchange="window.syncColor('card')" oninput="window.updatePreview()">
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label>Color de Texto</label>
                         <div class="color-picker-group">
-                            <input type="color" id="textColor" value="#f8fafc" oninput="syncColor('text')">
-                            <input type="text" id="textColorText" value="#f8fafc" oninput="syncColor('text')">
+                            <input type="color" id="textColor" value="#f8fafc" onchange="window.syncColor('text')">
+                            <input type="text" id="textColorText" value="#f8fafc" onchange="window.syncColor('text')" oninput="window.updatePreview()">
                         </div>
                     </div>
                 </div>
@@ -444,19 +429,18 @@
                     
                     <div class="form-group">
                         <label>Fuente Principal</label>
-                        <select id="fontFamily" onchange="updatePreview()">
+                        <select id="fontFamily" onchange="window.updatePreview()">
                             <option value="'Inter', sans-serif">Inter (Moderna)</option>
                             <option value="'Poppins', sans-serif">Poppins (Redondeada)</option>
                             <option value="'Montserrat', sans-serif">Montserrat (Elegante)</option>
                             <option value="'Roboto', sans-serif">Roboto (Clásica)</option>
-                            <option value="'Open Sans', sans-serif">Open Sans (Legible)</option>
                             <option value="monospace">Monospace (Técnica)</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label>Tamaño de Fuente Base</label>
-                        <select id="fontSize" onchange="updatePreview()">
+                        <select id="fontSize" onchange="window.updatePreview()">
                             <option value="14px">Pequeño (14px)</option>
                             <option value="16px" selected>Normal (16px)</option>
                             <option value="18px">Grande (18px)</option>
@@ -469,7 +453,7 @@
                     
                     <div class="form-group">
                         <label>Radio de Bordes</label>
-                        <select id="borderRadius" onchange="updatePreview()">
+                        <select id="borderRadius" onchange="window.updatePreview()">
                             <option value="4px">Cuadrado (4px)</option>
                             <option value="12px" selected>Suave (12px)</option>
                             <option value="20px">Redondo (20px)</option>
@@ -501,23 +485,20 @@
                             <option value="fab fa-twitter">Twitter</option>
                             <option value="fab fa-instagram">Instagram</option>
                             <option value="fab fa-youtube">YouTube</option>
-                            <option value="fab fa-tiktok">TikTok</option>
                             <option value="fas fa-globe">Sitio Web</option>
                             <option value="fas fa-envelope">Email</option>
-                            <option value="fas fa-heart">Corazón</option>
-                            <option value="fas fa-star">Estrella</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label>Color del Botón</label>
                         <div class="color-picker-group">
-                            <input type="color" id="btnColor" value="#6366f1" oninput="syncColor('btn')">
-                            <input type="text" id="btnColorText" value="#6366f1" oninput="syncColor('btn')">
+                            <input type="color" id="btnColor" value="#6366f1" onchange="window.syncColor('btn')">
+                            <input type="text" id="btnColorText" value="#6366f1" onchange="window.syncColor('btn')">
                         </div>
                     </div>
                     
-                    <button class="btn btn-primary" onclick="addCustomButton()" style="width:100%">
+                    <button class="btn btn-primary" onclick="window.addCustomButton()" style="width:100%">
                         <i class="fas fa-plus"></i>Agregar Botón
                     </button>
                 </div>
@@ -549,12 +530,12 @@
                     <div class="form-group">
                         <label>Color</label>
                         <div class="color-picker-group">
-                            <input type="color" id="gcColor" value="#6366f1" oninput="syncColor('gc')">
-                            <input type="text" id="gcColorText" value="#6366f1" oninput="syncColor('gc')">
+                            <input type="color" id="gcColor" value="#6366f1" onchange="window.syncColor('gc')">
+                            <input type="text" id="gcColorText" value="#6366f1" onchange="window.syncColor('gc')">
                         </div>
                     </div>
                     
-                    <button class="btn btn-primary" onclick="addGiftCard()" style="width:100%">
+                    <button class="btn btn-primary" onclick="window.addGiftCard()" style="width:100%">
                         <i class="fas fa-plus"></i>Crear Gift Card
                     </button>
                 </div>
@@ -569,67 +550,12 @@
                 </div>
             </div>
 
-            <div id="tab-redeem" style="display:none">
-                <div class="sidebar-section">
-                    <div class="sidebar-title"><i class="fas fa-plus-circle"></i>Crear Código de Canje</div>
-                    
-                    <div class="form-group">
-                        <label>Código</label>
-                        <input type="text" id="redeemCode" placeholder="Ej: PROMO2026" style="text-transform:uppercase">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Tipo de Recompensa</label>
-                        <select id="redeemType">
-                            <option value="credit">Crédito en tienda ($)</option>
-                            <option value="product">Producto específico</option>
-                            <option value="discount">Descuento (%)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Valor</label>
-                        <input type="text" id="redeemValue" placeholder="Ej: 5.00 o 10 (para 10%)">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Producto (si aplica)</label>
-                        <select id="redeemProduct">
-                            <option value="">Selecciona un producto</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Usos Máximos</label>
-                        <input type="number" id="redeemMaxUses" placeholder="Ej: 100 (0 = ilimitado)">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Fecha de Expiración</label>
-                        <input type="date" id="redeemExpiry">
-                    </div>
-                    
-                    <button class="btn btn-primary" onclick="addRedeemCode()" style="width:100%">
-                        <i class="fas fa-plus"></i>Crear Código
-                    </button>
-                </div>
-
-                <div class="sidebar-section">
-                    <div class="sidebar-title"><i class="fas fa-list"></i>Códigos Activos</div>
-                    <div class="item-list" id="redeemCodesList">
-                        <div class="item-card" style="justify-content:center;color:var(--text-muted)">
-                            <p>No hay códigos aún</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div id="tab-payment" style="display:none">
                 <div class="sidebar-section">
                     <div class="sidebar-title"><i class="fas fa-credit-card"></i>Métodos de Pago</div>
                     
                     <div class="payment-methods">
-                        <div class="payment-method active" onclick="selectPayment('paypal', this)">
+                        <div class="payment-method active" onclick="window.selectPayment('paypal', this)">
                             <i class="fab fa-paypal"></i>
                             <div class="payment-method-info">
                                 <div class="payment-method-title">PayPal</div>
@@ -637,7 +563,7 @@
                             </div>
                         </div>
                         
-                        <div class="payment-method" onclick="selectPayment('stripe', this)">
+                        <div class="payment-method" onclick="window.selectPayment('stripe', this)">
                             <i class="fab fa-stripe"></i>
                             <div class="payment-method-info">
                                 <div class="payment-method-title">Stripe</div>
@@ -645,7 +571,7 @@
                             </div>
                         </div>
                         
-                        <div class="payment-method" onclick="selectPayment('manual', this)">
+                        <div class="payment-method" onclick="window.selectPayment('manual', this)">
                             <i class="fas fa-hand-holding-usd"></i>
                             <div class="payment-method-info">
                                 <div class="payment-method-title">Pago Manual</div>
@@ -672,47 +598,31 @@
                             <option value="ARS">ARS - Peso Argentino</option>
                             <option value="CLP">CLP - Peso Chileno</option>
                             <option value="COP">COP - Peso Colombiano</option>
-                            <option value="PEN">PEN - Sol Peruano</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="sidebar-section">
-                    <div class="sidebar-title"><i class="fas fa-link"></i>Enlaces Adicionales</div>
+                    <div class="sidebar-title"><i class="fas fa-link"></i>Redes Sociales</div>
                     
                     <div class="form-group">
                         <label>Discord</label>
-                        <input type="url" id="discordUrl" placeholder="https://discord.gg/tu-servidor" onchange="updatePreview()">
+                        <input type="url" id="discordUrl" placeholder="https://discord.gg/tu-servidor" oninput="window.updatePreview()">
                     </div>
                     
                     <div class="form-group">
                         <label>Twitter/X</label>
-                        <input type="url" id="twitterUrl" placeholder="https://twitter.com/tu-servidor" onchange="updatePreview()">
+                        <input type="url" id="twitterUrl" placeholder="https://twitter.com/tu-servidor" oninput="window.updatePreview()">
                     </div>
                     
                     <div class="form-group">
                         <label>Instagram</label>
-                        <input type="url" id="instagramUrl" placeholder="https://instagram.com/tu-servidor" onchange="updatePreview()">
+                        <input type="url" id="instagramUrl" placeholder="https://instagram.com/tu-servidor" oninput="window.updatePreview()">
                     </div>
                     
                     <div class="form-group">
                         <label>YouTube</label>
-                        <input type="url" id="youtubeUrl" placeholder="https://youtube.com/@tu-servidor" onchange="updatePreview()">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>TikTok</label>
-                        <input type="url" id="tiktokUrl" placeholder="https://tiktok.com/@tu-servidor" onchange="updatePreview()">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Términos y Condiciones (URL)</label>
-                        <input type="url" id="termsUrl" placeholder="https://tusitio.com/terminos" onchange="updatePreview()">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Política de Reembolsos (URL)</label>
-                        <input type="url" id="refundUrl" placeholder="https://tusitio.com/reembolsos" onchange="updatePreview()">
+                        <input type="url" id="youtubeUrl" placeholder="https://youtube.com/@tu-servidor" oninput="window.updatePreview()">
                     </div>
                 </div>
             </div>
@@ -733,7 +643,7 @@
                         <div class="products-grid" id="previewProductsGrid">
                             <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-muted)">
                                 <i class="fas fa-box-open" style="font-size:64px;margin-bottom:16px;opacity:0.5"></i>
-                                <p>No hay productos aún. Agrega productos desde el dashboard.</p>
+                                <p>No hay productos aún</p>
                             </div>
                         </div>
                     </div>
@@ -744,20 +654,8 @@
                         <div class="gift-cards-grid" id="previewGiftCardsGrid"></div>
                     </div>
 
-                    <div class="redeem-section" id="previewRedeem" style="display:none">
-                        <div class="redeem-container">
-                            <h2>Canjear Código</h2>
-                            <p>¿Tienes un código promocional? Canjéalo aquí</p>
-                            <div class="redeem-input-group">
-                                <input type="text" class="redeem-input" placeholder="Ingresa tu código">
-                                <button class="redeem-btn">Canjear</button>
-                            </div>
-                        </div>
-                    </div>
-
                     <footer class="store-preview-footer" id="previewFooter">
-                        <p id="previewFooterText">Powered by BuyCrafting • 2026</p>
-                        <div class="store-preview-footer-links" id="previewFooterLinks"></div>
+                        <p id="previewFooterText">Powered by BuyCrafting</p>
                         <div class="store-preview-socials" id="previewSocials"></div>
                     </footer>
                 </div>
@@ -788,7 +686,6 @@
 
         let customButtons = [];
         let giftCards = [];
-        let redeemCodes = [];
         let serverId = null;
 
         const pathParts = window.location.pathname.split('/');
@@ -799,9 +696,10 @@
 
         console.log('Editor loaded for server:', serverId);
 
+        // Cargar configuración
         async function loadStoreConfig(){
             if(!serverId){
-                showNotification('Error: No se encontró el servidor', 'error');
+                window.showNotification('Error: No se encontró el servidor', 'error');
                 return;
             }
 
@@ -813,6 +711,7 @@
                     const data = storeSnap.data();
                     console.log('Store config loaded:', data);
 
+                    // General
                     document.getElementById('storeName').value = data.name || '';
                     document.getElementById('storeDescription').value = data.description || '';
                     document.getElementById('logoUrl').value = data.logo || '';
@@ -820,6 +719,7 @@
                     document.getElementById('heroTitle').value = data.heroTitle || 'Productos Disponibles';
                     document.getElementById('footerText').value = data.footerText || 'Powered by BuyCrafting';
 
+                    // Colores
                     document.getElementById('primaryColor').value = data.primaryColor || '#6366f1';
                     document.getElementById('primaryColorText').value = data.primaryColor || '#6366f1';
                     document.getElementById('bgColor').value = data.backgroundColor || '#0a0e1a';
@@ -832,61 +732,54 @@
                     document.getElementById('fontSize').value = data.fontSize || '16px';
                     document.getElementById('borderRadius').value = data.borderRadius || '12px';
 
+                    // PayPal
                     document.getElementById('paypalEmail').value = data.paypalEmail || '';
                     document.getElementById('currency').value = data.currency || 'USD';
                     document.getElementById('discordUrl').value = data.discordUrl || '';
                     document.getElementById('twitterUrl').value = data.twitterUrl || '';
                     document.getElementById('instagramUrl').value = data.instagramUrl || '';
                     document.getElementById('youtubeUrl').value = data.youtubeUrl || '';
-                    document.getElementById('tiktokUrl').value = data.tiktokUrl || '';
-                    document.getElementById('termsUrl').value = data.termsUrl || '';
-                    document.getElementById('refundUrl').value = data.refundUrl || '';
 
-                    if(data.sections){
-                        if(!data.sections.hero) document.getElementById('toggle-hero').classList.remove('active');
-                        if(!data.sections.products) document.getElementById('toggle-products').classList.remove('active');
-                        if(data.sections.giftcards) document.getElementById('toggle-giftcards').classList.add('active');
-                        if(data.sections.redeem) document.getElementById('toggle-redeem').classList.add('active');
-                        if(!data.sections.footer) document.getElementById('toggle-footer').classList.remove('active');
-                    }
-
-                    if(data.customButtons && data.customButtons.length > 0){
-                        customButtons = data.customButtons;
-                        renderButtonsList();
-                    }
-
-                    if(data.giftCards && data.giftCards.length > 0){
-                        giftCards = data.giftCards;
-                        renderGiftCardsList();
-                    }
-
-                    if(data.redeemCodes && data.redeemCodes.length > 0){
-                        redeemCodes = data.redeemCodes;
-                        renderRedeemCodesList();
-                    }
-
+                    // Previews de imágenes
                     if(data.logo){
                         document.getElementById('logoPreview').innerHTML = `<img src="${data.logo}" style="max-width:100%;max-height:100%">`;
                     }
                     if(data.backgroundImage){
-                        document.getElementById('bgPreview').innerHTML = `<img src="${data.backgroundImage}" style="max-width:100%;max-height:100%">`;
+                        const isGif = data.backgroundImage.includes('.gif');
+                        document.getElementById('bgPreview').innerHTML = `
+                            <img src="${data.backgroundImage}" style="max-width:100%;max-height:100%">
+                            ${isGif ? '<div class="gif-badge">GIF</div>' : ''}
+                        `;
                     }
 
-                    updatePreview();
-                    showNotification('Configuración cargada', 'success');
+                    // Botones
+                    if(data.customButtons && data.customButtons.length > 0){
+                        customButtons = data.customButtons;
+                        window.renderButtonsList();
+                    }
+
+                    // Gift Cards
+                    if(data.giftCards && data.giftCards.length > 0){
+                        giftCards = data.giftCards;
+                        window.renderGiftCardsList();
+                    }
+
+                    window.updatePreview();
+                    window.showNotification('Configuración cargada', 'success');
                 } else {
                     console.log('No store config found, using defaults');
-                    updatePreview();
+                    window.updatePreview();
                 }
 
                 await loadProducts();
 
             } catch(error){
                 console.error('Error loading store config:', error);
-                showNotification('Error al cargar: ' + error.message, 'error');
+                window.showNotification('Error al cargar: ' + error.message, 'error');
             }
         }
 
+        // Cargar productos
         async function loadProducts(){
             try{
                 const productsRef = collection(db, 'products');
@@ -900,7 +793,7 @@
                     grid.innerHTML = `
                         <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-muted)">
                             <i class="fas fa-box-open" style="font-size:64px;margin-bottom:16px;opacity:0.5"></i>
-                            <p>No hay productos aún. Agrega productos desde el dashboard.</p>
+                            <p>No hay productos aún</p>
                         </div>
                     `;
                     return;
@@ -910,14 +803,6 @@
                     const product = doc.data();
                     const card = createProductCard(product);
                     grid.appendChild(card);
-                });
-
-                const productSelect = document.getElementById('redeemProduct');
-                productsSnap.forEach(doc => {
-                    const option = document.createElement('option');
-                    option.value = doc.id;
-                    option.textContent = doc.data().name;
-                    productSelect.appendChild(option);
                 });
 
             } catch(error){
@@ -932,13 +817,6 @@
             let iconHtml = '';
             if(product.image){
                 iconHtml = `<img src="${product.image}" alt="${product.name}">`;
-            } else if(product.material){
-                const icons = {
-                    'DIAMOND': '💎', 'EMERALD': '💚', 'GOLD_INGOT': '🥇',
-                    'IRON_INGOT': '⚙️', 'NETHER_STAR': '⭐', 'PLAYER_HEAD': '👤',
-                    'CHEST': '📦', 'BOOK': '📚', 'PAPER': '📄', 'APPLE': '🍎'
-                };
-                iconHtml = `<div style="font-size:48px">${icons[product.material] || '📦'}</div>`;
             } else {
                 iconHtml = `<i class="fas fa-box" style="font-size:48px;color:var(--text-muted)"></i>`;
             }
@@ -958,19 +836,21 @@
             return div;
         }
 
+        // Sincronizar colores
         window.syncColor = function(type){
-            const color = document.getElementById(type + 'Color').value;
-            const text = document.getElementById(type + 'ColorText').value;
+            const colorInput = document.getElementById(type + 'Color');
+            const textInput = document.getElementById(type + 'ColorText');
             
             if(event.target.type === 'color'){
-                document.getElementById(type + 'ColorText').value = color;
+                textInput.value = colorInput.value;
             } else {
-                document.getElementById(type + 'Color').value = text;
+                colorInput.value = textInput.value;
             }
             
-            updatePreview();
+            window.updatePreview();
         };
 
+        // Actualizar vista previa
         window.updatePreview = function(){
             const storeName = document.getElementById('storeName').value || 'Mi Tienda';
             const storeDesc = document.getElementById('storeDescription').value || 'Bienvenido a nuestra tienda oficial';
@@ -991,15 +871,14 @@
             const twitterUrl = document.getElementById('twitterUrl').value;
             const instagramUrl = document.getElementById('instagramUrl').value;
             const youtubeUrl = document.getElementById('youtubeUrl').value;
-            const tiktokUrl = document.getElementById('tiktokUrl').value;
-            const termsUrl = document.getElementById('termsUrl').value;
-            const refundUrl = document.getElementById('refundUrl').value;
 
+            // Textos
             document.getElementById('previewTitle').textContent = storeName;
             document.getElementById('previewDesc').textContent = storeDesc;
             document.getElementById('previewProductsTitle').textContent = heroTitle;
             document.getElementById('previewFooterText').textContent = footerText;
 
+            // Logo
             const logoEl = document.getElementById('previewLogo');
             if(logoUrl){
                 logoEl.innerHTML = `<img src="${logoUrl}" alt="Logo">`;
@@ -1007,6 +886,7 @@
                 logoEl.innerHTML = '<i class="fas fa-shopping-cart"></i>';
             }
 
+            // Fondo
             const headerEl = document.getElementById('previewHeader');
             if(bgUrl){
                 headerEl.style.backgroundImage = `url(${bgUrl})`;
@@ -1018,6 +898,7 @@
                 headerEl.style.background = `linear-gradient(135deg,${primaryColor} 0%,${primaryColor}dd 50%,${primaryColor}aa 100%)`;
             }
 
+            // Colores CSS
             const previewEl = document.getElementById('storePreview');
             previewEl.style.setProperty('--preview-bg', bgColor);
             previewEl.style.setProperty('--preview-primary', primaryColor);
@@ -1025,58 +906,63 @@
             previewEl.style.setProperty('--preview-text', textColor);
             previewEl.style.setProperty('--preview-gradient', `linear-gradient(135deg,${primaryColor} 0%,${primaryColor}dd 50%,${primaryColor}aa 100%)`);
 
+            // Fuente
             previewEl.style.fontFamily = fontFamily;
             previewEl.style.fontSize = fontSize;
 
+            // Bordes
             document.querySelectorAll('.product-card-preview, .buy-btn-preview, .custom-btn-preview, .gift-card-preview').forEach(el => {
                 el.style.borderRadius = borderRadius;
             });
 
-            renderCustomButtonsPreview();
-            renderGiftCardsPreview();
+            // Botones personalizados
+            window.renderCustomButtonsPreview();
 
+            // Gift Cards
+            window.renderGiftCardsPreview();
+
+            // Redes sociales
             const socialsEl = document.getElementById('previewSocials');
             socialsEl.innerHTML = '';
             if(discordUrl) socialsEl.innerHTML += `<a href="${discordUrl}" target="_blank"><i class="fab fa-discord"></i></a>`;
             if(twitterUrl) socialsEl.innerHTML += `<a href="${twitterUrl}" target="_blank"><i class="fab fa-twitter"></i></a>`;
             if(instagramUrl) socialsEl.innerHTML += `<a href="${instagramUrl}" target="_blank"><i class="fab fa-instagram"></i></a>`;
             if(youtubeUrl) socialsEl.innerHTML += `<a href="${youtubeUrl}" target="_blank"><i class="fab fa-youtube"></i></a>`;
-            if(tiktokUrl) socialsEl.innerHTML += `<a href="${tiktokUrl}" target="_blank"><i class="fab fa-tiktok"></i></a>`;
 
-            const footerLinksEl = document.getElementById('previewFooterLinks');
-            footerLinksEl.innerHTML = '';
-            if(termsUrl) footerLinksEl.innerHTML += `<a href="${termsUrl}" target="_blank">Términos y Condiciones</a>`;
-            if(refundUrl) footerLinksEl.innerHTML += `<a href="${refundUrl}" target="_blank">Política de Reembolsos</a>`;
-
+            // Visibilidad de secciones
             document.getElementById('previewHeader').style.display = document.getElementById('toggle-hero').classList.contains('active') ? 'block' : 'none';
             document.getElementById('previewProducts').style.display = document.getElementById('toggle-products').classList.contains('active') ? 'block' : 'none';
             document.getElementById('previewGiftCards').style.display = document.getElementById('toggle-giftcards').classList.contains('active') ? 'block' : 'none';
-            document.getElementById('previewRedeem').style.display = document.getElementById('toggle-redeem').classList.contains('active') ? 'block' : 'none';
             document.getElementById('previewFooter').style.display = document.getElementById('toggle-footer').classList.contains('active') ? 'block' : 'none';
         };
 
+        // Subir imagen
         window.uploadImage = async function(type, input){
             const file = input.files[0];
-            if(!file) return;
+            if(!file){
+                window.showNotification('No se seleccionó ningún archivo', 'error');
+                return;
+            }
 
             const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
             if(!validTypes.includes(file.type)){
-                showNotification('Formato no válido. Usa PNG, JPG o GIF', 'error');
+                window.showNotification('Formato no válido. Usa PNG, JPG o GIF', 'error');
                 return;
             }
 
             const maxSize = file.type === 'image/gif' ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
             if(file.size > maxSize){
                 const mb = file.type === 'image/gif' ? '10MB' : '5MB';
-                showNotification(`La imagen es muy grande (máx ${mb})`, 'error');
+                window.showNotification(`La imagen es muy grande (máx ${mb})`, 'error');
                 return;
             }
 
-            showNotification('Subiendo imagen...');
+            window.showNotification('Procesando imagen...', 'info');
 
             const reader = new FileReader();
             reader.onload = function(e){
                 const preview = document.getElementById(type + 'Preview');
+                const urlInput = document.getElementById(type + 'Url');
                 
                 if(file.type === 'image/gif'){
                     preview.innerHTML = `
@@ -1087,16 +973,17 @@
                     preview.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:100%">`;
                 }
                 
-                document.getElementById(type + 'Url').value = e.target.result;
-                updatePreview();
-                showNotification('Imagen cargada', 'success');
+                urlInput.value = e.target.result;
+                window.updatePreview();
+                window.showNotification('Imagen cargada correctamente', 'success');
             };
             reader.onerror = function(){
-                showNotification('Error al cargar la imagen', 'error');
+                window.showNotification('Error al cargar la imagen', 'error');
             };
             reader.readAsDataURL(file);
         };
 
+        // Cambiar tab
         window.switchTab = function(tab){
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
@@ -1105,22 +992,24 @@
             document.getElementById('tab-design').style.display = 'none';
             document.getElementById('tab-buttons').style.display = 'none';
             document.getElementById('tab-giftcards').style.display = 'none';
-            document.getElementById('tab-redeem').style.display = 'none';
             document.getElementById('tab-payment').style.display = 'none';
             document.getElementById(`tab-${tab}`).style.display = 'block';
         };
 
+        // Toggle sección
         window.toggleSection = function(section){
             const toggle = document.getElementById(`toggle-${section}`);
             toggle.classList.toggle('active');
-            updatePreview();
+            window.updatePreview();
         };
 
+        // Seleccionar pago
         window.selectPayment = function(method, element){
             document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
             element.classList.add('active');
         };
 
+        // Agregar botón
         window.addCustomButton = function(){
             const text = document.getElementById('btnText').value;
             const url = document.getElementById('btnUrl').value;
@@ -1128,21 +1017,19 @@
             const color = document.getElementById('btnColor').value;
 
             if(!text || !url){
-                showNotification('Completa texto y URL del botón', 'error');
+                window.showNotification('Completa texto y URL del botón', 'error');
                 return;
             }
 
             customButtons.push({ id: Date.now(), text, url, icon, color });
-            renderButtonsList();
-            updatePreview();
+            window.renderButtonsList();
+            window.updatePreview();
 
             document.getElementById('btnText').value = '';
             document.getElementById('btnUrl').value = '';
             document.getElementById('btnIcon').value = '';
-            document.getElementById('btnColor').value = '#6366f1';
-            document.getElementById('btnColorText').value = '#6366f1';
 
-            showNotification('Botón agregado', 'success');
+            window.showNotification('Botón agregado', 'success');
         };
 
         window.renderButtonsList = function(){
@@ -1162,7 +1049,7 @@
                         <div class="item-card-desc">${btn.url}</div>
                     </div>
                     <div class="item-card-actions">
-                        <button class="btn-delete" onclick="deleteButton(${btn.id})"><i class="fas fa-trash"></i></button>
+                        <button class="btn-delete" onclick="window.deleteButton(${btn.id})"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
             `).join('');
@@ -1170,6 +1057,10 @@
 
         window.renderCustomButtonsPreview = function(){
             const container = document.getElementById('previewCustomButtons');
+            if(customButtons.length === 0){
+                container.innerHTML = '';
+                return;
+            }
             container.innerHTML = customButtons.map(btn => `
                 <a href="${btn.url}" target="_blank" class="custom-btn-preview" style="background:${btn.color};color:white">
                     ${btn.icon ? `<i class="${btn.icon}"></i>` : ''}${btn.text}
@@ -1179,31 +1070,30 @@
 
         window.deleteButton = function(id){
             customButtons = customButtons.filter(b => b.id !== id);
-            renderButtonsList();
-            updatePreview();
-            showNotification('Botón eliminado', 'success');
+            window.renderButtonsList();
+            window.updatePreview();
+            window.showNotification('Botón eliminado', 'success');
         };
 
+        // Gift Cards
         window.addGiftCard = function(){
             const value = parseFloat(document.getElementById('gcValue').value);
             const desc = document.getElementById('gcDesc').value;
             const color = document.getElementById('gcColor').value;
 
             if(!value || value <= 0){
-                showNotification('Ingresa un valor válido', 'error');
+                window.showNotification('Ingresa un valor válido', 'error');
                 return;
             }
 
             giftCards.push({ id: Date.now(), value, desc: desc || `$${value.toFixed(2)} de crédito`, color });
-            renderGiftCardsList();
-            updatePreview();
+            window.renderGiftCardsList();
+            window.updatePreview();
 
             document.getElementById('gcValue').value = '';
             document.getElementById('gcDesc').value = '';
-            document.getElementById('gcColor').value = '#6366f1';
-            document.getElementById('gcColorText').value = '#6366f1';
 
-            showNotification('Gift Card creada', 'success');
+            window.showNotification('Gift Card creada', 'success');
         };
 
         window.renderGiftCardsList = function(){
@@ -1223,7 +1113,7 @@
                         <div class="item-card-desc">${gc.desc}</div>
                     </div>
                     <div class="item-card-actions">
-                        <button class="btn-delete" onclick="deleteGiftCard(${gc.id})"><i class="fas fa-trash"></i></button>
+                        <button class="btn-delete" onclick="window.deleteGiftCard(${gc.id})"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
             `).join('');
@@ -1249,77 +1139,15 @@
 
         window.deleteGiftCard = function(id){
             giftCards = giftCards.filter(gc => gc.id !== id);
-            renderGiftCardsList();
-            updatePreview();
-            showNotification('Gift Card eliminada', 'success');
+            window.renderGiftCardsList();
+            window.updatePreview();
+            window.showNotification('Gift Card eliminada', 'success');
         };
 
-        window.addRedeemCode = function(){
-            const code = document.getElementById('redeemCode').value.toUpperCase();
-            const type = document.getElementById('redeemType').value;
-            const value = document.getElementById('redeemValue').value;
-            const productId = document.getElementById('redeemProduct').value;
-            const maxUses = parseInt(document.getElementById('redeemMaxUses').value) || 0;
-            const expiry = document.getElementById('redeemExpiry').value;
-
-            if(!code || !value){
-                showNotification('Completa código y valor', 'error');
-                return;
-            }
-
-            redeemCodes.push({
-                id: Date.now(),
-                code,
-                type,
-                value,
-                productId,
-                maxUses,
-                currentUses: 0,
-                expiry,
-                active: true
-            });
-            renderRedeemCodesList();
-
-            document.getElementById('redeemCode').value = '';
-            document.getElementById('redeemValue').value = '';
-            document.getElementById('redeemMaxUses').value = '';
-            document.getElementById('redeemExpiry').value = '';
-
-            showNotification('Código creado', 'success');
-        };
-
-        window.renderRedeemCodesList = function(){
-            const list = document.getElementById('redeemCodesList');
-            if(redeemCodes.length === 0){
-                list.innerHTML = `<div class="item-card" style="justify-content:center;color:var(--text-muted)"><p>No hay códigos aún</p></div>`;
-                return;
-            }
-
-            list.innerHTML = redeemCodes.map(rc => `
-                <div class="item-card">
-                    <div class="item-card-icon" style="background:var(--primary)20;color:var(--primary)">
-                        <i class="fas fa-ticket-alt"></i>
-                    </div>
-                    <div class="item-card-info">
-                        <div class="item-card-title">${rc.code}</div>
-                        <div class="item-card-desc">${rc.type === 'credit' ? `$${rc.value} crédito` : rc.type === 'discount' ? `${rc.value}% descuento` : 'Producto'}</div>
-                    </div>
-                    <div class="item-card-actions">
-                        <button class="btn-delete" onclick="deleteRedeemCode(${rc.id})"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        };
-
-        window.deleteRedeemCode = function(id){
-            redeemCodes = redeemCodes.filter(rc => rc.id !== id);
-            renderRedeemCodesList();
-            showNotification('Código eliminado', 'success');
-        };
-
+        // Guardar tienda
         window.saveStore = async function(){
             if(!serverId){
-                showNotification('Error: No se encontró el servidor', 'error');
+                window.showNotification('Error: No se encontró el servidor', 'error');
                 return;
             }
 
@@ -1345,17 +1173,12 @@
                     twitterUrl: document.getElementById('twitterUrl').value,
                     instagramUrl: document.getElementById('instagramUrl').value,
                     youtubeUrl: document.getElementById('youtubeUrl').value,
-                    tiktokUrl: document.getElementById('tiktokUrl').value,
-                    termsUrl: document.getElementById('termsUrl').value,
-                    refundUrl: document.getElementById('refundUrl').value,
                     customButtons: customButtons,
                     giftCards: giftCards,
-                    redeemCodes: redeemCodes,
                     sections: {
                         hero: document.getElementById('toggle-hero').classList.contains('active'),
                         products: document.getElementById('toggle-products').classList.contains('active'),
                         giftcards: document.getElementById('toggle-giftcards').classList.contains('active'),
-                        redeem: document.getElementById('toggle-redeem').classList.contains('active'),
                         footer: document.getElementById('toggle-footer').classList.contains('active')
                     },
                     updatedAt: new Date()
@@ -1363,19 +1186,21 @@
 
                 await setDoc(doc(db, 'stores', serverId), config, { merge: true });
 
-                showNotification('Tienda guardada exitosamente', 'success');
+                window.showNotification('Tienda guardada exitosamente', 'success');
 
             } catch(error){
                 console.error('Error saving store:', error);
-                showNotification('Error al guardar: ' + error.message, 'error');
+                window.showNotification('Error al guardar: ' + error.message, 'error');
             }
         };
 
+        // Vista completa
         window.previewFull = function(){
             const url = `/store/${serverId}`;
             window.open(url, '_blank');
         };
 
+        // Notificación
         window.showNotification = function(message, type = 'success'){
             const notification = document.getElementById('notification');
             const icon = document.getElementById('notificationIcon');
@@ -1389,6 +1214,7 @@
             }, 4000);
         };
 
+        // Inicializar
         loadStoreConfig();
     </script>
 </body>
