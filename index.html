@@ -100,6 +100,7 @@
         .modal-close:hover{background:var(--bg-hover);color:var(--text)}
         .modal-body{padding:24px}
         .modal-footer{padding:20px 24px;border-top:1px solid var(--border);display:flex;gap:12px;justify-content:flex-end}
+        .server-badge{background:var(--primary);color:white;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-left:10px}
     </style>
 </head>
 <body>
@@ -113,6 +114,7 @@
         <div style="display:flex;align-items:center;gap:12px;padding:20px;border-bottom:1px solid var(--border)">
             <div style="width:40px;height:40px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px"><i class="fas fa-bolt"></i></div>
             <div style="font-size:22px;font-weight:700;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent">BuyCrafting</div>
+            <span class="server-badge" id="serverNameBadge">Mi Servidor</span>
         </div>
         <div class="nav-menu">
             <div class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
@@ -127,7 +129,7 @@
     <main class="main-content">
         <header class="header">
             <div class="header-title"><h1 id="pageTitle">Dashboard</h1><p id="currentDate">Cargando...</p></div>
-            <div class="user-menu"><div class="avatar">A</div><div><div style="font-weight:600">Administrador</div><div style="font-size:12px;color:var(--text-muted)">admin@buycrafting</div></div></div>
+            <div class="user-menu"><div class="avatar">A</div><div><div style="font-weight:600" id="userName">Administrador</div><div style="font-size:12px;color:var(--text-muted)" id="userEmail">admin@buycrafting</div></div></div>
         </header>
         <section id="dashboard" class="section active">
             <div class="stats-grid">
@@ -164,11 +166,23 @@
         </section>
         <section id="settings" class="section">
             <div class="card">
-                <div class="card-header"><div class="card-title"><i class="fas fa-key"></i>API Key</div></div>
-                <p style="color:var(--text-muted);margin-bottom:20px;font-size:14px">Esta clave va en el <code style="background:var(--bg);padding:4px 8px;border-radius:4px">config.yml</code> del plugin</p>
+                <div class="card-header"><div class="card-title"><i class="fas fa-key"></i>Token de Servidor</div></div>
+                <p style="color:var(--text-muted);margin-bottom:20px;font-size:14px">Este token va en el <code style="background:var(--bg);padding:4px 8px;border-radius:4px">config.yml</code> de tu plugin. Solo tu servidor puede usarlo.</p>
                 <div class="key-display"><span class="key-value" id="apiKeyDisplay">Cargando...</span><button class="btn btn-secondary btn-sm" onclick="copyApiKey()"><i class="fas fa-copy"></i>Copiar</button></div>
-                <div class="form-group"><label>Nueva Key</label><input type="text" id="newApiKey" placeholder="Deja vacío para auto-generar"></div>
-                <button class="btn btn-primary" onclick="updateApiKey()"><i class="fas fa-sync-alt"></i>Actualizar Key</button>
+                <div class="form-group">
+                    <label>Regenerar Token</label>
+                    <input type="text" id="newApiKey" placeholder="Deja vacío para auto-generar">
+                </div>
+                <button class="btn btn-primary" onclick="updateApiKey()"><i class="fas fa-sync-alt"></i>Actualizar Token</button>
+                <p style="color:var(--text-muted);font-size:12px;margin-top:15px"><i class="fas fa-info-circle"></i> Al cambiar el token, actualiza el config.yml de tu plugin para que siga funcionando.</p>
+            </div>
+            <div class="card">
+                <div class="card-header"><div class="card-title"><i class="fas fa-info-circle"></i>Información del Servidor</div></div>
+                <div style="display:grid;gap:12px">
+                    <div><strong>ID del Servidor:</strong> <code id="serverIdDisplay" style="background:var(--bg);padding:4px 8px;border-radius:4px;font-family:monospace;font-size:13px">Cargando...</code></div>
+                    <div><strong>Nombre:</strong> <span id="serverNameDisplay">Cargando...</span></div>
+                    <div><strong>Email:</strong> <span id="serverEmailDisplay">Cargando...</span></div>
+                </div>
             </div>
         </section>
     </main>
@@ -179,9 +193,10 @@
             <div class="modal-header"><div class="modal-title"><i class="fas fa-box"></i>Nuevo Producto</div><button class="modal-close" onclick="closeModal('productModal')"><i class="fas fa-times"></i></button></div>
             <div class="modal-body">
                 <div class="form-grid">
-                    <div class="form-group"><label>Nombre</label><input type="text" id="prodName"></div>
-                    <div class="form-group"><label>Precio</label><input type="number" id="prodPrice" step="0.01"></div>
+                    <div class="form-group"><label>Nombre</label><input type="text" id="prodName" placeholder="Ej: Rango VIP"></div>
+                    <div class="form-group"><label>Precio (USD)</label><input type="number" id="prodPrice" step="0.01" placeholder="5.00"></div>
                     <div class="form-group full"><label>Comando</label><input type="text" id="prodCommand" placeholder="give {player} diamond 1"></div>
+                    <div class="form-group full"><label>Descripción (para la GUI)</label><textarea id="prodDescription" placeholder="Beneficios del producto..."></textarea></div>
                 </div>
             </div>
             <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('productModal')">Cancelar</button><button class="btn btn-primary" onclick="createProduct()">Guardar</button></div>
@@ -193,7 +208,7 @@
         <div class="modal-content">
             <div class="modal-header"><div class="modal-title"><i class="fas fa-shopping-cart"></i>Nueva Orden</div><button class="modal-close" onclick="closeModal('orderModal')"><i class="fas fa-times"></i></button></div>
             <div class="modal-body">
-                <div class="form-group"><label>Jugador</label><input type="text" id="orderPlayer"></div>
+                <div class="form-group"><label>Jugador</label><input type="text" id="orderPlayer" placeholder="Nombre del jugador"></div>
                 <div class="form-group"><label>Producto</label><select id="orderProduct"><option value="">Seleccionar...</option></select></div>
             </div>
             <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('orderModal')">Cancelar</button><button class="btn btn-primary" onclick="createOrder()">Crear</button></div>
@@ -204,7 +219,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, deleteDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, deleteDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCIGXn0zND_8A_nD6NPxx1txYFQzrhM9hg",
@@ -218,32 +233,47 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         let currentSection = 'dashboard';
+        let currentServerId = null;
+        let currentToken = null;
 
-        // ✅ INICIALIZACIÓN CORREGIDA (SIN BUCLE)
+        // ✅ INICIALIZACIÓN MULTI-TENANT
         document.addEventListener('DOMContentLoaded', async function(){
-            console.log('🚀 BuyCrafting con Firebase iniciando...');
+            console.log('🚀 BuyCrafting Multi-Tenant iniciando...');
             
-            // Quitar loading después de 4 segundos
             setTimeout(()=>{
                 document.getElementById('loadingScreen').classList.add('hidden');
                 console.log('✅ Loading removido');
             }, 4000);
             
-            // ✅ Solo verificar auth, NO redirigir automáticamente
             const auth = localStorage.getItem('buycrafting_auth');
             if(auth !== 'true'){
-                console.log('⚠️ No autenticado - Mostrar botón de login');
-                // No redirigir, solo mostrar mensaje
+                console.log('⚠️ No autenticado');
                 document.getElementById('pageTitle').innerText = 'No Autenticado';
                 document.getElementById('currentDate').innerText = 'Por favor inicia sesión';
                 return;
             }
             
-            console.log('✅ Usuario autenticado');
+            // Obtener datos del servidor actual
+            currentServerId = localStorage.getItem('buycrafting_serverId');
+            currentToken = localStorage.getItem('buycrafting_token');
+            const serverName = localStorage.getItem('buycrafting_serverName') || 'Mi Servidor';
+            
+            if(!currentServerId){
+                window.showNotification('Error: No hay servidor seleccionado','error');
+                return;
+            }
+            
+            // Actualizar UI con datos del servidor
+            document.getElementById('serverNameBadge').innerText = serverName;
+            document.getElementById('userName').innerText = 'Admin';
+            document.getElementById('pageTitle').innerText = 'Dashboard';
             document.getElementById('currentDate').innerText = new Date().toLocaleDateString('es-ES',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+            
+            console.log('✅ Servidor:', currentServerId);
             loadDashboard();
             loadApiKey();
-            console.log('✅ Dashboard listo con Firebase');
+            loadServerInfo();
+            console.log('✅ Dashboard listo con Firebase Multi-Tenant');
         });
 
         window.toggleMenu = function(){ document.querySelector('.sidebar').classList.toggle('active'); document.querySelector('.overlay').classList.toggle('active'); };
@@ -273,107 +303,242 @@
         window.openProductModal = ()=>{document.getElementById('productModal').classList.add('active');};
         window.openOrderModal = ()=>{loadProductsForSelect();document.getElementById('orderModal').classList.add('active');};
         window.closeModal = (id)=>{document.getElementById(id).classList.remove('active');};
-        window.copyApiKey = ()=>{navigator.clipboard.writeText(document.getElementById('apiKeyDisplay').innerText);window.showNotification('Key copiada');};
+        window.copyApiKey = ()=>{
+            navigator.clipboard.writeText(document.getElementById('apiKeyDisplay').innerText);
+            window.showNotification('Token copiado');
+        };
 
+        // Cargar información del servidor
+        async function loadServerInfo(){
+            try{
+                if(!currentServerId) return;
+                const serverRef = doc(db, 'servers', currentServerId);
+                const serverSnap = await getDoc(serverRef);
+                if(serverSnap.exists()){
+                    const data = serverSnap.data();
+                    document.getElementById('serverIdDisplay').innerText = currentServerId;
+                    document.getElementById('serverNameDisplay').innerText = data.serverName || 'Sin nombre';
+                    document.getElementById('serverEmailDisplay').innerText = data.ownerEmail || 'Sin email';
+                }
+            }catch(e){console.error('Error loading server info:',e);}
+        }
+
+        // Cargar API Key/Token del servidor
         async function loadApiKey(){
             try{
-                const configRef = doc(db, 'config', 'settings');
+                if(!currentServerId) return;
+                const configRef = doc(db, 'configs', currentServerId);
                 const configSnap = await getDoc(configRef);
                 if(configSnap.exists()){
                     const key = configSnap.data().apiKey;
                     document.getElementById('apiKeyDisplay').innerText = key;
                     document.getElementById('newApiKey').value = key;
+                    currentToken = key;
                 }
             }catch(e){console.error('Error loading key:',e);}
         }
 
+        // Actualizar token del servidor
         async function updateApiKey(){
             try{
-                const newKey = document.getElementById('newApiKey').value || 'Adrian2005@';
-                await setDoc(doc(db, 'config', 'settings'), { apiKey: newKey }, { merge: true });
-                window.showNotification('Key actualizada: '+newKey);
+                if(!currentServerId) return;
+                const newKey = document.getElementById('newApiKey').value.trim() || 'sk_'+Math.random().toString(36).substring(2,8)+Math.random().toString(36).substring(2,8);
+                
+                // Actualizar en configs
+                await setDoc(doc(db, 'configs', currentServerId), { apiKey: newKey }, { merge: true });
+                
+                // Actualizar en servers también
+                await setDoc(doc(db, 'servers', currentServerId), { token: newKey }, { merge: true });
+                
+                // Actualizar localStorage
+                localStorage.setItem('buycrafting_token', newKey);
+                currentToken = newKey;
+                
+                window.showNotification('Token actualizado: '+newKey);
                 loadApiKey();
             }catch(e){window.showNotification('Error: '+e.message,'error');}
         }
 
+        // Cargar Dashboard (solo datos de ESTE servidor)
         async function loadDashboard(){
             try{
-                const ordersSnap = await getDocs(query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(5)));
-                const orders = []; ordersSnap.forEach(d=>{orders.push({id:d.id,...d.data()});});
+                if(!currentServerId) return;
+                
+                // Cargar órdenes de ESTE servidor
+                const ordersRef = collection(db, 'orders');
+                const q = query(ordersRef, where('serverId', '==', currentServerId), orderBy('createdAt', 'desc'), limit(5));
+                const ordersSnap = await getDocs(q);
+                
+                const orders = [];
+                ordersSnap.forEach(d => { orders.push({id:d.id,...d.data()}); });
+                
                 document.getElementById('totalOrders').innerText = orders.length;
-                const pending = orders.filter(o=>!o.delivered).length;
+                const pending = orders.filter(o => !o.delivered).length;
                 document.getElementById('pendingOrders').innerText = pending;
-                const productsSnap = await getDocs(collection(db, 'products'));
+                
+                // Cargar productos de ESTE servidor
+                const productsRef = collection(db, 'products');
+                const pq = query(productsRef, where('serverId', '==', currentServerId));
+                const productsSnap = await getDocs(pq);
                 document.getElementById('totalProducts').innerText = productsSnap.size;
+                
                 document.getElementById('totalRevenue').innerText = '$'+(orders.length*5).toFixed(2);
-                const tbody = document.getElementById('recentOrdersTable'); tbody.innerHTML = '';
+                
+                const tbody = document.getElementById('recentOrdersTable');
+                tbody.innerHTML = '';
                 if(orders.length){
-                    orders.forEach(o=>{
+                    orders.forEach(o => {
                         tbody.innerHTML += `<tr><td>#${o.id.substr(0,8)}</td><td>${o.playerName||'-'}</td><td>${o.productName||'-'}</td><td>${o.createdAt?new Date(o.createdAt.toDate()).toLocaleDateString():'-'}</td><td><span class="badge ${o.delivered?'success':'pending'}">${o.delivered?'Entregado':'Pendiente'}</span></td></tr>`;
                     });
-                } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">Sin órdenes</td></tr>'; }
-            }catch(e){console.error('Error:',e);window.showNotification('Error cargando datos','error');}
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">Sin órdenes</td></tr>';
+                }
+            }catch(e){
+                console.error('Error:',e);
+                window.showNotification('Error cargando datos','error');
+            }
         }
 
+        // Cargar Productos (solo de ESTE servidor)
         async function loadProducts(){
             try{
-                const snap = await getDocs(collection(db, 'products'));
-                const tbody = document.getElementById('productsTable'); tbody.innerHTML = '';
+                if(!currentServerId) return;
+                const productsRef = collection(db, 'products');
+                const q = query(productsRef, where('serverId', '==', currentServerId));
+                const snap = await getDocs(q);
+                const tbody = document.getElementById('productsTable');
+                tbody.innerHTML = '';
                 if(!snap.empty){
-                    snap.forEach(d=>{ const p=d.data(); tbody.innerHTML += `<tr><td>${p.name}</td><td>$${p.price||0}</td><td><code style="background:var(--bg);padding:4px 8px;border-radius:4px;font-size:12px">${p.command}</code></td><td><button class="btn btn-sm btn-danger" onclick="window.deleteProduct('${d.id}')"><i class="fas fa-trash"></i></button></td></tr>`; });
-                } else { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted)">Sin productos</td></tr>'; }
+                    snap.forEach(d => {
+                        const p = d.data();
+                        tbody.innerHTML += `<tr><td>${p.name}</td><td>$${p.price||0}</td><td><code style="background:var(--bg);padding:4px 8px;border-radius:4px;font-size:12px">${p.command}</code></td><td><button class="btn btn-sm btn-danger" onclick="window.deleteProduct('${d.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted)">Sin productos</td></tr>';
+                }
             }catch(e){console.error('Error:',e);}
         }
 
+        // Crear Producto (con serverId)
         window.createProduct = async function(){
             try{
-                const name=document.getElementById('prodName').value, price=parseFloat(document.getElementById('prodPrice').value)||0, command=document.getElementById('prodCommand').value;
+                if(!currentServerId){window.showNotification('Error: No hay servidor','error');return;}
+                const name = document.getElementById('prodName').value;
+                const price = parseFloat(document.getElementById('prodPrice').value)||0;
+                const command = document.getElementById('prodCommand').value;
+                const description = document.getElementById('prodDescription').value;
+                
                 if(!name||!command){window.showNotification('Nombre y comando requeridos','error');return;}
-                await addDoc(collection(db,'products'),{name,price,command,createdAt:new Date()});
-                window.showNotification('Producto creado'); closeModal('productModal');
-                document.getElementById('prodName').value=''; document.getElementById('prodPrice').value=''; document.getElementById('prodCommand').value='';
-                loadProducts(); loadDashboard();
+                
+                await addDoc(collection(db,'products'), {
+                    serverId: currentServerId,
+                    name: name,
+                    price: price,
+                    command: command,
+                    description: description || '',
+                    createdAt: new Date()
+                });
+                
+                window.showNotification('Producto creado');
+                closeModal('productModal');
+                document.getElementById('prodName').value='';
+                document.getElementById('prodPrice').value='';
+                document.getElementById('prodCommand').value='';
+                document.getElementById('prodDescription').value='';
+                loadProducts();
+                loadDashboard();
             }catch(e){window.showNotification('Error: '+e.message,'error');}
         };
 
+        // Cargar productos para select (solo de ESTE servidor)
         async function loadProductsForSelect(){
             try{
-                const snap = await getDocs(collection(db,'products'));
-                const sel = document.getElementById('orderProduct'); sel.innerHTML = '<option value="">Seleccionar...</option>';
-                snap.forEach(d=>{ const p=d.data(); sel.innerHTML += `<option value="${p.command}">${p.name} - $${p.price}</option>`; });
+                if(!currentServerId) return;
+                const snap = await getDocs(query(collection(db,'products'), where('serverId', '==', currentServerId)));
+                const sel = document.getElementById('orderProduct');
+                sel.innerHTML = '<option value="">Seleccionar...</option>';
+                snap.forEach(d => {
+                    const p = d.data();
+                    sel.innerHTML += `<option value="${p.command}">${p.name} - $${p.price}</option>`;
+                });
             }catch(e){console.error('Error:',e);}
         }
 
+        // Crear Orden (con serverId y token)
         window.createOrder = async function(){
             try{
-                const player=document.getElementById('orderPlayer').value, command=document.getElementById('orderProduct').value;
+                if(!currentServerId){window.showNotification('Error: No hay servidor','error');return;}
+                const player = document.getElementById('orderPlayer').value;
+                const command = document.getElementById('orderProduct').value;
+                
                 if(!player||!command){window.showNotification('Jugador y producto requeridos','error');return;}
-                const configSnap = await getDoc(doc(db,'config','settings'));
-                const apiKey = configSnap.exists()?configSnap.data().apiKey:'Adrian2005@';
-                await addDoc(collection(db,'orders'),{playerName:player,productName:command,apiKey,delivered:false,createdAt:new Date()});
-                window.showNotification('Orden creada'); closeModal('orderModal');
-                loadAllOrders(); loadDashboard();
+                
+                await addDoc(collection(db,'orders'), {
+                    serverId: currentServerId,
+                    playerName: player,
+                    productName: command,
+                    apiKey: currentToken,
+                    delivered: false,
+                    createdAt: new Date()
+                });
+                
+                window.showNotification('Orden creada');
+                closeModal('orderModal');
+                loadAllOrders();
+                loadDashboard();
             }catch(e){window.showNotification('Error: '+e.message,'error');}
         };
 
+        // Cargar Todas las Órdenes (solo de ESTE servidor)
         async function loadAllOrders(){
             try{
-                const snap = await getDocs(query(collection(db,'orders'),orderBy('createdAt','desc')));
-                const tbody = document.getElementById('allOrdersTable'); tbody.innerHTML = '';
+                if(!currentServerId) return;
+                const ordersRef = collection(db, 'orders');
+                const q = query(ordersRef, where('serverId', '==', currentServerId), orderBy('createdAt', 'desc'));
+                const snap = await getDocs(q);
+                const tbody = document.getElementById('allOrdersTable');
+                tbody.innerHTML = '';
                 if(!snap.empty){
-                    snap.forEach(d=>{ const o=d.data(); tbody.innerHTML += `<tr><td>#${d.id.substr(0,8)}</td><td>${o.playerName||'-'}</td><td>${o.productName||'-'}</td><td><span class="badge ${o.delivered?'success':'pending'}">${o.delivered?'Entregado':'Pendiente'}</span></td><td><button class="btn btn-sm btn-danger" onclick="window.deleteOrder('${d.id}')"><i class="fas fa-trash"></i></button></td></tr>`; });
-                } else { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">Sin órdenes</td></tr>'; }
+                    snap.forEach(d => {
+                        const o = d.data();
+                        tbody.innerHTML += `<tr><td>#${d.id.substr(0,8)}</td><td>${o.playerName||'-'}</td><td>${o.productName||'-'}</td><td><span class="badge ${o.delivered?'success':'pending'}">${o.delivered?'Entregado':'Pendiente'}</span></td><td><button class="btn btn-sm btn-danger" onclick="window.deleteOrder('${d.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">Sin órdenes</td></tr>';
+                }
             }catch(e){console.error('Error:',e);}
         }
 
-        window.deleteProduct = async function(id){ if(!confirm('¿Eliminar?'))return; try{ await deleteDoc(doc(db,'products',id)); window.showNotification('Eliminado'); loadProducts(); loadDashboard(); }catch(e){window.showNotification('Error: '+e.message,'error');} };
-        window.deleteOrder = async function(id){ if(!confirm('¿Eliminar?'))return; try{ await deleteDoc(doc(db,'orders',id)); window.showNotification('Eliminado'); loadAllOrders(); loadDashboard(); }catch(e){window.showNotification('Error: '+e.message,'error');} };
+        // Eliminar Producto
+        window.deleteProduct = async function(id){
+            if(!confirm('¿Eliminar este producto?')) return;
+            try{
+                await deleteDoc(doc(db,'products',id));
+                window.showNotification('Eliminado');
+                loadProducts();
+                loadDashboard();
+            }catch(e){window.showNotification('Error: '+e.message,'error');}
+        };
 
-        window.logout = function(){ 
-            localStorage.removeItem('buycrafting_auth'); 
-            localStorage.removeItem('buycrafting_key'); 
-            window.showNotification('Sesión cerrada'); 
-            setTimeout(()=>{window.location.href='login.html';},1500); 
+        // Eliminar Orden
+        window.deleteOrder = async function(id){
+            if(!confirm('¿Eliminar esta orden?')) return;
+            try{
+                await deleteDoc(doc(db,'orders',id));
+                window.showNotification('Eliminado');
+                loadAllOrders();
+                loadDashboard();
+            }catch(e){window.showNotification('Error: '+e.message,'error');}
+        };
+
+        // Cerrar Sesión
+        window.logout = function(){
+            localStorage.removeItem('buycrafting_auth');
+            localStorage.removeItem('buycrafting_serverId');
+            localStorage.removeItem('buycrafting_token');
+            localStorage.removeItem('buycrafting_serverName');
+            window.showNotification('Sesión cerrada');
+            setTimeout(()=>{window.location.href='login.html';},1500);
         };
         
         window.onclick = function(e){ if(e.target.classList.contains('modal')) e.target.classList.remove('active'); };
