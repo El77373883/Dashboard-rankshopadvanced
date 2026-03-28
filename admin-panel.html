@@ -206,6 +206,28 @@
             background:rgba(239,68,68,0.2);color:var(--danger)
         }
         
+        /* Verification Badge - Profesional como la imagen */
+        .verified-badge-icon{
+            width:24px;height:24px;
+            background:linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%);
+            border-radius:50%;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            margin-left:8px;
+            box-shadow:0 2px 8px rgba(29,161,242,0.4);
+            animation:verifiedPulse 2s ease-in-out infinite
+        }
+        .verified-badge-icon i{
+            color:white;
+            font-size:12px;
+            font-weight:900
+        }
+        @keyframes verifiedPulse{
+            0%,100%{transform:scale(1);box-shadow:0 2px 8px rgba(29,161,242,0.4)}
+            50%{transform:scale(1.1);box-shadow:0 4px 12px rgba(29,161,242,0.6)}
+        }
+        
         /* Buttons */
         .btn{
             padding:12px 24px;border:none;border-radius:12px;
@@ -232,6 +254,11 @@
         }
         .btn-danger:hover{background:var(--danger);color:white}
         .btn-sm{padding:8px 16px;font-size:13px;border-radius:10px}
+        .btn-success{
+            background:rgba(16,185,129,0.15);color:var(--secondary);
+            border:1px solid var(--secondary)
+        }
+        .btn-success:hover{background:var(--secondary);color:white}
         
         /* Forms */
         .form-group{margin-bottom:20px}
@@ -340,6 +367,68 @@
         .verified-list-item .info i{color:#1da1f2;font-size:18px}
         .verified-list-item .actions{display:flex;gap:8px}
         
+        /* Ticket Styles */
+        .ticket-card{
+            background:var(--bg);border:2px solid var(--border);
+            border-radius:12px;padding:20px;margin-bottom:16px;
+            transition:all 0.3s;cursor:pointer
+        }
+        .ticket-card:hover{
+            border-color:var(--primary);
+            transform:translateY(-2px);
+            box-shadow:0 4px 12px rgba(99,102,241,0.2)
+        }
+        .ticket-card.urgent{border-left:4px solid var(--danger)}
+        .ticket-card.high{border-left:4px solid var(--warning)}
+        .ticket-card.medium{border-left:4px solid var(--info)}
+        .ticket-card.low{border-left:4px solid var(--secondary)}
+        .ticket-header{
+            display:flex;justify-content:space-between;
+            align-items:center;margin-bottom:12px
+        }
+        .ticket-title{font-weight:600;font-size:16px;margin-bottom:4px}
+        .ticket-meta{
+            display:flex;gap:12px;font-size:12px;color:var(--text-muted)
+        }
+        .ticket-description{
+            color:var(--text-muted);font-size:14px;line-height:1.6;
+            margin-bottom:12px
+        }
+        .ticket-actions{
+            display:flex;gap:8px;flex-wrap:wrap
+        }
+        
+        /* Modal */
+        .modal{
+            position:fixed;top:0;left:0;right:0;bottom:0;
+            background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);
+            z-index:2000;display:none;align-items:center;
+            justify-content:center;padding:20px
+        }
+        .modal.active{display:flex}
+        .modal-content{
+            background:var(--bg-card);border:1px solid var(--border);
+            border-radius:16px;width:100%;max-width:700px;
+            max-height:90vh;overflow-y:auto;animation:fadeIn 0.3s
+        }
+        .modal-header{
+            padding:20px 24px;border-bottom:1px solid var(--border);
+            display:flex;justify-content:space-between;align-items:center
+        }
+        .modal-title{font-size:18px;font-weight:600}
+        .modal-close{
+            background:none;border:none;color:var(--text-muted);
+            font-size:24px;cursor:pointer;width:36px;height:36px;
+            display:flex;align-items:center;justify-content:center;
+            border-radius:8px;transition:all 0.3s
+        }
+        .modal-close:hover{background:var(--bg-hover);color:var(--text)}
+        .modal-body{padding:24px}
+        .modal-footer{
+            padding:16px 24px;border-top:1px solid var(--border);
+            display:flex;gap:12px;justify-content:flex-end
+        }
+        
         /* Responsive */
         @media(max-width:768px){
             .item-card{grid-template-columns:1fr}
@@ -360,7 +449,7 @@
         <div class="header-actions">
             <button class="header-btn" onclick="showSection('notifications')" title="Notificaciones">
                 <i class="fas fa-bell"></i>
-                <span class="badge">3</span>
+                <span class="badge" id="notifBadge">0</span>
             </button>
             <button class="header-btn" onclick="logout()" title="Cerrar Sesión">
                 <i class="fas fa-sign-out-alt"></i>
@@ -377,9 +466,6 @@
             <div class="sidebar-title">Principal</div>
             <div class="nav-item active" onclick="showSection('dashboard')">
                 <i class="fas fa-chart-line"></i> Dashboard
-            </div>
-            <div class="nav-item" onclick="showSection('analytics')">
-                <i class="fas fa-chart-bar"></i> Analytics
             </div>
         </div>
 
@@ -405,19 +491,12 @@
 
         <div class="sidebar-section">
             <div class="sidebar-title">Plataforma</div>
-            <div class="nav-item" onclick="showSection('plans')">
-                <i class="fas fa-crown"></i> Planes
-            </div>
-            <div class="nav-item" onclick="showSection('announcements')">
-                <i class="fas fa-bullhorn"></i> Anuncios
-            </div>
             <div class="nav-item" onclick="showSection('tickets')">
                 <i class="fas fa-ticket-alt"></i> Soporte
-                <span class="badge">5</span>
+                <span class="badge" id="ticketBadge">0</span>
             </div>
-            <!-- NUEVA OPCIÓN: Verificaciones -->
             <div class="nav-item" onclick="showSection('verifications')">
-                <i class="fas fa-check-circle" style="color:#1da1f2"></i> Verificaciones
+                <i class="fas fa-badge-check" style="color:#1da1f2"></i> Verificaciones
                 <span class="badge" id="verifiedBadge">0</span>
             </div>
         </div>
@@ -426,12 +505,6 @@
             <div class="sidebar-title">Sistema</div>
             <div class="nav-item" onclick="showSection('settings')">
                 <i class="fas fa-cog"></i> Configuración
-            </div>
-            <div class="nav-item" onclick="showSection('logs')">
-                <i class="fas fa-history"></i> Logs
-            </div>
-            <div class="nav-item" onclick="showSection('database')">
-                <i class="fas fa-database"></i> Base de Datos
             </div>
         </div>
     </aside>
@@ -459,9 +532,6 @@
                         </div>
                         <div class="stat-card-icon"><i class="fas fa-server"></i></div>
                     </div>
-                    <div class="stat-card-change positive">
-                        <i class="fas fa-arrow-up"></i> 12% vs mes anterior
-                    </div>
                 </div>
                 
                 <div class="stat-card">
@@ -471,9 +541,6 @@
                             <div class="stat-card-label">Usuarios Registrados</div>
                         </div>
                         <div class="stat-card-icon"><i class="fas fa-users"></i></div>
-                    </div>
-                    <div class="stat-card-change positive">
-                        <i class="fas fa-arrow-up"></i> 8% esta semana
                     </div>
                 </div>
                 
@@ -485,9 +552,6 @@
                         </div>
                         <div class="stat-card-icon"><i class="fas fa-box"></i></div>
                     </div>
-                    <div class="stat-card-change positive">
-                        <i class="fas fa-arrow-up"></i> 24 nuevos
-                    </div>
                 </div>
                 
                 <div class="stat-card">
@@ -497,32 +561,6 @@
                             <div class="stat-card-label">Ingresos Totales</div>
                         </div>
                         <div class="stat-card-icon"><i class="fas fa-dollar-sign"></i></div>
-                    </div>
-                    <div class="stat-card-change positive">
-                        <i class="fas fa-arrow-up"></i> 15% vs mes anterior
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid-2">
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-chart-line"></i> Ingresos (Últimos 7 días)</h3>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-clock"></i> Actividad Reciente</h3>
-                    </div>
-                    <div id="recentActivity">
-                        <div class="loading">
-                            <i class="fas fa-spinner"></i>
-                            <p>Cargando...</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -543,226 +581,12 @@
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-list"></i> Lista de Servidores</h3>
-                    <div style="display:flex;gap:12px">
-                        <input type="text" placeholder="Buscar servidor..." style="padding:10px 16px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text)" onkeyup="filterServers(this.value)">
-                    </div>
+                    <input type="text" placeholder="Buscar servidor..." style="padding:10px 16px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);width:300px" onkeyup="filterServers(this.value)">
                 </div>
                 <div class="item-list" id="serversList">
                     <div class="loading">
                         <i class="fas fa-spinner"></i>
                         <p>Cargando servidores...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Users Section -->
-        <section id="section-users" class="section">
-            <div class="page-header">
-                <div>
-                    <h1>Gestión de Usuarios</h1>
-                    <p>Administra todos los usuarios registrados</p>
-                </div>
-                <button class="btn btn-primary" onclick="loadUsers()">
-                    <i class="fas fa-sync-alt"></i> Actualizar
-                </button>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-users"></i> Usuarios Registrados</h3>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Usuario</th>
-                                <th>Email</th>
-                                <th>Servidor</th>
-                                <th>Plan</th>
-                                <th>Fecha Registro</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTable">
-                            <tr><td colspan="6" class="loading"><i class="fas fa-spinner"></i> Cargando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Products Section -->
-        <section id="section-products" class="section">
-            <div class="page-header">
-                <div>
-                    <h1>Gestión de Productos</h1>
-                    <p>Todos los productos de la plataforma</p>
-                </div>
-                <button class="btn btn-primary" onclick="loadProducts()">
-                    <i class="fas fa-sync-alt"></i> Actualizar
-                </button>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-box"></i> Productos Registrados</h3>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Servidor</th>
-                                <th>Precio</th>
-                                <th>Ventas</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productsTable">
-                            <tr><td colspan="6" class="loading"><i class="fas fa-spinner"></i> Cargando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Orders Section -->
-        <section id="section-orders" class="section">
-            <div class="page-header">
-                <div>
-                    <h1>Gestión de Órdenes</h1>
-                    <p>Todas las transacciones de la plataforma</p>
-                </div>
-                <button class="btn btn-primary" onclick="loadOrders()">
-                    <i class="fas fa-sync-alt"></i> Actualizar
-                </button>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-shopping-cart"></i> Órdenes Recientes</h3>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Producto</th>
-                                <th>Jugador</th>
-                                <th>Monto</th>
-                                <th>Fecha</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ordersTable">
-                            <tr><td colspan="6" class="loading"><i class="fas fa-spinner"></i> Cargando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Plans Section -->
-        <section id="section-plans" class="section">
-            <div class="page-header">
-                <div>
-                    <h1>Gestión de Planes</h1>
-                    <p>Configura los planes disponibles</p>
-                </div>
-            </div>
-            
-            <div class="grid-3">
-                <div class="card">
-                    <div style="text-align:center;padding:20px">
-                        <i class="fas fa-crown" style="font-size:48px;color:#6b7280;margin-bottom:16px"></i>
-                        <h3 style="margin-bottom:8px">Plan Gratis</h3>
-                        <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">Características básicas</p>
-                        <ul style="text-align:left;color:var(--text-muted);font-size:13px;line-height:2;margin-bottom:20px">
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> Hasta 10 productos</li>
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> Tienda básica</li>
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> 5% comisión</li>
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> Soporte email</li>
-                        </ul>
-                        <button class="btn btn-secondary btn-sm">Editar Plan</button>
-                    </div>
-                </div>
-                
-                <div class="card" style="border-color:var(--primary);box-shadow:0 0 20px rgba(99,102,241,0.2)">
-                    <div style="text-align:center;padding:20px">
-                        <i class="fas fa-gem" style="font-size:48px;color:var(--primary);margin-bottom:16px"></i>
-                        <h3 style="margin-bottom:8px">Plan Premium</h3>
-                        <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">$9.99/mes</p>
-                        <ul style="text-align:left;color:var(--text-muted);font-size:13px;line-height:2;margin-bottom:20px">
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> Productos ilimitados</li>
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> Tienda personalizada</li>
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> Sin comisión</li>
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> Soporte prioritario</li>
-                        </ul>
-                        <button class="btn btn-primary btn-sm">Editar Plan</button>
-                    </div>
-                </div>
-                
-                <div class="card" style="border-color:var(--secondary)">
-                    <div style="text-align:center;padding:20px">
-                        <i class="fas fa-star" style="font-size:48px;color:var(--secondary);margin-bottom:16px"></i>
-                        <h3 style="margin-bottom:8px">Plan VIP</h3>
-                        <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">$19.99/mes</p>
-                        <ul style="text-align:left;color:var(--text-muted);font-size:13px;line-height:2;margin-bottom:20px">
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> Todo lo de Premium</li>
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> Dominio personalizado</li>
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> API access</li>
-                            <li><i class="fas fa-check" style="color:var(--secondary)"></i> Soporte 24/7</li>
-                        </ul>
-                        <button class="btn btn-secondary btn-sm">Editar Plan</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Announcements Section -->
-        <section id="section-announcements" class="section">
-            <div class="page-header">
-                <div>
-                    <h1>Anuncios</h1>
-                    <p>Publica anuncios para todos los servidores</p>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-plus"></i> Nuevo Anuncio</h3>
-                </div>
-                <div class="form-group">
-                    <label>Título del Anuncio</label>
-                    <input type="text" id="announcementTitle" placeholder="Ej: Nueva actualización disponible">
-                </div>
-                <div class="form-group">
-                    <label>Contenido</label>
-                    <textarea id="announcementContent" rows="4" placeholder="Escribe el contenido del anuncio..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Tipo</label>
-                    <select id="announcementType">
-                        <option value="info">Informativo</option>
-                        <option value="warning">Advertencia</option>
-                        <option value="success">Éxito</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary" onclick="publishAnnouncement()">
-                    <i class="fas fa-paper-plane"></i> Publicar Anuncio
-                </button>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-list"></i> Anuncios Publicados</h3>
-                </div>
-                <div id="announcementsList">
-                    <div class="loading">
-                        <i class="fas fa-spinner"></i>
-                        <p>Cargando anuncios...</p>
                     </div>
                 </div>
             </div>
@@ -775,13 +599,16 @@
                     <h1>Soporte - Tickets</h1>
                     <p>Gestiona los tickets de los usuarios</p>
                 </div>
+                <button class="btn btn-primary" onclick="loadTickets()">
+                    <i class="fas fa-sync-alt"></i> Actualizar
+                </button>
             </div>
             
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-ticket-alt"></i> Tickets Pendientes</h3>
                 </div>
-                <div class="item-list" id="ticketsList">
+                <div id="ticketsList">
                     <div class="loading">
                         <i class="fas fa-spinner"></i>
                         <p>Cargando tickets...</p>
@@ -790,7 +617,7 @@
             </div>
         </section>
 
-        <!-- ✅ NUEVA SECCIÓN: VERIFICACIONES -->
+        <!-- Verifications Section -->
         <section id="section-verifications" class="section">
             <div class="page-header">
                 <div>
@@ -837,27 +664,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-info-circle"></i> ¿Cómo funciona?</h3>
-                </div>
-                <div style="color:var(--text-muted);line-height:1.8">
-                    <p><strong>✅ Verificación Automática:</strong></p>
-                    <ul style="margin-left:20px;margin-bottom:16px">
-                        <li>Cuando un usuario registra su tienda con un email/nombre de esta lista</li>
-                        <li>El sistema detecta la coincidencia automáticamente</li>
-                        <li>Se aplica la palomita azul 🔵 en su tienda pública</li>
-                        <li>El badge de verificación aparece sin intervención manual</li>
-                    </ul>
-                    <p><strong>📝 Ejemplos de uso:</strong></p>
-                    <ul style="margin-left:20px">
-                        <li><code>adrianortiz3322@gmail.com</code> → Tu cuenta personal</li>
-                        <li><code>partner@minecraft.com</code> → Socios oficiales</li>
-                        <li><code>MyServer Pro</code> → Nombre de servidor verificado</li>
-                    </ul>
-                </div>
-            </div>
         </section>
 
         <!-- Settings Section -->
@@ -883,101 +689,29 @@
                         <input type="email" id="supportEmail" value="soporte@buycrafting.com">
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Comisión Plataforma (%)</label>
-                        <input type="number" id="platformCommission" value="5" min="0" max="100">
-                    </div>
-                    <div class="form-group">
-                        <label>Moneda por Defecto</label>
-                        <select id="defaultCurrency">
-                            <option value="USD">USD - Dólar</option>
-                            <option value="EUR">EUR - Euro</option>
-                            <option value="MXN">MXN - Peso Mexicano</option>
-                        </select>
-                    </div>
-                </div>
                 <button class="btn btn-primary" onclick="saveSettings()">
                     <i class="fas fa-save"></i> Guardar Configuración
                 </button>
             </div>
         </section>
-
-        <!-- Logs Section -->
-        <section id="section-logs" class="section">
-            <div class="page-header">
-                <div>
-                    <h1>Logs del Sistema</h1>
-                    <p>Registro de actividades del sistema</p>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-history"></i> Actividad Reciente</h3>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Usuario</th>
-                                <th>Acción</th>
-                                <th>Detalles</th>
-                            </tr>
-                        </thead>
-                        <tbody id="logsTable">
-                            <tr><td colspan="4" class="loading"><i class="fas fa-spinner"></i> Cargando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Database Section -->
-        <section id="section-database" class="section">
-            <div class="page-header">
-                <div>
-                    <h1>Base de Datos</h1>
-                    <p>Gestión y respaldo de datos</p>
-                </div>
-            </div>
-            
-            <div class="grid-2">
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-download"></i> Exportar Datos</h3>
-                    </div>
-                    <p style="color:var(--text-muted);margin-bottom:16px">Descarga una copia de seguridad de los datos</p>
-                    <div style="display:flex;gap:12px;flex-wrap:wrap">
-                        <button class="btn btn-secondary" onclick="exportData('servers')">
-                            <i class="fas fa-server"></i> Servidores
-                        </button>
-                        <button class="btn btn-secondary" onclick="exportData('users')">
-                            <i class="fas fa-users"></i> Usuarios
-                        </button>
-                        <button class="btn btn-secondary" onclick="exportData('products')">
-                            <i class="fas fa-box"></i> Productos
-                        </button>
-                        <button class="btn btn-primary" onclick="exportData('all')">
-                            <i class="fas fa-database"></i> Todo
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-upload"></i> Importar Datos</h3>
-                    </div>
-                    <p style="color:var(--text-muted);margin-bottom:16px">Restaura datos desde un archivo JSON</p>
-                    <input type="file" accept=".json" style="margin-bottom:12px">
-                    <button class="btn btn-danger">
-                        <i class="fas fa-upload"></i> Importar
-                    </button>
-                </div>
-            </div>
-        </section>
     </main>
+
+    <!-- Ticket Modal -->
+    <div class="modal" id="ticketModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-ticket-alt"></i> Detalle del Ticket</div>
+                <button class="modal-close" onclick="closeModal('ticketModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="ticketModalBody">
+                <!-- Content loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('ticketModal')">Cerrar</button>
+                <button class="btn btn-success" onclick="resolveTicket()"><i class="fas fa-check"></i> Marcar como Resuelto</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Notification -->
     <div class="notification" id="notification">
@@ -985,8 +719,10 @@
         <span id="notificationText"></span>
     </div>
 
-    <script>
-        // Firebase config
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, query, where, deleteDoc, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyCIGXn0zND_8A_nD6NPxx1txYFQzrhM9hg",
             authDomain: "rankshop-9c9d3.firebaseapp.com",
@@ -996,18 +732,19 @@
             appId: "1:556660639350:web:23734d089097e50c9ec157"
         };
 
-        // Initialize Firebase (sin módulos para compatibilidad)
-        let db;
-        let revenueChart = null;
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let currentTicketId = null;
 
         // Toggle Menu
-        function toggleMenu(){
+        window.toggleMenu = function(){
             document.getElementById('sidebar').classList.toggle('active');
             document.querySelector('.sidebar-overlay').classList.toggle('active');
-        }
+        };
 
         // Show Section
-        function showSection(sectionName){
+        window.showSection = function(sectionName){
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById('section-' + sectionName).classList.add('active');
             
@@ -1017,155 +754,112 @@
                 if(navItem) navItem.classList.add('active');
             }
             
-            if(window.innerWidth <= 768) toggleMenu();
+            if(window.innerWidth <= 768) window.toggleMenu();
             
             // Load section data
             const loaders = {
                 'dashboard': loadDashboard,
                 'servers': loadServers,
-                'users': loadUsers,
-                'products': loadProducts,
-                'orders': loadOrders,
-                'announcements': loadAnnouncements,
                 'tickets': loadTickets,
-                'logs': loadLogs,
                 'verifications': loadVerifications
             };
             
             if(loaders[sectionName]) loaders[sectionName]();
-        }
+        };
 
-        // Load Dashboard (simulado para demo)
-        function loadDashboard(){
-            // Datos de ejemplo
-            document.getElementById('totalServers').textContent = '12';
-            document.getElementById('totalUsers').textContent = '45';
-            document.getElementById('totalProducts').textContent = '128';
-            document.getElementById('totalRevenue').textContent = '$1,245.00';
-            
-            // Update badges
-            document.getElementById('badgeServers').textContent = '12';
-            document.getElementById('badgeUsers').textContent = '45';
-            document.getElementById('badgeProducts').textContent = '128';
-            document.getElementById('badgeOrders').textContent = '23';
+        // Load Dashboard
+        window.loadDashboard = async function(){
+            try{
+                const serversSnap = await getDocs(collection(db, 'servers'));
+                const usersSnap = await getDocs(collection(db, 'users'));
+                const productsSnap = await getDocs(collection(db, 'products'));
+                const ordersSnap = await getDocs(collection(db, 'orders'));
 
-            // Load recent activity (simulado)
-            const container = document.getElementById('recentActivity');
-            container.innerHTML = `
-                <div class="activity-item">
-                    <div class="activity-icon success"><i class="fas fa-shopping-cart"></i></div>
-                    <div class="activity-content">
-                        <div class="activity-title">Rango VIP</div>
-                        <div style="color:var(--text-muted);font-size:13px">Steve</div>
-                        <div class="activity-time">$15.00 - Hace 2 horas</div>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon success"><i class="fas fa-shopping-cart"></i></div>
-                    <div class="activity-content">
-                        <div class="activity-title">Kit Legendario</div>
-                        <div style="color:var(--text-muted);font-size:13px">Alex</div>
-                        <div class="activity-time">$8.50 - Hace 5 horas</div>
-                    </div>
-                </div>
-            `;
-            
-            // Load chart
-            loadRevenueChart();
-        }
+                document.getElementById('totalServers').textContent = serversSnap.size;
+                document.getElementById('totalUsers').textContent = usersSnap.size;
+                document.getElementById('totalProducts').textContent = productsSnap.size;
+                
+                let revenue = 0;
+                ordersSnap.forEach(d => { 
+                    const data = d.data();
+                    if(data.delivered) revenue += data.price || 0; 
+                });
+                document.getElementById('totalRevenue').textContent = '$' + revenue.toFixed(2);
+                
+                document.getElementById('badgeServers').textContent = serversSnap.size;
+                document.getElementById('badgeUsers').textContent = usersSnap.size;
+                document.getElementById('badgeProducts').textContent = productsSnap.size;
+                document.getElementById('badgeOrders').textContent = ordersSnap.size;
+                
+                // Load ticket count
+                const ticketsSnap = await getDocs(collection(db, 'tickets'));
+                const openTickets = ticketsSnap.docs.filter(d => {
+                    const data = d.data();
+                    return data.status !== 'closed';
+                }).length;
+                document.getElementById('ticketBadge').textContent = openTickets;
+                
+            } catch(e){
+                console.error('Error loading dashboard:', e);
+                showNotification('Error al cargar dashboard', 'error');
+            }
+        };
 
-        // Load Revenue Chart
-        function loadRevenueChart(){
-            const ctx = document.getElementById('revenueChart');
-            if(!ctx) return;
-            
-            if(revenueChart) revenueChart.destroy();
-            
-            revenueChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                    datasets: [{
-                        label: 'Ingresos',
-                        data: [120, 190, 30, 50, 20, 30, 45],
-                        borderColor: '#6366f1',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { 
-                            beginAtZero: true,
-                            grid: { color: 'rgba(51, 65, 85, 0.3)' },
-                            ticks: { color: '#94a3b8' }
-                        },
-                        x: { 
-                            grid: { display: false },
-                            ticks: { color: '#94a3b8' }
-                        }
-                    }
+        // Load Servers
+        window.loadServers = async function(){
+            try{
+                const serversSnap = await getDocs(collection(db, 'servers'));
+                const list = document.getElementById('serversList');
+                list.innerHTML = '';
+
+                if(serversSnap.empty){
+                    list.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px">No hay servidores registrados</p>';
+                    return;
                 }
-            });
-        }
 
-        // Load Servers (simulado)
-        function loadServers(){
-            const list = document.getElementById('serversList');
-            list.innerHTML = `
-                <div class="item-card">
-                    <div class="item-info">
-                        <h4>Mi Servidor Pro <i class="fas fa-check-circle" style="color:#1da1f2;margin-left:6px"></i></h4>
-                        <p><i class="fas fa-envelope"></i> adrianortiz3322@gmail.com</p>
-                        <p><i class="fas fa-calendar"></i> 15/03/2024</p>
-                    </div>
-                    <div class="badge-plan premium">
-                        <i class="fas fa-crown"></i>
-                        <span>Premium</span>
-                    </div>
-                    <div class="plan-selector">
-                        <select id="select-demo1">
-                            <option value="free">Gratis</option>
-                            <option value="premium" selected>Premium</option>
-                            <option value="vip">VIP</option>
-                            <option value="enterprise">Enterprise</option>
-                        </select>
-                        <button onclick="applyPlan('demo1')" class="btn-apply">
-                            <i class="fas fa-check"></i> Aplicar
-                        </button>
-                    </div>
-                </div>
-                <div class="item-card">
-                    <div class="item-info">
-                        <h4>Servidor Demo</h4>
-                        <p><i class="fas fa-envelope"></i> usuario@ejemplo.com</p>
-                        <p><i class="fas fa-calendar"></i> 20/03/2024</p>
-                    </div>
-                    <div class="badge-plan free">
-                        <i class="fas fa-crown"></i>
-                        <span>Gratis</span>
-                    </div>
-                    <div class="plan-selector">
-                        <select id="select-demo2">
-                            <option value="free" selected>Gratis</option>
-                            <option value="premium">Premium</option>
-                            <option value="vip">VIP</option>
-                            <option value="enterprise">Enterprise</option>
-                        </select>
-                        <button onclick="applyPlan('demo2')" class="btn-apply">
-                            <i class="fas fa-check"></i> Aplicar
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
+                serversSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const plan = data.plan || 'free';
+                    const serverId = docSnap.id;
+                    const isVerified = data.verified || false;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'item-card';
+                    item.innerHTML = `
+                        <div class="item-info">
+                            <h4>
+                                ${data.serverName || 'Sin nombre'}
+                                ${isVerified ? '<span class="verified-badge-icon"><i class="fas fa-check"></i></span>' : ''}
+                            </h4>
+                            <p><i class="fas fa-envelope"></i> ${data.ownerEmail || 'N/A'}</p>
+                            <p><i class="fas fa-calendar"></i> ${data.createdAt?.toDate?.().toLocaleDateString() || 'N/A'}</p>
+                        </div>
+                        <div class="badge-plan ${plan}">
+                            <i class="fas fa-crown"></i>
+                            <span>${getPlanName(plan)}</span>
+                        </div>
+                        <div class="plan-selector">
+                            <select id="select-${serverId}">
+                                <option value="free" ${plan==='free'?'selected':''}>Gratis</option>
+                                <option value="premium" ${plan==='premium'?'selected':''}>Premium</option>
+                                <option value="vip" ${plan==='vip'?'selected':''}>VIP</option>
+                                <option value="enterprise" ${plan==='enterprise'?'selected':''}>Enterprise</option>
+                            </select>
+                            <button onclick="applyPlan('${serverId}')" class="btn-apply">
+                                <i class="fas fa-check"></i> Aplicar
+                            </button>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+            } catch(e){
+                console.error('Error loading servers:', e);
+                showNotification('Error al cargar servidores', 'error');
+            }
+        };
 
         // Apply Plan
-        function applyPlan(serverId){
+        window.applyPlan = async function(serverId){
             const select = document.getElementById(`select-${serverId}`);
             if(!select){
                 showNotification('Error: No se encontró el selector', 'error');
@@ -1173,13 +867,28 @@
             }
             
             const newPlan = select.value;
-            const planNames = {free:'Gratis', premium:'Premium', vip:'VIP', enterprise:'Enterprise'};
             
-            showNotification(`✅ Plan ${planNames[newPlan]} aplicado correctamente`, 'success');
-        }
+            try{
+                const serverRef = doc(db, 'servers', serverId);
+                await updateDoc(serverRef, {
+                    plan: newPlan,
+                    updatedAt: new Date()
+                });
+
+                showNotification(`✅ Plan ${getPlanName(newPlan)} aplicado correctamente`, 'success');
+                
+                setTimeout(() => {
+                    loadServers();
+                }, 1000);
+                
+            } catch(e){
+                console.error('Error updating plan:', e);
+                showNotification('❌ Error: ' + e.message, 'error');
+            }
+        };
 
         // Filter Servers
-        function filterServers(searchTerm){
+        window.filterServers = function(searchTerm){
             const cards = document.querySelectorAll('.item-card');
             const term = searchTerm.toLowerCase();
             
@@ -1187,150 +896,225 @@
                 const text = card.textContent.toLowerCase();
                 card.style.display = text.includes(term) ? 'grid' : 'none';
             });
-        }
+        };
 
-        // Load Users (simulado)
-        function loadUsers(){
-            const tbody = document.getElementById('usersTable');
-            tbody.innerHTML = `
-                <tr>
-                    <td>
-                        <div style="display:flex;align-items:center;gap:12px">
-                            <div style="width:40px;height:40px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700">A</div>
-                            <div>
-                                <div style="font-weight:600">Administrador <i class="fas fa-check-circle" style="color:#1da1f2;margin-left:6px"></i></div>
-                                <div style="font-size:12px;color:var(--text-muted)">adrianortiz3322@gmail.com</div>
-                            </div>
+        // Load Tickets
+        window.loadTickets = async function(){
+            try{
+                const ticketsSnap = await getDocs(collection(db, 'tickets'));
+                const list = document.getElementById('ticketsList');
+                list.innerHTML = '';
+
+                if(ticketsSnap.empty){
+                    list.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px">No hay tickets pendientes</p>';
+                    document.getElementById('ticketBadge').textContent = '0';
+                    return;
+                }
+
+                const tickets = [];
+                ticketsSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if(data.status !== 'closed'){
+                        tickets.push({ id: docSnap.id, ...data });
+                    }
+                });
+
+                // Sort by priority and date
+                tickets.sort((a, b) => {
+                    const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
+                    if(priorityOrder[a.priority] !== priorityOrder[b.priority]){
+                        return priorityOrder[a.priority] - priorityOrder[b.priority];
+                    }
+                    return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
+                });
+
+                if(tickets.length === 0){
+                    list.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px">No hay tickets pendientes</p>';
+                    document.getElementById('ticketBadge').textContent = '0';
+                    return;
+                }
+
+                document.getElementById('ticketBadge').textContent = tickets.length;
+
+                tickets.forEach(ticket => {
+                    const item = document.createElement('div');
+                    item.className = `ticket-card ${ticket.priority || 'medium'}`;
+                    item.onclick = () => viewTicket(ticket.id);
+                    
+                    const priorityLabels = {
+                        urgent: { text: 'Urgente', color: 'var(--danger)' },
+                        high: { text: 'Alta', color: 'var(--warning)' },
+                        medium: { text: 'Media', color: 'var(--info)' },
+                        low: { text: 'Baja', color: 'var(--secondary)' }
+                    };
+                    
+                    const priority = priorityLabels[ticket.priority || 'medium'];
+                    
+                    item.innerHTML = `
+                        <div class="ticket-header">
+                            <div class="ticket-title">${ticket.subject || 'Sin asunto'}</div>
+                            <span class="badge-status" style="background:${priority.color}20;color:${priority.color}">${priority.text}</span>
                         </div>
-                    </td>
-                    <td>adrianortiz3322@gmail.com</td>
-                    <td>Mi Servidor Pro</td>
-                    <td><span class="badge-plan premium"><i class="fas fa-crown"></i> Premium</span></td>
-                    <td>15/03/2024</td>
-                    <td>
-                        <button class="btn btn-secondary btn-sm" onclick="viewUser('demo')"><i class="fas fa-eye"></i></button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteUser('demo')"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `;
-        }
+                        <div class="ticket-meta">
+                            <span><i class="fas fa-user"></i> ${ticket.userName || 'Usuario'}</span>
+                            <span><i class="fas fa-envelope"></i> ${ticket.userEmail || 'N/A'}</span>
+                            <span><i class="fas fa-calendar"></i> ${ticket.createdAt?.toDate?.().toLocaleDateString() || 'N/A'}</span>
+                        </div>
+                        <div class="ticket-description">${ticket.description?.substring(0, 150) || ''}${ticket.description?.length > 150 ? '...' : ''}</div>
+                        <div class="ticket-actions">
+                            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); viewTicket('${ticket.id}')">
+                                <i class="fas fa-eye"></i> Ver Ticket
+                            </button>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+            } catch(e){
+                console.error('Error loading tickets:', e);
+                showNotification('Error al cargar tickets', 'error');
+            }
+        };
 
-        // Load Products (simulado)
-        function loadProducts(){
-            const tbody = document.getElementById('productsTable');
-            tbody.innerHTML = `
-                <tr>
-                    <td><div style="font-weight:600">Rango VIP</div><div style="font-size:12px;color:var(--text-muted)">ranks</div></td>
-                    <td>Mi Servidor Pro</td>
-                    <td style="font-weight:600;color:var(--primary)">$15.00</td>
-                    <td>45</td>
-                    <td><span class="badge-status active">Activo</span></td>
-                    <td>
-                        <button class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `;
-        }
-
-        // Load Orders (simulado)
-        function loadOrders(){
-            const tbody = document.getElementById('ordersTable');
-            tbody.innerHTML = `
-                <tr>
-                    <td><code>#abc12345</code></td>
-                    <td>Rango VIP</td>
-                    <td>Steve</td>
-                    <td style="font-weight:600;color:var(--primary)">$15.00</td>
-                    <td>28/03/2024</td>
-                    <td><span class="badge-status active">Entregado</span></td>
-                </tr>
-            `;
-        }
-
-        // Load Announcements (simulado)
-        function loadAnnouncements(){
-            const list = document.getElementById('announcementsList');
-            list.innerHTML = `
-                <div class="activity-item">
-                    <div class="activity-icon info"><i class="fas fa-bullhorn"></i></div>
-                    <div class="activity-content" style="flex:1">
-                        <div class="activity-title">Nueva actualización disponible</div>
-                        <div style="color:var(--text-muted);font-size:13px;margin:8px 0">Hemos agregado nuevas características a la plataforma...</div>
-                        <div class="activity-time"><i class="fas fa-user"></i> Admin • <i class="fas fa-calendar"></i> 25/03/2024</div>
+        // View Ticket
+        window.viewTicket = async function(ticketId){
+            try{
+                const ticketRef = doc(db, 'tickets', ticketId);
+                const ticketSnap = await getDoc(ticketRef);
+                
+                if(!ticketSnap.exists()){
+                    showNotification('Ticket no encontrado', 'error');
+                    return;
+                }
+                
+                const ticket = { id: ticketSnap.id, ...ticketSnap.data() };
+                currentTicketId = ticketId;
+                
+                const priorityLabels = {
+                    urgent: '🔴 Urgente',
+                    high: '🟠 Alta',
+                    medium: '🔵 Media',
+                    low: '🟢 Baja'
+                };
+                
+                const modalBody = document.getElementById('ticketModalBody');
+                modalBody.innerHTML = `
+                    <div style="margin-bottom:20px">
+                        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Asunto</div>
+                        <div style="font-size:18px;font-weight:600">${ticket.subject || 'Sin asunto'}</div>
                     </div>
-                    <button class="btn btn-danger btn-sm" onclick="deleteAnnouncement('demo')"><i class="fas fa-trash"></i></button>
-                </div>
-            `;
-        }
+                    <div style="margin-bottom:20px">
+                        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Prioridad</div>
+                        <div>${priorityLabels[ticket.priority || 'medium']}</div>
+                    </div>
+                    <div style="margin-bottom:20px">
+                        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Usuario</div>
+                        <div><strong>${ticket.userName || 'N/A'}</strong></div>
+                        <div style="color:var(--text-muted);font-size:14px">${ticket.userEmail || 'N/A'}</div>
+                    </div>
+                    <div style="margin-bottom:20px">
+                        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Descripción</div>
+                        <div style="background:var(--bg);padding:16px;border-radius:8px;line-height:1.6">${ticket.description || 'Sin descripción'}</div>
+                    </div>
+                    ${ticket.serverName ? `
+                    <div style="margin-bottom:20px">
+                        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Servidor</div>
+                        <div>${ticket.serverName}</div>
+                    </div>
+                    ` : ''}
+                    <div style="font-size:12px;color:var(--text-muted)">
+                        Creado: ${ticket.createdAt?.toDate?.().toLocaleString() || 'N/A'}
+                    </div>
+                `;
+                
+                document.getElementById('ticketModal').classList.add('active');
+            } catch(e){
+                console.error('Error viewing ticket:', e);
+                showNotification('Error al ver ticket', 'error');
+            }
+        };
 
-        // Publish Announcement
-        function publishAnnouncement(){
-            const title = document.getElementById('announcementTitle').value;
-            const content = document.getElementById('announcementContent').value;
-
-            if(!title || !content){
-                showNotification('❌ Completa todos los campos', 'error');
+        // Resolve Ticket
+        window.resolveTicket = async function(){
+            if(!currentTicketId){
+                showNotification('No hay ticket seleccionado', 'error');
                 return;
             }
+            
+            if(!confirm('¿Marcar este ticket como resuelto?')) return;
+            
+            try{
+                const ticketRef = doc(db, 'tickets', currentTicketId);
+                await updateDoc(ticketRef, {
+                    status: 'closed',
+                    closedAt: new Date(),
+                    closedBy: 'admin'
+                });
+                
+                showNotification('✅ Ticket marcado como resuelto', 'success');
+                closeModal('ticketModal');
+                loadTickets();
+                loadDashboard();
+            } catch(e){
+                console.error('Error resolving ticket:', e);
+                showNotification('Error al resolver ticket', 'error');
+            }
+        };
 
-            showNotification('✅ Anuncio publicado exitosamente', 'success');
-            document.getElementById('announcementTitle').value = '';
-            document.getElementById('announcementContent').value = '';
-            loadAnnouncements();
-        }
+        // Close Modal
+        window.closeModal = function(modalId){
+            document.getElementById(modalId).classList.remove('active');
+            currentTicketId = null;
+        };
 
-        // Load Tickets (simulado)
-        function loadTickets(){
-            const list = document.getElementById('ticketsList');
-            list.innerHTML = `
-                <div class="item-card">
-                    <div class="item-info">
-                        <h4>Problema con pagos</h4>
-                        <p><i class="fas fa-user"></i> usuario@ejemplo.com</p>
-                        <p><i class="fas fa-calendar"></i> 27/03/2024</p>
-                    </div>
-                    <div><span class="badge-status pending">Pendiente</span></div>
-                    <div>
-                        <button class="btn btn-primary btn-sm" onclick="viewTicket('demo')"><i class="fas fa-eye"></i> Ver</button>
-                    </div>
-                </div>
-            `;
-        }
+        // Load Verifications
+        window.loadVerifications = async function(){
+            try{
+                const verificationsSnap = await getDocs(collection(db, 'verified_list'));
+                const list = document.getElementById('verificationsList');
+                list.innerHTML = '';
 
-        // Load Logs (simulado)
-        function loadLogs(){
-            const tbody = document.getElementById('logsTable');
-            tbody.innerHTML = `
-                <tr><td>28/03/2024 14:30</td><td>Admin</td><td>Login</td><td style="color:var(--text-muted)">Acceso exitoso</td></tr>
-                <tr><td>28/03/2024 14:25</td><td>Sistema</td><td>Backup</td><td style="color:var(--text-muted)">Respaldo automático</td></tr>
-            `;
-        }
+                if(verificationsSnap.empty){
+                    list.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px">No hay verificaciones configuradas</p>';
+                    document.getElementById('verifiedBadge').textContent = '0';
+                    return;
+                }
 
-        // ✅ FUNCIONES DE VERIFICACIÓN
-
-        // Load Verifications List
-        function loadVerifications(){
-            const list = document.getElementById('verificationsList');
-            list.innerHTML = `
-                <div class="verified-list-item">
-                    <div class="info">
-                        <i class="fas fa-check-circle" style="color:#1da1f2"></i>
-                        <div>
-                            <strong>adrianortiz3322@gmail.com</strong>
-                            <div style="font-size:12px;color:var(--text-muted)">📧 Email • Creador oficial</div>
+                let count = 0;
+                verificationsSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    count++;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'verified-list-item';
+                    item.innerHTML = `
+                        <div class="info">
+                            <span class="verified-badge-icon"><i class="fas fa-check"></i></span>
+                            <div>
+                                <strong>${data.value}</strong>
+                                <div style="font-size:12px;color:var(--text-muted)">
+                                    ${data.type === 'email' ? '📧 Email' : '🏷️ Nombre'} • ${data.notes || 'Sin notas'}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="actions">
-                        <button class="btn btn-danger btn-sm" onclick="removeVerification('demo1')"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-            `;
-            document.getElementById('verifiedBadge').textContent = '1';
-        }
+                        <div class="actions">
+                            <button class="btn btn-danger btn-sm" onclick="removeVerification('${docSnap.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+                
+                document.getElementById('verifiedBadge').textContent = count;
+                
+            } catch(e){
+                console.error('Error loading verifications:', e);
+                showNotification('Error al cargar verificaciones', 'error');
+            }
+        };
 
         // Add Verification
-        function addVerification(){
+        window.addVerification = async function(){
             const type = document.getElementById('verificationType').value;
             const value = document.getElementById('verificationValue').value.trim().toLowerCase();
             const notes = document.getElementById('verificationNotes').value.trim();
@@ -1340,29 +1124,95 @@
                 return;
             }
 
-            showNotification('✅ Agregado a lista de verificados', 'success');
-            document.getElementById('verificationValue').value = '';
-            document.getElementById('verificationNotes').value = '';
-            loadVerifications();
-        }
+            try{
+                // Check if already exists
+                const existing = await getDocs(query(
+                    collection(db, 'verified_list'),
+                    where('value', '==', value),
+                    where('type', '==', type)
+                ));
+
+                if(!existing.empty){
+                    showNotification('⚠️ Este valor ya está en la lista', 'warning');
+                    return;
+                }
+
+                await addDoc(collection(db, 'verified_list'), {
+                    type: type,
+                    value: value,
+                    notes: notes || null,
+                    addedBy: 'admin@buycrafting.com',
+                    createdAt: new Date()
+                });
+
+                showNotification('✅ Agregado a lista de verificados', 'success');
+                
+                // Clear form
+                document.getElementById('verificationValue').value = '';
+                document.getElementById('verificationNotes').value = '';
+                
+                // Reload list
+                loadVerifications();
+                
+                // Auto-verify existing servers with this email/name
+                await autoVerifyServers(type, value);
+                
+            } catch(e){
+                console.error('Error adding verification:', e);
+                showNotification('❌ Error: ' + e.message, 'error');
+            }
+        };
 
         // Remove Verification
-        function removeVerification(id){
+        window.removeVerification = async function(id){
             if(!confirm('¿Eliminar esta verificación de la lista?')) return;
-            showNotification('🗑️ Verificación eliminada', 'success');
-            loadVerifications();
-        }
+            
+            try{
+                await deleteDoc(doc(db, 'verified_list', id));
+                showNotification('🗑️ Verificación eliminada', 'success');
+                loadVerifications();
+            } catch(e){
+                console.error('Error removing verification:', e);
+                showNotification('❌ Error: ' + e.message, 'error');
+            }
+        };
 
-        // Export Data
-        function exportData(type){
-            showNotification(`📥 Exportando ${type}...`, 'info');
-            setTimeout(() => showNotification('✅ Datos exportados correctamente', 'success'), 1500);
+        // Auto-verify servers when adding to list
+        async function autoVerifyServers(type, value){
+            try{
+                const serversRef = collection(db, 'servers');
+                let q;
+                
+                if(type === 'email'){
+                    q = query(serversRef, where('ownerEmail', '==', value));
+                } else {
+                    q = query(serversRef, where('serverName', '==', value));
+                }
+                
+                const snap = await getDocs(q);
+                
+                snap.forEach(async (docSnap) => {
+                    await updateDoc(doc(db, 'servers', docSnap.id), {
+                        verified: true,
+                        verifiedAt: new Date(),
+                        verifiedBy: 'auto-verification',
+                        updatedAt: new Date()
+                    });
+                    console.log('✅ Auto-verificado:', docSnap.id);
+                });
+                
+                if(snap.size > 0){
+                    showNotification(`✅ ${snap.size} servidor(es) verificado(s) automáticamente`, 'success');
+                }
+            } catch(e){
+                console.error('Error auto-verifying:', e);
+            }
         }
 
         // Save Settings
-        function saveSettings(){
+        window.saveSettings = function(){
             showNotification('✅ Configuración guardada correctamente', 'success');
-        }
+        };
 
         // Helper Functions
         function getPlanName(plan){
@@ -1370,20 +1220,15 @@
             return plans[plan] || 'Gratis';
         }
 
-        function viewUser(id){ showNotification('👁️ Ver usuario: ' + id, 'info'); }
-        function deleteUser(id){ if(confirm('¿Eliminar este usuario?')) showNotification('🗑️ Usuario eliminado', 'success'); }
-        function viewTicket(id){ showNotification('🎫 Ver ticket: ' + id, 'info'); }
-        function deleteAnnouncement(id){ if(confirm('¿Eliminar este anuncio?')){ showNotification('🗑️ Anuncio eliminado', 'success'); loadAnnouncements(); } }
-
-        function logout(){
+        window.logout = function(){
             if(confirm('¿Cerrar sesión?')){
                 showNotification('Sesión cerrada', 'success');
                 setTimeout(() => location.reload(), 1000);
             }
-        }
+        };
 
         // Notification
-        function showNotification(message, type = 'success'){
+        window.showNotification = function(message, type = 'success'){
             const notif = document.getElementById('notification');
             const icon = document.getElementById('notificationIcon');
             document.getElementById('notificationText').textContent = message;
@@ -1393,8 +1238,9 @@
                            'fas fa-info-circle';
             
             notif.classList.add('show');
+            
             setTimeout(() => notif.classList.remove('show'), 3000);
-        }
+        };
 
         // Update verification label when type changes
         document.getElementById('verificationType')?.addEventListener('change', function(e){
@@ -1403,11 +1249,20 @@
             document.getElementById('verificationValue').placeholder = e.target.value === 'email' ? 'ejemplo@dominio.com' : 'Nombre del Servidor';
         });
 
-        // Load dashboard on start
-        document.addEventListener('DOMContentLoaded', function(){
-            console.log('✅ Admin Panel cargado correctamente');
-            loadDashboard();
+        // Close modal on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e){
+                if(e.target === this){
+                    this.classList.remove('active');
+                    currentTicketId = null;
+                }
+            });
         });
+
+        // Load dashboard on start
+        window.loadDashboard();
+        
+        console.log('✅ Admin Panel cargado correctamente');
     </script>
 </body>
 </html>
