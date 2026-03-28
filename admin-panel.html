@@ -330,6 +330,16 @@
         .section.active{display:block;animation:fadeIn 0.3s}
         @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         
+        /* Verification List Styles */
+        .verified-list-item{
+            display:flex;justify-content:space-between;align-items:center;
+            padding:12px 16px;background:var(--bg);border:1px solid var(--border);
+            border-radius:10px;margin-bottom:8px
+        }
+        .verified-list-item .info{display:flex;align-items:center;gap:12px}
+        .verified-list-item .info i{color:#1da1f2;font-size:18px}
+        .verified-list-item .actions{display:flex;gap:8px}
+        
         /* Responsive */
         @media(max-width:768px){
             .item-card{grid-template-columns:1fr}
@@ -404,6 +414,11 @@
             <div class="nav-item" onclick="window.showSection('tickets')">
                 <i class="fas fa-ticket-alt"></i> Soporte
                 <span class="badge">5</span>
+            </div>
+            <!-- NUEVA OPCIÓN: Verificaciones -->
+            <div class="nav-item" onclick="window.showSection('verifications')">
+                <i class="fas fa-check-circle" style="color:#1da1f2"></i> Verificaciones
+                <span class="badge" id="verifiedBadge">0</span>
             </div>
         </div>
 
@@ -775,6 +790,76 @@
             </div>
         </section>
 
+        <!-- ✅ NUEVA SECCIÓN: VERIFICACIONES -->
+        <section id="section-verifications" class="section">
+            <div class="page-header">
+                <div>
+                    <h1>Verificaciones Automáticas</h1>
+                    <p>Gestiona emails/nombres que reciben la palomita azul automáticamente</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-plus-circle" style="color:#1da1f2"></i> Agregar a Lista de Verificados</h3>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Verificación</label>
+                    <select id="verificationType">
+                        <option value="email">Por Email</option>
+                        <option value="name">Por Nombre de Servidor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label id="verificationLabel">Email a verificar</label>
+                    <input type="text" id="verificationValue" placeholder="ejemplo@dominio.com">
+                </div>
+                <div class="form-group">
+                    <label>Notas (opcional)</label>
+                    <input type="text" id="verificationNotes" placeholder="Ej: Creador oficial, Partner, etc.">
+                </div>
+                <button class="btn btn-primary" onclick="window.addVerification()">
+                    <i class="fas fa-plus"></i> Agregar a Lista
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-list-check"></i> Lista de Verificados Automáticos</h3>
+                    <button class="btn btn-secondary btn-sm" onclick="window.loadVerifications()">
+                        <i class="fas fa-sync-alt"></i> Actualizar
+                    </button>
+                </div>
+                <div id="verificationsList">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <p>Cargando verificaciones...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-info-circle"></i> ¿Cómo funciona?</h3>
+                </div>
+                <div style="color:var(--text-muted);line-height:1.8">
+                    <p><strong>✅ Verificación Automática:</strong></p>
+                    <ul style="margin-left:20px;margin-bottom:16px">
+                        <li>Cuando un usuario registra su tienda con un email/nombre de esta lista</li>
+                        <li>El sistema detecta la coincidencia automáticamente</li>
+                        <li>Se aplica la palomita azul 🔵 en su tienda pública</li>
+                        <li>El badge de verificación aparece sin intervención manual</li>
+                    </ul>
+                    <p><strong>📝 Ejemplos de uso:</strong></p>
+                    <ul style="margin-left:20px">
+                        <li><code>adrianortiz3322@gmail.com</code> → Tu cuenta personal</li>
+                        <li><code>partner@minecraft.com</code> → Socios oficiales</li>
+                        <li><code>MyServer Pro</code> → Nombre de servidor verificado</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
         <!-- Settings Section -->
         <section id="section-settings" class="section">
             <div class="page-header">
@@ -902,7 +987,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, query, orderBy, limit, where, deleteDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCIGXn0zND_8A_nD6NPxx1txYFQzrhM9hg",
@@ -943,7 +1028,8 @@
                 'orders': window.loadOrders,
                 'announcements': window.loadAnnouncements,
                 'tickets': window.loadTickets,
-                'logs': window.loadLogs
+                'logs': window.loadLogs,
+                'verifications': window.loadVerifications
             };
             
             if(loaders[sectionName]) loaders[sectionName]();
@@ -1023,11 +1109,11 @@
             
             revenueChart = new Chart(ctx, {
                 type: 'line',
-                data: {
+                 {
                     labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
                     datasets: [{
                         label: 'Ingresos',
-                        data: [120, 190, 30, 50, 20, 30, 45],
+                         [120, 190, 30, 50, 20, 30, 45],
                         borderColor: '#6366f1',
                         backgroundColor: 'rgba(99, 102, 241, 0.1)',
                         fill: true,
@@ -1074,7 +1160,7 @@
                     item.className = 'item-card';
                     item.innerHTML = `
                         <div class="item-info">
-                            <h4>${data.serverName || 'Sin nombre'}</h4>
+                            <h4>${data.serverName || 'Sin nombre'} ${data.verified ? '<i class="fas fa-check-circle" style="color:#1da1f2;margin-left:6px"></i>' : ''}</h4>
                             <p><i class="fas fa-envelope"></i> ${data.ownerEmail || 'N/A'}</p>
                             <p><i class="fas fa-calendar"></i> ${data.createdAt?.toDate?.().toLocaleDateString() || 'N/A'}</p>
                         </div>
@@ -1165,7 +1251,7 @@
                                     ${(data.displayName || 'U')[0].toUpperCase()}
                                 </div>
                                 <div>
-                                    <div style="font-weight:600">${data.displayName || 'Usuario'}</div>
+                                    <div style="font-weight:600">${data.displayName || 'Usuario'} ${data.verified ? '<i class="fas fa-check-circle" style="color:#1da1f2;margin-left:6px"></i>' : ''}</div>
                                     <div style="font-size:12px;color:var(--text-muted)">${data.email || ''}</div>
                                 </div>
                             </div>
@@ -1398,6 +1484,200 @@
             }
         };
 
+        // ✅ NUEVAS FUNCIONES DE VERIFICACIÓN
+
+        // Load Verifications List
+        window.loadVerifications = async function(){
+            try{
+                const verificationsSnap = await getDocs(collection(db, 'verified_list'));
+                const list = document.getElementById('verificationsList');
+                list.innerHTML = '';
+
+                if(verificationsSnap.empty){
+                    list.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px">No hay verificaciones configuradas</p>';
+                    document.getElementById('verifiedBadge').textContent = '0';
+                    return;
+                }
+
+                let count = 0;
+                verificationsSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    count++;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'verified-list-item';
+                    item.innerHTML = `
+                        <div class="info">
+                            <i class="fas fa-check-circle" style="color:#1da1f2"></i>
+                            <div>
+                                <strong>${data.value}</strong>
+                                <div style="font-size:12px;color:var(--text-muted)">
+                                    ${data.type === 'email' ? '📧 Email' : '🏷️ Nombre'} • ${data.notes || 'Sin notas'}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-danger btn-sm" onclick="window.removeVerification('${docSnap.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+                
+                document.getElementById('verifiedBadge').textContent = count;
+                
+            } catch(e){
+                console.error('Error loading verifications:', e);
+            }
+        };
+
+        // Add Verification
+        window.addVerification = async function(){
+            const type = document.getElementById('verificationType').value;
+            const value = document.getElementById('verificationValue').value.trim().toLowerCase();
+            const notes = document.getElementById('verificationNotes').value.trim();
+
+            if(!value){
+                window.showNotification('❌ Ingresa un email o nombre', 'error');
+                return;
+            }
+
+            try{
+                // Verificar si ya existe
+                const existing = await getDocs(query(
+                    collection(db, 'verified_list'),
+                    where('value', '==', value),
+                    where('type', '==', type)
+                ));
+
+                if(!existing.empty){
+                    window.showNotification('⚠️ Este valor ya está en la lista', 'warning');
+                    return;
+                }
+
+                await addDoc(collection(db, 'verified_list'), {
+                    type: type,
+                    value: value,
+                    notes: notes || null,
+                    addedBy: 'admin@buycrafting.com',
+                    createdAt: new Date()
+                });
+
+                window.showNotification('✅ Agregado a lista de verificados', 'success');
+                
+                // Clear form
+                document.getElementById('verificationValue').value = '';
+                document.getElementById('verificationNotes').value = '';
+                
+                // Reload list
+                window.loadVerifications();
+                
+                // Auto-verify existing servers with this email/name
+                await autoVerifyServers(type, value);
+                
+            } catch(e){
+                console.error('Error adding verification:', e);
+                window.showNotification('❌ Error: ' + e.message, 'error');
+            }
+        };
+
+        // Remove Verification
+        window.removeVerification = async function(id){
+            if(!confirm('¿Eliminar esta verificación de la lista?')) return;
+            
+            try{
+                await deleteDoc(doc(db, 'verified_list', id));
+                window.showNotification('🗑️ Verificación eliminada', 'success');
+                window.loadVerifications();
+            } catch(e){
+                console.error('Error removing verification:', e);
+                window.showNotification('❌ Error: ' + e.message, 'error');
+            }
+        };
+
+        // Auto-verify servers when adding to list
+        async function autoVerifyServers(type, value){
+            try{
+                const serversRef = collection(db, 'servers');
+                let q;
+                
+                if(type === 'email'){
+                    q = query(serversRef, where('ownerEmail', '==', value));
+                } else {
+                    q = query(serversRef, where('serverName', '==', value));
+                }
+                
+                const snap = await getDocs(q);
+                
+                snap.forEach(async (docSnap) => {
+                    await updateDoc(doc(db, 'servers', docSnap.id), {
+                        verified: true,
+                        verifiedAt: new Date(),
+                        verifiedBy: 'auto-verification',
+                        updatedAt: new Date()
+                    });
+                    console.log('✅ Auto-verificado:', docSnap.id);
+                });
+                
+                if(snap.size > 0){
+                    window.showNotification(`✅ ${snap.size} servidor(es) verificado(s) automáticamente`, 'success');
+                }
+            } catch(e){
+                console.error('Error auto-verifying:', e);
+            }
+        }
+
+        // Check if server should be auto-verified (call this when server is created/updated)
+        window.checkAutoVerification = async function(serverData, serverId){
+            try{
+                const { ownerEmail, serverName } = serverData;
+                
+                // Check email
+                if(ownerEmail){
+                    const emailCheck = await getDocs(query(
+                        collection(db, 'verified_list'),
+                        where('type', '==', 'email'),
+                        where('value', '==', ownerEmail.toLowerCase())
+                    ));
+                    
+                    if(!emailCheck.empty){
+                        await updateDoc(doc(db, 'servers', serverId), {
+                            verified: true,
+                            verifiedAt: new Date(),
+                            verifiedBy: 'auto-verification',
+                            updatedAt: new Date()
+                        });
+                        return true;
+                    }
+                }
+                
+                // Check name
+                if(serverName){
+                    const nameCheck = await getDocs(query(
+                        collection(db, 'verified_list'),
+                        where('type', '==', 'name'),
+                        where('value', '==', serverName.toLowerCase())
+                    ));
+                    
+                    if(!nameCheck.empty){
+                        await updateDoc(doc(db, 'servers', serverId), {
+                            verified: true,
+                            verifiedAt: new Date(),
+                            verifiedBy: 'auto-verification',
+                            updatedAt: new Date()
+                        });
+                        return true;
+                    }
+                }
+                
+                return false;
+            } catch(e){
+                console.error('Error checking auto-verification:', e);
+                return false;
+            }
+        };
+
         // Export Data
         window.exportData = async function(type){
             try{
@@ -1430,7 +1710,7 @@
                 
                 window.showNotification('✅ Datos exportados correctamente', 'success');
             } catch(e){
-                console.error('Error exporting data:', e);
+                console.error('Error exporting ', e);
                 window.showNotification('❌ Error al exportar', 'error');
             }
         };
@@ -1492,10 +1772,17 @@
             setTimeout(() => notif.classList.remove('show'), 3000);
         };
 
+        // Update verification label when type changes
+        document.getElementById('verificationType')?.addEventListener('change', function(e){
+            const label = document.getElementById('verificationLabel');
+            label.textContent = e.target.value === 'email' ? 'Email a verificar' : 'Nombre de servidor a verificar';
+            document.getElementById('verificationValue').placeholder = e.target.value === 'email' ? 'ejemplo@dominio.com' : 'Nombre del Servidor';
+        });
+
         // Load dashboard on start
         window.loadDashboard();
         
-        console.log('✅ Admin Panel completo cargado correctamente');
+        console.log('✅ Admin Panel con verificaciones automáticas cargado correctamente');
     </script>
 </body>
 </html>
