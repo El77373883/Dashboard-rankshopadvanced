@@ -85,15 +85,30 @@
         @keyframes titlePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
         
         /* ======================================== */
+        /* ✅ PUBLISHER INFO - Todo en una línea */
+        /* ======================================== */
+        .publisher-info{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:6px;
+            margin:8px 0 12px;
+            font-size:14px;
+            color:rgba(255,255,255,0.85);
+            flex-wrap:nowrap;
+            white-space:nowrap
+        }
+        .publisher-info i{color:var(--primary)}
+        
+        /* ======================================== */
         /* ✅ PALOMITA DE VERIFICACIÓN ANIMADA */
         /* ======================================== */
         .verified-badge{
             display:inline-flex;
             align-items:center;
             justify-content:center;
-            margin-left:6px;
-            cursor:help;
-            vertical-align:middle
+            margin:0 2px;
+            cursor:help
         }
         .verified-icon{
             color:#1da1f2;
@@ -125,10 +140,9 @@
             border-radius:20px;
             font-size:12px;
             font-weight:700;
-            margin-left:12px;
+            margin:0 2px;
             text-transform:uppercase;
-            letter-spacing:0.5px;
-            vertical-align:middle
+            letter-spacing:0.5px
         }
         .plan-badge.free{
             background:rgba(107,114,128,0.2);
@@ -149,28 +163,6 @@
             background:rgba(245,158,11,0.2);
             color:#fbbf24;
             border:1px solid #f59e0b
-        }
-        
-        .published-by{
-            font-size:14px;
-            color:rgba(255,255,255,0.85);
-            margin:8px 0 12px;
-            font-weight:500;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:6px;
-            flex-wrap:nowrap;
-            white-space:nowrap
-        }
-        .published-by i{margin-right:6px;color:var(--primary)}
-        
-        .publisher-wrapper{
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:6px;
-            margin:8px 0 12px
         }
         
         .store-desc{font-size:16px;color:rgba(255,255,255,0.9);max-width:550px;margin:0 auto}
@@ -1030,13 +1022,10 @@
             .redeem-form{flex-direction:column}
             .product-name{font-size:20px}
             .product-price{font-size:24px}
-            .publisher-wrapper{
-                flex-direction:column;
-                gap:8px
-            }
-            .published-by{
+            .publisher-info{
                 flex-wrap:wrap;
-                white-space:normal
+                white-space:normal;
+                gap:8px
             }
         }
     </style>
@@ -1061,17 +1050,18 @@
         <header class="store-header" id="storeHeader">
             <div class="store-logo" id="storeLogo"><i class="fas fa-shopping-cart"></i></div>
             <h1 class="store-title" id="storeTitle">Mi Tienda</h1>
-            <div class="publisher-wrapper">
-                <p class="published-by" id="publishedBy">
-                    <i class="fas fa-user-check"></i>
-                    Publicado por 
-                    <span id="publisherName">Tu Nombre</span>
-                </p>
+            
+            <!-- ✅ Publisher Info - Todo alineado en una línea -->
+            <div class="publisher-info">
+                <i class="fas fa-user-check"></i>
+                <span>Publicado por</span>
+                <span id="publisherName" style="font-weight:600">Tu Nombre</span>
                 <span id="verifiedBadge" class="verified-badge" style="display:none">
                     <i class="fas fa-check-circle verified-icon" title="Cuenta verificada"></i>
                 </span>
                 <span id="planBadge" class="plan-badge free">Gratis</span>
             </div>
+            
             <p class="store-desc" id="storeDesc">Bienvenido a nuestra tienda oficial</p>
             <div class="custom-buttons" id="customButtons"></div>
         </header>
