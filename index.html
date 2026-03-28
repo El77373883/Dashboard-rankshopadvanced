@@ -156,6 +156,25 @@
         .badge.warning{background:rgba(249,115,22,0.15);color:var(--warning)}
         .badge.info{background:rgba(99,102,241,0.15);color:var(--primary)}
         
+        /* Plan Badges */
+        .badge-plan{
+            display:inline-flex;align-items:center;gap:8px;
+            padding:8px 16px;border-radius:20px;
+            font-size:12px;font-weight:700
+        }
+        .badge-plan.free{
+            background:rgba(107,114,128,0.2);color:#9ca3af;border:1px solid #6b7280
+        }
+        .badge-plan.premium{
+            background:rgba(99,102,241,0.2);color:#818cf8;border:1px solid #6366f1
+        }
+        .badge-plan.vip{
+            background:rgba(16,185,129,0.2);color:#34d399;border:1px solid #10b981
+        }
+        .badge-plan.enterprise{
+            background:rgba(245,158,11,0.2);color:#fbbf24;border:1px solid #f59e0b
+        }
+        
         /* Notifications */
         .notification{position:fixed;top:20px;right:20px;padding:16px 20px;border-radius:12px;background:var(--bg-card);border:1px solid var(--border);box-shadow:var(--shadow);transform:translateX(400px);transition:transform 0.3s;z-index:3000;display:flex;align-items:center;gap:12px;max-width:350px}
         .notification.show{transform:translateX(0)}
@@ -293,10 +312,6 @@
         }
         .profile-name{font-size:24px;font-weight:700;margin-bottom:4px;position:relative}
         .profile-email{color:rgba(255,255,255,0.9);font-size:14px;margin-bottom:16px;position:relative}
-        .profile-badge{
-            display:inline-block;padding:6px 16px;background:rgba(255,255,255,0.2);
-            border-radius:20px;font-size:12px;font-weight:600;position:relative
-        }
         
         .profile-stats{
             display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px
@@ -361,7 +376,7 @@
             <div class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
             <div class="nav-item" onclick="showSection('products')"><i class="fas fa-box-open"></i><span>Productos</span></div>
             <div class="nav-item" onclick="showSection('orders')"><i class="fas fa-shopping-cart"></i><span>Órdenes</span><span class="badge" id="pendingBadge">0</span></div>
-            <div class="nav-item" onclick="showSection('tickets')"><i class="fas fa-ticket-alt"></i><span>Soporte</span><span class="badge">0</span></div>
+            <div class="nav-item" onclick="showSection('tickets')"><i class="fas fa-ticket-alt"></i><span>Soporte</span><span class="badge" id="ticketBadge">0</span></div>
             
             <div class="nav-section-title" style="margin-top:16px">Tienda</div>
             <div class="nav-item" onclick="window.open('edit-store.html','_blank')"><i class="fas fa-paint-brush"></i><span>Editar Web</span></div>
@@ -552,7 +567,7 @@
             </div>
         </section>
 
-        <!-- Store Section - REPLACED WITH INFO ABOUT NEW EDITOR -->
+        <!-- Store Section -->
         <section id="store" class="section">
             <div class="card">
                 <div class="card-header">
@@ -591,13 +606,15 @@
             </div>
         </section>
 
-        <!-- Profile Section - NEW -->
+        <!-- Profile Section -->
         <section id="profile" class="section">
             <div class="profile-header">
                 <div class="profile-avatar" id="profileAvatar">A</div>
                 <h2 class="profile-name" id="profileNameDisplay">Administrador</h2>
                 <p class="profile-email" id="profileEmailDisplay">admin@buycrafting.com</p>
-                <span class="profile-badge"><i class="fas fa-crown"></i> Plan Gratis</span>
+                <div id="profilePlanBadge" class="badge-plan free" style="margin-top:12px;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700">
+                    <i class="fas fa-crown"></i> Plan Gratis
+                </div>
             </div>
 
             <div class="profile-stats">
@@ -672,6 +689,19 @@
                 <button class="btn btn-secondary" onclick="changePassword()" style="margin-top:16px">
                     <i class="fas fa-key"></i>Cambiar Contraseña
                 </button>
+            </div>
+        </section>
+
+        <!-- Tickets Section -->
+        <section id="tickets" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i class="fas fa-ticket-alt"></i>Sistema de Soporte</div>
+                    <button class="btn btn-primary" onclick="openTicketModal()"><i class="fas fa-plus"></i>Nuevo Ticket</button>
+                </div>
+                <div id="ticketsList">
+                    <div class="loading"><div class="spinner"></div>Cargando tickets...</div>
+                </div>
             </div>
         </section>
 
@@ -769,7 +799,7 @@
                     <div><strong>ID del Servidor:</strong> <code id="serverIdDisplay" style="background:var(--bg-input);padding:4px 8px;border-radius:4px;font-family:monospace;font-size:13px">Cargando...</code></div>
                     <div><strong>Nombre:</strong> <span id="serverNameDisplay">Cargando...</span></div>
                     <div><strong>Email:</strong> <span id="serverEmailDisplay">Cargando...</span></div>
-                    <div><strong>Plan:</strong> <span class="badge success">Gratis</span></div>
+                    <div><strong>Plan:</strong> <span id="serverPlanBadge" class="badge success">Gratis</span></div>
                     <div><strong>Fecha de Registro:</strong> <span id="serverCreatedDisplay">Cargando...</span></div>
                 </div>
             </div>
@@ -791,11 +821,9 @@
             </div>
         </section>
 
-        <!-- Other sections (promotions, categories, tickets, players, export) -->
-        <!-- Keeping placeholders for brevity -->
+        <!-- Other sections -->
         <section id="promotions" class="section"><div class="card"><div class="empty-state"><i class="fas fa-tag"></i><p>Promociones (Próximamente)</p></div></div></section>
         <section id="categories" class="section"><div class="card"><div class="empty-state"><i class="fas fa-folder"></i><p>Categorías (Próximamente)</p></div></div></section>
-        <section id="tickets" class="section"><div class="card"><div class="empty-state"><i class="fas fa-ticket-alt"></i><p>Soporte (Próximamente)</p></div></div></section>
         <section id="players" class="section"><div class="card"><div class="empty-state"><i class="fas fa-users"></i><p>Jugadores (Próximamente)</p></div></div></section>
         <section id="export" class="section"><div class="card"><div class="empty-state"><i class="fas fa-download"></i><p>Exportar Datos (Próximamente)</p></div></div></section>
     </main>
@@ -906,6 +934,39 @@
         </div>
     </div>
 
+    <!-- Ticket Modal -->
+    <div class="modal" id="ticketModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-ticket-alt"></i>Nuevo Ticket de Soporte</div>
+                <button class="modal-close" onclick="closeModal('ticketModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Asunto *</label>
+                    <input type="text" id="ticketSubject" placeholder="Ej: Problema con pagos">
+                </div>
+                <div class="form-group">
+                    <label>Prioridad</label>
+                    <select id="ticketPriority">
+                        <option value="low">Baja</option>
+                        <option value="medium" selected>Media</option>
+                        <option value="high">Alta</option>
+                        <option value="urgent">Urgente</option>
+                    </select>
+                </div>
+                <div class="form-group full">
+                    <label>Descripción del Problema *</label>
+                    <textarea id="ticketDescription" rows="6" placeholder="Describe tu problema con el mayor detalle posible..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('ticketModal')">Cancelar</button>
+                <button class="btn btn-primary" onclick="createTicket()"><i class="fas fa-paper-plane"></i>Enviar Ticket</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification -->
     <div class="notification" id="notification">
         <div class="notification-icon"><i class="fas fa-check"></i></div>
@@ -915,7 +976,7 @@
     <script type="module">
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, deleteDoc, query, where, orderBy, limit, updateDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, deleteDoc, query, where, orderBy, limit, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         // Firebase config
         const firebaseConfig = {
@@ -990,6 +1051,10 @@
             await loadApiKey();
             await loadServerInfo();
             await loadProfile();
+            await loadTickets();
+            
+            // Setup real-time listener for plan changes
+            setupPlanListener();
             
             console.log('✅ BuyCrafting Pro listo');
         });
@@ -1036,6 +1101,7 @@
             if(section === 'settings') loadApiKey();
             if(section === 'gui-editor') initGuiEditor();
             if(section === 'profile') loadProfile();
+            if(section === 'tickets') loadTickets();
         };
 
         // Notification system
@@ -1071,6 +1137,7 @@
             document.getElementById('productModal').classList.add('active');
         };
         window.openOrderModal = function(){ loadProductsForSelect(); document.getElementById('orderModal').classList.add('active'); };
+        window.openTicketModal = function(){ document.getElementById('ticketModal').classList.add('active'); };
         window.closeModal = function(id){ document.getElementById(id).classList.remove('active'); };
         window.onclick = function(e){ if(e.target.classList.contains('modal')) e.target.classList.remove('active'); };
 
@@ -1099,8 +1166,53 @@
                     document.getElementById('serverEmailDisplay').textContent = data.ownerEmail || 'Sin email';
                     document.getElementById('serverCreatedDisplay').textContent = data.createdAt?.toDate?.().toLocaleDateString('es-ES') || 'N/A';
                     document.getElementById('configServerName').textContent = data.serverName || 'Mi Servidor';
+                    
+                    // Update plan badge
+                    const plan = data.plan || 'free';
+                    updatePlanBadge(plan);
                 }
             }catch(e){ console.error('Error loading server info:', e); }
+        }
+
+        // Setup real-time listener for plan changes
+        function setupPlanListener(){
+            if(!currentServerId) return;
+            
+            const serverRef = doc(db, 'servers', currentServerId);
+            onSnapshot(serverRef, (doc) => {
+                if(doc.exists()){
+                    const data = doc.data();
+                    const plan = data.plan || 'free';
+                    updatePlanBadge(plan);
+                    console.log('🔄 Plan actualizado en tiempo real:', plan);
+                }
+            });
+        }
+
+        // Update plan badge in UI
+        function updatePlanBadge(plan){
+            const planNames = {
+                'free': 'Gratis',
+                'premium': 'Premium',
+                'vip': 'VIP',
+                'enterprise': 'Enterprise'
+            };
+            
+            const planName = planNames[plan] || 'Gratis';
+            
+            // Update profile badge
+            const profileBadge = document.getElementById('profilePlanBadge');
+            if(profileBadge){
+                profileBadge.className = `badge-plan ${plan}`;
+                profileBadge.innerHTML = `<i class="fas fa-crown"></i> Plan ${planName}`;
+            }
+            
+            // Update settings badge
+            const settingsBadge = document.getElementById('serverPlanBadge');
+            if(settingsBadge){
+                settingsBadge.className = `badge ${plan === 'free' ? 'success' : plan === 'premium' ? 'info' : plan === 'vip' ? 'success' : 'warning'}`;
+                settingsBadge.textContent = planName;
+            }
         }
 
         // Load API Key
@@ -1156,6 +1268,10 @@
                     document.getElementById('profileDescription').value = data.description || '';
                     document.getElementById('profileWebsite').value = data.website || '';
                     document.getElementById('profileDiscord').value = data.discord || '';
+                    
+                    // Update plan badge
+                    const plan = data.plan || 'free';
+                    updatePlanBadge(plan);
                 }
                 
                 // Load stats
@@ -1372,7 +1488,136 @@
             }
         };
 
-        // GUI Editor Functions (kept from previous code)
+        // Create Ticket
+        window.createTicket = async function(){
+            try{
+                if(!currentServerId){ showNotification('Error: No hay servidor', 'error'); return; }
+                
+                const subject = document.getElementById('ticketSubject').value.trim();
+                const priority = document.getElementById('ticketPriority').value;
+                const description = document.getElementById('ticketDescription').value.trim();
+                
+                if(!subject || !description){
+                    showNotification('Completa todos los campos requeridos', 'error');
+                    return;
+                }
+                
+                const ticketData = {
+                    serverId: currentServerId,
+                    subject,
+                    priority,
+                    description,
+                    status: 'open',
+                    createdAt: new Date(),
+                    createdBy: localStorage.getItem('buycrafting_email') || 'unknown'
+                };
+                
+                await addDoc(collection(db, 'tickets'), ticketData);
+                
+                showNotification('✅ Ticket creado exitosamente. Te responderemos pronto.');
+                closeModal('ticketModal');
+                loadTickets();
+                
+                // Clear form
+                document.getElementById('ticketSubject').value = '';
+                document.getElementById('ticketPriority').value = 'medium';
+                document.getElementById('ticketDescription').value = '';
+                
+            } catch(e){
+                console.error('Error creating ticket:', e);
+                showNotification('Error al crear ticket: ' + e.message, 'error');
+            }
+        };
+
+        // Load Tickets
+        async function loadTickets(){
+            try{
+                if(!currentServerId) return;
+                
+                const ticketsRef = collection(db, 'tickets');
+                const q = query(ticketsRef, where('serverId', '==', currentServerId), orderBy('createdAt', 'desc'));
+                const snap = await getDocs(q);
+                
+                const list = document.getElementById('ticketsList');
+                list.innerHTML = '';
+                
+                if(snap.empty){
+                    list.innerHTML = '<div class="empty-state"><i class="fas fa-ticket-alt"></i><p>No hay tickets</p></div>';
+                    document.getElementById('ticketBadge').textContent = '0';
+                    return;
+                }
+                
+                let openTickets = 0;
+                
+                snap.forEach(docSnap => {
+                    const ticket = docSnap.data();
+                    if(ticket.status === 'open') openTickets++;
+                    
+                    const priorityColors = {
+                        'low': 'var(--text-muted)',
+                        'medium': 'var(--warning)',
+                        'high': 'var(--danger)',
+                        'urgent': '#dc2626'
+                    };
+                    
+                    const statusBadge = ticket.status === 'open' ? 
+                        '<span class="badge pending">Abierto</span>' : 
+                        '<span class="badge success">Cerrado</span>';
+                    
+                    const item = document.createElement('div');
+                    item.className = 'card';
+                    item.style.marginBottom = '16px';
+                    item.innerHTML = `
+                        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px">
+                            <div>
+                                <h4 style="margin-bottom:4px">${ticket.subject}</h4>
+                                <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+                                    <span style="color:${priorityColors[ticket.priority]};font-size:12px;font-weight:600">
+                                        <i class="fas fa-flag"></i> ${ticket.priority.toUpperCase()}
+                                    </span>
+                                    ${statusBadge}
+                                    <span style="color:var(--text-muted);font-size:12px">
+                                        <i class="fas fa-calendar"></i> ${ticket.createdAt?.toDate?.().toLocaleDateString() || 'N/A'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="color:var(--text-muted);font-size:14px;margin-bottom:12px;line-height:1.5">${ticket.description}</p>
+                        ${ticket.status === 'open' ? `
+                            <button class="btn btn-secondary btn-sm" onclick="closeTicket('${docSnap.id}')">
+                                <i class="fas fa-check"></i> Marcar como Resuelto
+                            </button>
+                        ` : ''}
+                    `;
+                    list.appendChild(item);
+                });
+                
+                document.getElementById('ticketBadge').textContent = openTickets;
+                
+            } catch(e){
+                console.error('Error loading tickets:', e);
+            }
+        }
+
+        // Close Ticket
+        window.closeTicket = async function(ticketId){
+            if(!confirm('¿Marcar este ticket como resuelto?')) return;
+            
+            try{
+                await updateDoc(doc(db, 'tickets', ticketId), {
+                    status: 'closed',
+                    closedAt: new Date()
+                });
+                
+                showNotification('Ticket marcado como resuelto');
+                loadTickets();
+            } catch(e){
+                console.error('Error closing ticket:', e);
+                showNotification('Error: ' + e.message, 'error');
+            }
+        };
+
+        // GUI Editor Functions
         async function initGuiEditor(){
             if(currentSection !== 'gui-editor') return;
             
