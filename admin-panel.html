@@ -14,94 +14,50 @@
             --gradient:linear-gradient(135deg,#6366f1 0%,#a855f7 100%)
         }
         body{
-            font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-            background:var(--bg);color:var(--text);min-height:100vh
+            font-family:'Inter',sans-serif;background:var(--bg);
+            color:var(--text);min-height:100vh
         }
         
-        /* Login Screen */
-        #loginScreen{
-            min-height:100vh;display:flex;align-items:center;
-            justify-content:center;padding:20px;
-            background:linear-gradient(135deg,#6366f1 0%,#a855f7 50%,#ec4899 100%)
+        /* Header */
+        .header{
+            position:fixed;top:0;left:0;right:0;height:70px;
+            background:var(--bg-card);border-bottom:1px solid var(--border);
+            display:flex;align-items:center;justify-content:space-between;
+            padding:0 24px;z-index:1000
         }
-        .login-box{
-            background:var(--bg-card);padding:40px;border-radius:24px;
-            box-shadow:0 25px 100px rgba(0,0,0,0.5);
-            max-width:450px;width:100%;animation:slideIn 0.5s
+        .menu-toggle{
+            width:50px;height:50px;border:none;background:transparent;
+            color:var(--text);font-size:24px;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;
+            border-radius:12px;transition:all 0.3s
         }
-        @keyframes slideIn{
-            from{opacity:0;transform:translateY(-30px)}
-            to{opacity:1;transform:translateY(0)}
+        .menu-toggle:hover{
+            background:rgba(99,102,241,0.1);color:var(--primary)
         }
-        .login-header{text-align:center;margin-bottom:32px}
-        .login-header i{
-            font-size:64px;color:var(--primary);margin-bottom:16px;
-            animation:pulse 2s infinite
-        }
-        @keyframes pulse{
-            0%,100%{transform:scale(1)}
-            50%{transform:scale(1.05)}
-        }
-        .login-header h1{
-            font-size:28px;margin-bottom:8px;background:var(--gradient);
+        .header-title{
+            font-size:20px;font-weight:700;background:var(--gradient);
             -webkit-background-clip:text;-webkit-text-fill-color:transparent
         }
-        .login-header p{color:var(--text-muted);font-size:14px}
-        .form-group{margin-bottom:20px}
-        .form-group label{
-            display:block;margin-bottom:8px;font-size:14px;
-            font-weight:600;color:var(--text-muted)
+        .user-info{
+            display:flex;align-items:center;gap:12px;
+            padding:8px 16px;background:rgba(99,102,241,0.1);
+            border-radius:12px;border:1px solid rgba(99,102,241,0.2)
         }
-        .form-group input{
-            width:100%;padding:14px 16px;background:var(--bg);
-            border:2px solid var(--border);border-radius:12px;
-            color:var(--text);font-size:15px;transition:all 0.3s
-        }
-        .form-group input:focus{
-            outline:none;border-color:var(--primary);
-            box-shadow:0 0 0 4px rgba(99,102,241,0.1)
-        }
-        .btn{
-            width:100%;padding:16px;border:none;border-radius:12px;
-            font-size:16px;font-weight:700;cursor:pointer;
-            transition:all 0.3s;display:flex;align-items:center;
-            justify-content:center;gap:10px
-        }
-        .btn-primary{
-            background:var(--gradient);color:white;
-            box-shadow:0 8px 20px rgba(99,102,241,0.4)
-        }
-        .btn-primary:hover{
-            transform:translateY(-2px);
-            box-shadow:0 12px 30px rgba(99,102,241,0.6)
-        }
+        .user-info i{color:var(--primary)}
+        .user-info span{font-size:14px}
         
-        /* Admin Panel */
-        #adminPanel{display:none}
+        /* Sidebar */
         .sidebar{
-            position:fixed;left:0;top:0;width:280px;height:100vh;
+            position:fixed;left:-300px;top:70px;width:280px;height:calc(100vh - 70px);
             background:var(--bg-card);border-right:1px solid var(--border);
-            padding:24px;overflow-y:auto;z-index:100
+            padding:24px;overflow-y:auto;transition:left 0.3s;z-index:999
         }
-        .sidebar-header{
-            padding-bottom:24px;border-bottom:1px solid var(--border);
-            margin-bottom:24px
+        .sidebar.active{left:0}
+        .sidebar-overlay{
+            position:fixed;top:70px;left:0;right:0;bottom:0;
+            background:rgba(0,0,0,0.5);z-index:998;display:none
         }
-        .sidebar-header h2{
-            font-size:24px;margin-bottom:4px;background:var(--gradient);
-            -webkit-background-clip:text;-webkit-text-fill-color:transparent
-        }
-        .sidebar-header p{color:var(--text-muted);font-size:13px}
-        .admin-info{
-            background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);
-            border-radius:12px;padding:16px;margin-bottom:24px
-        }
-        .admin-info p{
-            font-size:13px;color:var(--text-muted);margin-bottom:4px
-        }
-        .admin-info strong{
-            color:var(--text);font-size:14px
-        }
+        .sidebar-overlay.active{display:block}
         .nav-item{
             padding:14px 16px;margin-bottom:8px;border-radius:12px;
             cursor:pointer;transition:all 0.3s;display:flex;
@@ -117,12 +73,12 @@
         }
         .nav-item i{width:20px;text-align:center}
         
+        /* Main Content */
         .main-content{
-            margin-left:280px;padding:32px;min-height:100vh
+            margin-top:70px;padding:32px;min-height:calc(100vh - 70px)
         }
         .page-header{
-            margin-bottom:32px;display:flex;
-            justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px
+            margin-bottom:32px
         }
         .page-header h1{font-size:32px;margin-bottom:8px}
         .page-header p{color:var(--text-muted)}
@@ -215,8 +171,22 @@
         }
         .btn-apply:hover{transform:scale(1.05)}
         
+        .btn{
+            padding:12px 24px;border:none;border-radius:12px;
+            font-size:14px;font-weight:600;cursor:pointer;
+            transition:all 0.3s;display:flex;align-items:center;gap:8px
+        }
+        .btn-primary{
+            background:var(--gradient);color:white;
+            box-shadow:0 4px 15px rgba(99,102,241,0.4)
+        }
+        .btn-primary:hover{
+            transform:translateY(-2px);
+            box-shadow:0 8px 25px rgba(99,102,241,0.6)
+        }
+        
         .notification{
-            position:fixed;top:20px;right:20px;padding:16px 24px;
+            position:fixed;top:90px;right:20px;padding:16px 24px;
             background:var(--bg-card);border:1px solid var(--border);
             border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.5);
             transform:translateX(400px);transition:transform 0.3s;
@@ -234,201 +204,216 @@
         }
         @keyframes spin{to{transform:rotate(360deg)}}
         
+        .section{display:none}
+        .section.active{display:block}
+        
         @media(max-width:768px){
-            .sidebar{transform:translateX(-100%)}
-            .main-content{margin-left:0}
             .server-item{grid-template-columns:1fr}
         }
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div id="loginScreen">
-        <div class="login-box">
-            <div class="login-header">
-                <i class="fas fa-shield-alt"></i>
-                <h1>Admin Panel</h1>
-                <p>BuyCrafting Pro - Acceso Exclusivo</p>
-            </div>
-            <form onsubmit="window.handleLogin(event)">
-                <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Correo Electrónico</label>
-                    <input type="email" id="adminEmail" placeholder="tu@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Contraseña</label>
-                    <input type="password" id="adminPassword" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-                </button>
-            </form>
+    <!-- Header -->
+    <header class="header">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="header-title">
+            <i class="fas fa-crown"></i> Admin Panel
         </div>
-    </div>
+        <div class="user-info">
+            <i class="fas fa-user-shield"></i>
+            <span>Administrador</span>
+        </div>
+    </header>
 
-    <!-- Admin Panel -->
-    <div id="adminPanel">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2><i class="fas fa-crown"></i> Admin Panel</h2>
-                <p>BuyCrafting Pro</p>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="nav-item active" onclick="showSection('dashboard')">
+            <i class="fas fa-chart-line"></i> Dashboard
+        </div>
+        <div class="nav-item" onclick="showSection('servers')">
+            <i class="fas fa-server"></i> Servidores
+        </div>
+        <div class="nav-item" onclick="showSection('plans')">
+            <i class="fas fa-crown"></i> Gestión de Planes
+        </div>
+        <div class="nav-item" onclick="showSection('users')">
+            <i class="fas fa-users"></i> Usuarios
+        </div>
+        <div class="nav-item" onclick="logout()">
+            <i class="fas fa-sign-out-alt" style="color:var(--danger)"></i> Cerrar Sesión
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="section-dashboard" class="section active">
+            <div class="page-header">
+                <h1>Dashboard</h1>
+                <p>Resumen general de la plataforma</p>
             </div>
             
-            <div class="admin-info">
-                <p><i class="fas fa-user"></i> Administrador</p>
-                <strong id="adminEmailDisplay">Cargando...</strong>
+            <div class="stats-grid">
+                <div class="stat-card" onclick="showSection('servers')">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="totalServers">0</div>
+                            <div class="stat-card-label">Servidores Totales</div>
+                        </div>
+                        <div class="stat-card-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="totalUsers">0</div>
+                            <div class="stat-card-label">Usuarios Registrados</div>
+                        </div>
+                        <div class="stat-card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="totalProducts">0</div>
+                            <div class="stat-card-label">Productos Activos</div>
+                        </div>
+                        <div class="stat-card-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <div>
+                            <div class="stat-card-value" id="totalRevenue">$0</div>
+                            <div class="stat-card-label">Ingresos Totales</div>
+                        </div>
+                        <div class="stat-card-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Servers Section -->
+        <section id="section-servers" class="section">
+            <div class="page-header">
+                <h1>Gestión de Servidores</h1>
+                <p>Administra todos los servidores y asigna planes</p>
             </div>
             
-            <div class="nav-item active" onclick="window.showSection('dashboard')">
-                <i class="fas fa-chart-line"></i> Dashboard
-            </div>
-            <div class="nav-item" onclick="window.showSection('servers')">
-                <i class="fas fa-server"></i> Servidores
-            </div>
-            <div class="nav-item" onclick="window.showSection('plans')">
-                <i class="fas fa-crown"></i> Gestión de Planes
-            </div>
-            <div class="nav-item" onclick="window.adminLogout()" style="color:var(--danger)">
-                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Dashboard Section -->
-            <div id="section-dashboard">
-                <div class="page-header">
-                    <div>
-                        <h1>Dashboard</h1>
-                        <p>Resumen general de la plataforma</p>
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-list"></i> Lista de Servidores</h3>
+                    <button class="btn btn-primary" onclick="loadServers()">
+                        <i class="fas fa-sync-alt"></i> Actualizar
+                    </button>
+                </div>
+                <div class="server-list" id="serversList">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <p>Cargando servidores...</p>
                     </div>
                 </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-card" onclick="window.showSection('servers')">
-                        <div class="stat-card-header">
-                            <div>
-                                <div class="stat-card-value" id="totalServers">0</div>
-                                <div class="stat-card-label">Servidores Totales</div>
-                            </div>
-                            <div class="stat-card-icon">
-                                <i class="fas fa-server"></i>
-                            </div>
+            </div>
+        </section>
+
+        <!-- Plans Section -->
+        <section id="section-plans" class="section">
+            <div class="page-header">
+                <h1>Gestión de Planes</h1>
+                <p>Configuración de planes disponibles</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-crown"></i> Planes Disponibles</h3>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
+                    <div class="stat-card">
+                        <div style="text-align:center;padding:20px">
+                            <i class="fas fa-crown" style="font-size:48px;color:#6b7280;margin-bottom:16px"></i>
+                            <h3 style="margin-bottom:8px">Plan Gratis</h3>
+                            <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">
+                                Características básicas
+                            </p>
+                            <ul style="text-align:left;color:var(--text-muted);font-size:13px;line-height:2">
+                                <li><i class="fas fa-check"></i> Hasta 10 productos</li>
+                                <li><i class="fas fa-check"></i> Tienda básica</li>
+                                <li><i class="fas fa-check"></i> 5% comisión</li>
+                            </ul>
                         </div>
                     </div>
                     
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div>
-                                <div class="stat-card-value" id="totalUsers">0</div>
-                                <div class="stat-card-label">Usuarios Registrados</div>
-                            </div>
-                            <div class="stat-card-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
+                    <div class="stat-card" style="border-color:var(--primary)">
+                        <div style="text-align:center;padding:20px">
+                            <i class="fas fa-gem" style="font-size:48px;color:var(--primary);margin-bottom:16px"></i>
+                            <h3 style="margin-bottom:8px">Plan Premium</h3>
+                            <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">
+                                $9.99/mes
+                            </p>
+                            <ul style="text-align:left;color:var(--text-muted);font-size:13px;line-height:2">
+                                <li><i class="fas fa-check"></i> Productos ilimitados</li>
+                                <li><i class="fas fa-check"></i> Tienda personalizada</li>
+                                <li><i class="fas fa-check"></i> Sin comisión</li>
+                            </ul>
                         </div>
                     </div>
                     
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div>
-                                <div class="stat-card-value" id="totalProducts">0</div>
-                                <div class="stat-card-label">Productos Activos</div>
-                            </div>
-                            <div class="stat-card-icon">
-                                <i class="fas fa-box"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-card-header">
-                            <div>
-                                <div class="stat-card-value" id="totalRevenue">$0</div>
-                                <div class="stat-card-label">Ingresos Totales</div>
-                            </div>
-                            <div class="stat-card-icon">
-                                <i class="fas fa-dollar-sign"></i>
-                            </div>
+                    <div class="stat-card" style="border-color:var(--secondary)">
+                        <div style="text-align:center;padding:20px">
+                            <i class="fas fa-star" style="font-size:48px;color:var(--secondary);margin-bottom:16px"></i>
+                            <h3 style="margin-bottom:8px">Plan VIP</h3>
+                            <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">
+                                $19.99/mes
+                            </p>
+                            <ul style="text-align:left;color:var(--text-muted);font-size:13px;line-height:2">
+                                <li><i class="fas fa-check"></i> Todo lo de Premium</li>
+                                <li><i class="fas fa-check"></i> Dominio personalizado</li>
+                                <li><i class="fas fa-check"></i> Soporte 24/7</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Servers Section -->
-            <div id="section-servers" style="display:none">
-                <div class="page-header">
-                    <div>
-                        <h1>Gestión de Servidores</h1>
-                        <p>Administra todos los servidores registrados</p>
-                    </div>
+        <!-- Users Section -->
+        <section id="section-users" class="section">
+            <div class="page-header">
+                <h1>Usuarios</h1>
+                <p>Gestión de usuarios registrados</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-users"></i> Lista de Usuarios</h3>
+                    <button class="btn btn-primary" onclick="loadUsers()">
+                        <i class="fas fa-sync-alt"></i> Actualizar
+                    </button>
                 </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-list"></i> Lista de Servidores</h3>
-                        <button onclick="window.loadServers()" class="btn btn-primary" style="width:auto">
-                            <i class="fas fa-sync-alt"></i> Actualizar
-                        </button>
-                    </div>
-                    <div class="server-list" id="serversList">
-                        <div class="loading">
-                            <i class="fas fa-spinner"></i>
-                            <p>Cargando servidores...</p>
-                        </div>
+                <div id="usersList">
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <p>Cargando usuarios...</p>
                     </div>
                 </div>
             </div>
-
-            <!-- Plans Section -->
-            <div id="section-plans" style="display:none">
-                <div class="page-header">
-                    <div>
-                        <h1>Gestión de Planes</h1>
-                        <p>Asigna planes a los servidores</p>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-crown"></i> Planes Disponibles</h3>
-                    </div>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
-                        <div class="stat-card">
-                            <div style="text-align:center;padding:20px">
-                                <i class="fas fa-crown" style="font-size:48px;color:#6b7280;margin-bottom:16px"></i>
-                                <h3 style="margin-bottom:8px">Plan Gratis</h3>
-                                <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">
-                                    Características básicas
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div class="stat-card" style="border-color:var(--primary)">
-                            <div style="text-align:center;padding:20px">
-                                <i class="fas fa-gem" style="font-size:48px;color:var(--primary);margin-bottom:16px"></i>
-                                <h3 style="margin-bottom:8px">Plan Premium</h3>
-                                <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">
-                                    $9.99/mes
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div class="stat-card" style="border-color:var(--secondary)">
-                            <div style="text-align:center;padding:20px">
-                                <i class="fas fa-star" style="font-size:48px;color:var(--secondary);margin-bottom:16px"></i>
-                                <h3 style="margin-bottom:8px">Plan VIP</h3>
-                                <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px">
-                                    $19.99/mes
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <!-- Notification -->
     <div class="notification" id="notification">
@@ -452,89 +437,57 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const ADMIN_EMAIL = 'adrianortiz3322@gmail.com';
-        const ADMIN_PASSWORD = 'Adri2626@';
-
-        // Login Handler
-        window.handleLogin = function(e){
-            e.preventDefault();
-            const email = document.getElementById('adminEmail').value;
-            const password = document.getElementById('adminPassword').value;
-
-            console.log('Intentando login:', email, password);
-
-            if(email === ADMIN_EMAIL && password === ADMIN_PASSWORD){
-                localStorage.setItem('admin_logged', 'true');
-                localStorage.setItem('admin_email', email);
-                window.showAdminPanel();
-                window.showNotification('✅ Bienvenido Administrador', 'success');
-            } else {
-                window.showNotification('❌ Credenciales incorrectas', 'error');
-            }
+        // Toggle Sidebar
+        window.toggleSidebar = function(){
+            document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
         };
 
-        // Logout
-        window.adminLogout = function(){
-            localStorage.removeItem('admin_logged');
-            localStorage.removeItem('admin_email');
-            location.reload();
-        };
-
-        // Show Admin Panel
-        window.showAdminPanel = function(){
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-            document.getElementById('adminEmailDisplay').textContent = ADMIN_EMAIL;
-            window.loadDashboard();
-        };
-
-        // Check if logged in
-        if(localStorage.getItem('admin_logged') === 'true'){
-            window.showAdminPanel();
-        }
-
-        // Navigation
-        window.showSection = function(section){
-            console.log('Cambiando a sección:', section);
-            
+        // Show Section
+        window.showSection = function(sectionName){
             // Hide all sections
-            document.querySelectorAll('.main-content > div').forEach(div => {
-                if(div.id.startsWith('section-')){
-                    div.style.display = 'none';
-                }
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
             });
             
-            // Show selected section
-            const targetSection = document.getElementById('section-' + section);
+            // Show target section
+            const targetSection = document.getElementById('section-' + sectionName);
             if(targetSection){
-                targetSection.style.display = 'block';
+                targetSection.classList.add('active');
             }
             
             // Update nav active state
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Close sidebar on mobile
+            if(window.innerWidth <= 768){
+                toggleSidebar();
+            }
             
             // Load section data
-            if(section === 'servers'){
-                window.loadServers();
-            } else if(section === 'dashboard'){
-                window.loadDashboard();
+            if(sectionName === 'servers'){
+                loadServers();
+            } else if(sectionName === 'users'){
+                loadUsers();
+            } else if(sectionName === 'dashboard'){
+                loadDashboard();
             }
         };
 
         // Load Dashboard
         window.loadDashboard = async function(){
             try{
-                console.log('Cargando dashboard...');
                 const serversSnap = await getDocs(collection(db, 'servers'));
                 const usersSnap = await getDocs(collection(db, 'users'));
                 const productsSnap = await getDocs(collection(db, 'products'));
                 const ordersSnap = await getDocs(collection(db, 'orders'));
 
-                const totalServers = serversSnap.size;
-                const totalUsers = usersSnap.size;
-                const totalProducts = productsSnap.size;
+                document.getElementById('totalServers').textContent = serversSnap.size;
+                document.getElementById('totalUsers').textContent = usersSnap.size;
+                document.getElementById('totalProducts').textContent = productsSnap.size;
                 
                 let revenue = 0;
                 ordersSnap.forEach(doc => {
@@ -543,23 +496,16 @@
                         revenue += data.price || 0;
                     }
                 });
-
-                document.getElementById('totalServers').textContent = totalServers;
-                document.getElementById('totalUsers').textContent = totalUsers;
-                document.getElementById('totalProducts').textContent = totalProducts;
                 document.getElementById('totalRevenue').textContent = '$' + revenue.toFixed(2);
-                
-                console.log('Dashboard cargado:', { totalServers, totalUsers, totalProducts, revenue });
             } catch(e){
                 console.error('Error loading dashboard:', e);
-                window.showNotification('Error al cargar dashboard: ' + e.message, 'error');
+                showNotification('Error al cargar dashboard', 'error');
             }
         };
 
         // Load Servers
         window.loadServers = async function(){
             try{
-                console.log('Cargando servidores...');
                 const serversSnap = await getDocs(collection(db, 'servers'));
                 const list = document.getElementById('serversList');
                 list.innerHTML = '';
@@ -583,7 +529,7 @@
                         </div>
                         <div class="plan-badge ${plan}">
                             <i class="fas fa-crown"></i>
-                            <span>${window.getPlanName(plan)}</span>
+                            <span>${getPlanName(plan)}</span>
                         </div>
                         <div class="plan-selector">
                             <select id="plan-${docSnap.id}">
@@ -592,31 +538,23 @@
                                 <option value="vip" ${plan === 'vip' ? 'selected' : ''}>VIP</option>
                                 <option value="enterprise" ${plan === 'enterprise' ? 'selected' : ''}>Enterprise</option>
                             </select>
-                            <button onclick="window.updateServerPlan('${docSnap.id}')" class="btn-apply">
+                            <button onclick="updateServerPlan('${docSnap.id}')" class="btn-apply">
                                 <i class="fas fa-check"></i> Aplicar
                             </button>
                         </div>
                     `;
                     list.appendChild(item);
                 });
-                
-                console.log('Servidores cargados:', serversSnap.size);
             } catch(e){
                 console.error('Error loading servers:', e);
-                document.getElementById('serversList').innerHTML = '<p style="text-align:center;color:var(--danger);padding:40px">Error al cargar servidores: ' + e.message + '</p>';
+                document.getElementById('serversList').innerHTML = '<p style="text-align:center;color:var(--danger);padding:40px">Error al cargar servidores</p>';
             }
         };
 
         // Update Server Plan
         window.updateServerPlan = async function(serverId){
             const select = document.getElementById(`plan-${serverId}`);
-            if(!select){
-                window.showNotification('Error: No se encontró el selector', 'error');
-                return;
-            }
-            
             const newPlan = select.value;
-            console.log('Actualizando plan:', serverId, newPlan);
 
             try{
                 const serverRef = doc(db, 'servers', serverId);
@@ -625,15 +563,55 @@
                     updatedAt: new Date()
                 });
 
-                window.showNotification(`✅ Plan ${window.getPlanName(newPlan)} aplicado correctamente`, 'success');
+                showNotification(`✅ Plan ${getPlanName(newPlan)} aplicado correctamente`, 'success');
             } catch(e){
                 console.error('Error updating plan:', e);
-                window.showNotification('❌ Error al aplicar el plan: ' + e.message, 'error');
+                showNotification('❌ Error al aplicar el plan', 'error');
             }
         };
 
+        // Load Users
+        window.loadUsers = async function(){
+            try{
+                const usersSnap = await getDocs(collection(db, 'users'));
+                const list = document.getElementById('usersList');
+                list.innerHTML = '';
+
+                if(usersSnap.empty){
+                    list.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px">No hay usuarios registrados</p>';
+                    return;
+                }
+
+                usersSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    
+                    const item = document.createElement('div');
+                    item.className = 'server-item';
+                    item.innerHTML = `
+                        <div class="server-info">
+                            <h4>${data.displayName || 'Usuario'}</h4>
+                            <p><i class="fas fa-envelope"></i> ${data.email || 'N/A'}</p>
+                        </div>
+                        <div class="plan-badge free">
+                            <i class="fas fa-user"></i>
+                            <span>Usuario</span>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+            } catch(e){
+                console.error('Error loading users:', e);
+            }
+        };
+
+        // Logout
+        window.logout = function(){
+            localStorage.removeItem('admin_logged');
+            window.location.reload();
+        };
+
         // Helper Functions
-        window.getPlanName = function(plan){
+        function getPlanName(plan){
             const plans = {
                 'free': 'Gratis',
                 'premium': 'Premium',
@@ -641,7 +619,7 @@
                 'enterprise': 'Enterprise'
             };
             return plans[plan] || 'Gratis';
-        };
+        }
 
         window.showNotification = function(message, type = 'success'){
             const notif = document.getElementById('notification');
@@ -657,7 +635,8 @@
             }, 3000);
         };
 
-        console.log('Admin Panel cargado correctamente');
+        // Load dashboard on start
+        loadDashboard();
     </script>
 </body>
 </html>
