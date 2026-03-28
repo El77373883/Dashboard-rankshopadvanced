@@ -206,26 +206,25 @@
             background:rgba(239,68,68,0.2);color:var(--danger)
         }
         
-        /* Verification Badge - Profesional como la imagen */
-        .verified-badge-icon{
-            width:24px;height:24px;
-            background:linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%);
-            border-radius:50%;
+        /* ✅ Verification Badge - Badge profesional como la imagen (forma de estrella/sello) */
+        .verified-badge{
             display:inline-flex;
             align-items:center;
             justify-content:center;
             margin-left:8px;
-            box-shadow:0 2px 8px rgba(29,161,242,0.4);
+            width:20px;
+            height:20px;
+            position:relative;
             animation:verifiedPulse 2s ease-in-out infinite
         }
-        .verified-badge-icon i{
-            color:white;
-            font-size:12px;
-            font-weight:900
+        .verified-badge svg{
+            width:100%;
+            height:100%;
+            filter:drop-shadow(0 2px 4px rgba(29,161,242,0.4))
         }
         @keyframes verifiedPulse{
-            0%,100%{transform:scale(1);box-shadow:0 2px 8px rgba(29,161,242,0.4)}
-            50%{transform:scale(1.1);box-shadow:0 4px 12px rgba(29,161,242,0.6)}
+            0%,100%{transform:scale(1)}
+            50%{transform:scale(1.1)}
         }
         
         /* Buttons */
@@ -721,7 +720,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, query, where, deleteDoc, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, query, where, deleteDoc, orderBy, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCIGXn0zND_8A_nD6NPxx1txYFQzrhM9hg",
@@ -736,6 +735,9 @@
         const db = getFirestore(app);
 
         let currentTicketId = null;
+
+        // SVG Badge de verificación (forma de estrella/sello como la imagen)
+        const verifiedBadgeSVG = `<svg viewBox="0 0 24 24" fill="#1da1f2" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L14.4 7.2L20 8L16 12L17 18L12 15L7 18L8 12L4 8L9.6 7.2L12 2Z" fill="#1da1f2"/><path d="M12 15.5L10 13.5L10.7 12.8L12 14.1L15.3 10.8L16 11.5L12 15.5Z" fill="white"/></svg>`;
 
         // Toggle Menu
         window.toggleMenu = function(){
@@ -829,7 +831,7 @@
                         <div class="item-info">
                             <h4>
                                 ${data.serverName || 'Sin nombre'}
-                                ${isVerified ? '<span class="verified-badge-icon"><i class="fas fa-check"></i></span>' : ''}
+                                ${isVerified ? `<span class="verified-badge">${verifiedBadgeSVG}</span>` : ''}
                             </h4>
                             <p><i class="fas fa-envelope"></i> ${data.ownerEmail || 'N/A'}</p>
                             <p><i class="fas fa-calendar"></i> ${data.createdAt?.toDate?.().toLocaleDateString() || 'N/A'}</p>
@@ -1088,7 +1090,7 @@
                     item.className = 'verified-list-item';
                     item.innerHTML = `
                         <div class="info">
-                            <span class="verified-badge-icon"><i class="fas fa-check"></i></span>
+                            <span class="verified-badge" style="width:24px;height:24px">${verifiedBadgeSVG}</span>
                             <div>
                                 <strong>${data.value}</strong>
                                 <div style="font-size:12px;color:var(--text-muted)">
